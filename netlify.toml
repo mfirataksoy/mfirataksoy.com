@@ -1,0 +1,17 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# The 2020 site lives under /classic; keep a short alias too.
+[[redirects]]
+  from = "/2020"
+  to = "/classic/"
+  status = 301
+
+[[redirects]]
+  from = "/resume.pdf"
+  to = "/Mehmet_Firat_Aksoy_Resume.pdf"
+  status = 301
