@@ -92,8 +92,9 @@ export const chapters: Chapter[] = [
   {
     id: 'anlas',
     years: '2019 – 2020',
-    place: 'While at TCU',
-    focus: 'bridge',
+    place: 'Istanbul',
+    focus: 'istanbul',
+    arc: ['fortWorth', 'istanbul'],
     org: 'Anlaş Otomasyon',
     role: 'Software engineer intern',
     title: {
@@ -248,6 +249,75 @@ export const projects: Project[] = [
     body: 'A Three.js globe that follows my career route as you scroll, with a lens switch for engineering and customer success readers.',
     stack: ['Vue 3', 'Three.js', 'GSAP', 'Vite'],
     link: { label: 'View on GitHub', href: 'https://github.com/mfirataksoy/mfirataksoy.com' },
+  },
+]
+
+export type DeskKey = 'laptop' | 'jetson' | 'phone' | 'headset' | 'server'
+
+export type DeskItem = {
+  id: DeskKey
+  object: string
+  title: ByLens
+  body: ByLens
+  points?: string[]
+  projects?: string[]
+}
+
+// The playground: each object on the desk opens one part of the story.
+export const desk: DeskItem[] = [
+  {
+    id: 'laptop',
+    object: 'Laptop',
+    title: { eng: 'Things I built on the side', cs: 'Things I built on the side' },
+    body: {
+      eng: 'Side projects are where I try new stacks before I need them at work.',
+      cs: 'Side projects keep my hands on the code, so I know what I’m promising customers.',
+    },
+    projects: ['NoteWith.Me', 'This website'],
+  },
+  {
+    id: 'jetson',
+    object: 'Jetson Nano',
+    title: { eng: 'Computer vision on the edge', cs: 'A device built for real homes' },
+    body: {
+      eng: 'At H-E-B I led a smart-home grocery device: CNN models trained in TensorFlow and Keras, running in real time on an NVIDIA Jetson Nano with CUDA and OpenCV.',
+      cs: 'At H-E-B I took a smart-home grocery device from pitch to a prototype people could test at home, with an app flow that linked it to their H-E-B account.',
+    },
+    projects: ['Smart grocery device'],
+  },
+  {
+    id: 'phone',
+    object: 'Phone',
+    title: { eng: 'Mobile and chat', cs: 'Meeting people where they already are' },
+    body: {
+      eng: 'Flutter is my go-to for mobile and what I shipped with at İzibiz. Before that, StickerHub lived inside WhatsApp and Telegram.',
+      cs: 'StickerHub didn’t ask anyone to install an app: it lived inside the WhatsApp and Telegram chats people already used.',
+    },
+    projects: ['StickerHub'],
+  },
+  {
+    id: 'headset',
+    object: 'Headset',
+    title: { eng: 'Listening to customers', cs: 'Customer success' },
+    body: {
+      eng: 'My best engineering started with a conversation: what the client actually needs, what the support team fights with every day, which error message makes a user give up.',
+      cs: 'I’ve owned the client side of a product and built for the people who support customers. I translate between what customers need and what engineers can ship.',
+    },
+    points: [
+      'Owned the client relationship for a New York delivery app and turned needs into requirements',
+      'Built the internal React app Credit One’s customer support staff used daily',
+      'Replaced cryptic errors with actionable messages at Anlaş, cutting errors by 15%',
+    ],
+  },
+  {
+    id: 'server',
+    object: 'Server',
+    title: { eng: 'Cloud and DevOps', cs: 'Technical depth with customers’ engineers' },
+    body: {
+      eng: 'At Credit One I onboarded applications onto AWS EKS with Terraform and watched cluster health for production banking services. At İzibiz I containerized the stack with Docker and Nginx and set up Graylog and Zabbix.',
+      cs: 'Enough cloud experience to talk infrastructure with a customer’s engineers: AWS EKS and Terraform at Credit One, Docker, Nginx and monitoring at İzibiz. AWS Certified Cloud Practitioner.',
+    },
+    points: ['AWS EKS', 'Kubernetes', 'Terraform', 'Docker', 'Nginx', 'Graylog', 'Zabbix'],
   },
 ]
 

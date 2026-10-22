@@ -10,7 +10,7 @@ import HeroSection from './components/HeroSection.vue'
 import AboutSection from './components/AboutSection.vue'
 import JourneySection from './components/JourneySection.vue'
 import ToolkitSection from './components/ToolkitSection.vue'
-import ProjectsSection from './components/ProjectsSection.vue'
+import PlaygroundSection from './components/PlaygroundSection.vue'
 import ContactSection from './components/ContactSection.vue'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -86,9 +86,9 @@ onMounted(async () => {
     }
 
     ScrollTrigger.create({
-      trigger: '#toolkit',
+      trigger: '#projects',
       start: 'top 60%',
-      endTrigger: '#projects',
+      endTrigger: '#toolkit',
       end: 'bottom 40%',
       onToggle: (self) => {
         if (!self.isActive) return
@@ -123,8 +123,8 @@ onBeforeUnmount(() => ctx?.revert())
     <HeroSection />
     <AboutSection />
     <JourneySection />
+    <PlaygroundSection />
     <ToolkitSection />
-    <ProjectsSection />
     <ContactSection />
   </main>
 </template>
