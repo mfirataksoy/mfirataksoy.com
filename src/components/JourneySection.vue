@@ -33,7 +33,7 @@ import { lens, pick } from '../useLens'
               <p :key="lens" class="chapter__body">{{ pick(c.body) }}</p>
             </Transition>
             <ul class="chapter__tags">
-              <li v-for="t in c.tags" :key="t" class="tag">{{ t }}</li>
+              <li v-for="t in (lens === 'cs' && c.csTags) || c.tags" :key="t" class="tag">{{ t }}</li>
             </ul>
           </article>
         </li>
@@ -44,7 +44,9 @@ import { lens, pick } from '../useLens'
             <Transition name="swap" mode="out-in">
               <h3 :key="lens" class="chapter__title">{{ pick(nowChapter.title) }}</h3>
             </Transition>
-            <p class="chapter__body">{{ nowChapter.body }}</p>
+            <Transition name="swap" mode="out-in">
+              <p :key="lens" class="chapter__body">{{ pick(nowChapter.body) }}</p>
+            </Transition>
           </article>
         </li>
       </ol>

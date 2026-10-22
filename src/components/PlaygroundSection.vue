@@ -11,6 +11,10 @@ const has3d = ref(true)
 let scene: Desk | null = null
 
 const item = computed(() => desk.find((d) => d.id === selected.value)!)
+// Customer success readers meet the headset first.
+const ordered = computed(() =>
+  lens.value === 'cs' ? [...desk].sort((a, b) => Number(b.id === 'headset') - Number(a.id === 'headset')) : desk,
+)
 const itemProjects = computed(() => (item.value.projects ?? []).map((n) => projects.find((p) => p.name === n)!).filter(Boolean))
 const hoverLabel = computed(() => desk.find((d) => d.id === hover.value?.id)?.object)
 
@@ -69,7 +73,7 @@ onBeforeUnmount(() => scene?.dispose())
         <div class="play__side">
           <div class="play__picker" role="tablist" aria-label="Objects on the desk">
             <button
-              v-for="d in desk"
+              v-for="d in ordered"
               :key="d.id"
               type="button"
               role="tab"

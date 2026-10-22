@@ -21,7 +21,7 @@ import { lens, pick } from '../useLens'
           </Transition>
         </div>
         <dl class="about__facts" data-reveal>
-          <div v-for="f in about.facts" :key="f.label">
+          <div v-for="f in about.facts[lens]" :key="f.label">
             <dt>{{ f.value }}</dt>
             <dd>{{ f.label }}</dd>
           </div>

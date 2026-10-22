@@ -25,21 +25,21 @@ export const profile = {
   location: 'Istanbul, Türkiye',
 }
 
+// Customer success comes first: it's the default lens and the first option.
 export const lensLabels: Record<Lens, string> = {
-  eng: 'Engineering',
   cs: 'Customer success',
+  eng: 'Engineering',
 }
 
 export const hero = {
-  kicker: 'Based in Istanbul · open to work',
+  kicker: {
+    cs: 'Customer success · Istanbul · open to work',
+    eng: 'Full-stack engineer · Istanbul · open to work',
+  } satisfies ByLens,
   headline: 'I build bridges',
   sub: {
+    cs: 'between customers and the teams that serve them. A customer success manager with a software engineer’s background, so I can go deep on the technical side of every conversation.',
     eng: 'between a product idea and the code that ships it. Full-stack engineer across Flutter, Vue, Java Spring and AWS, with Claude Code at every stage.',
-    cs: 'between customers and the engineers who serve them. Customer success with a software engineer’s toolkit.',
-  } satisfies ByLens,
-  role: {
-    eng: 'Full-stack software engineer',
-    cs: 'Technical customer success',
   } satisfies ByLens,
 }
 
@@ -47,15 +47,23 @@ export const about = {
   photo: '/images/firat.jpg',
   greeting: 'Hi, I’m Firat.',
   body: {
+    cs: 'I trained as a software engineer, and the part of every project I cared about most was the people using it. As a customer success manager for a New York delivery platform, I owned the client relationship and turned what they needed into work the dev team could build. At Credit One Bank I built the app the support team used every day. Now I want to help customers succeed full time, with the technical depth to back it up.',
     eng: 'I’m a full-stack engineer who likes owning a product end to end: the Flutter app, the Vue dashboard, the Spring service behind them and the cluster they run on. Most recently I led regulated e-document products at İzibiz, with Claude Code built into every step so a small team could ship like a bigger one.',
-    cs: 'My best work happens where customers meet code: turning what a client needs into requirements, keeping people and teams aligned, and building the tools support teams use every day. I’m a software engineer by training, so I can go deep on the technical side of every customer conversation.',
   } satisfies ByLens,
-  facts: [
-    { value: '3+ years', label: 'shipping to production' },
-    { value: 'AWS', label: 'Certified Cloud Practitioner' },
-    { value: 'B.S. CS', label: 'Texas Christian University' },
-    { value: 'EN · TR', label: 'working languages' },
-  ],
+  facts: {
+    cs: [
+      { value: 'CSM', label: 'for a New York delivery platform' },
+      { value: 'EN · TR', label: 'fluent in both' },
+      { value: '3+ years', label: 'building software customers use' },
+      { value: 'AWS', label: 'Certified Cloud Practitioner' },
+    ],
+    eng: [
+      { value: '3+ years', label: 'shipping to production' },
+      { value: 'AWS', label: 'Certified Cloud Practitioner' },
+      { value: 'B.S. CS', label: 'Texas Christian University' },
+      { value: 'EN · TR', label: 'working languages' },
+    ],
+  },
 }
 
 export type Chapter = {
@@ -69,6 +77,8 @@ export type Chapter = {
   title: ByLens
   body: ByLens
   tags: string[]
+  // Customer-facing tags for the customer success lens; falls back to `tags`.
+  csTags?: string[]
 }
 
 export const chapters: Chapter[] = [
@@ -88,6 +98,7 @@ export const chapters: Chapter[] = [
       cs: 'Computer science with a math minor as a Chancellor’s Scholar. Alongside the degree, four years at TCU’s alumni center building ties with alumni across industries.',
     },
     tags: ['Chancellor’s Scholar', 'Dean’s List'],
+    csTags: ['Chancellor’s Scholar', 'Alumni relations'],
   },
   {
     id: 'anlas',
@@ -103,9 +114,10 @@ export const chapters: Chapter[] = [
     },
     body: {
       eng: 'Rebuilt the licensing server that authenticated every purchase, from Fortune 1000 firms to small businesses, in React, Node, Express and TypeScript.',
-      cs: 'Replaced cryptic UI errors with clear, actionable messages and reporting, which cut total errors by 15% for customers from Fortune 1000 firms to small businesses.',
+      cs: 'Rebuilt the licensing server every customer purchase went through, from Fortune 1000 firms to small businesses, and replaced cryptic errors with clear, actionable messages. Total errors dropped 15%.',
     },
     tags: ['React', 'Node', 'TypeScript', '−15% errors'],
+    csTags: ['Customer-facing errors', '−15% errors', 'Fortune 1000 to SMB'],
   },
   {
     id: 'heb',
@@ -121,9 +133,10 @@ export const chapters: Chapter[] = [
     },
     body: {
       eng: 'Technical lead for a smart-home grocery device: CNN product and barcode recognition with TensorFlow on an NVIDIA Jetson Nano, plus Wi-Fi setup, Firebase Auth and H-E-B account linking in the companion app.',
-      cs: 'Led a smart-home grocery device from pitch to working prototype, designed 3D-printed enclosures for in-home testing, and pitched integrating it into H-E-B’s customer apps.',
+      cs: 'Pitched a smart-home grocery device and led it to a working prototype built for real homes: Wi-Fi setup from the app, H-E-B account linking, and used-up items synced to the customer’s account automatically. Designed the enclosures for in-home testing.',
     },
     tags: ['Jetson Nano', 'TensorFlow', 'Firebase', '3D printing'],
+    csTags: ['Pitch → prototype', 'In-home testing', 'Setup and onboarding'],
   },
   {
     id: 'csm',
@@ -142,6 +155,7 @@ export const chapters: Chapter[] = [
       cs: 'Owned the client relationship for a New York delivery app for local shops. Turned client needs into requirements and kept the client and the dev team aligned on scope and timelines across time zones.',
     },
     tags: ['Client management', 'Requirements', 'Across time zones'],
+    csTags: ['Client relationship', 'Needs → requirements', 'Scope and timelines', 'Across time zones'],
   },
   {
     id: 'creditone',
@@ -157,9 +171,10 @@ export const chapters: Chapter[] = [
     },
     body: {
       eng: 'In the Information Management Leadership Program: onboarded applications onto the bank’s hybrid cloud with Terraform, deployed to AWS EKS, and watched cluster health for production banking services.',
-      cs: 'Selected for the bank’s IT leadership program and partnered with senior IT leaders on planning and delivery. Built an internal React app that the customer support staff used daily.',
+      cs: 'Selected for the bank’s two-year IT leadership program and partnered with senior IT leaders on planning and delivery. Built the internal React app the bank’s customer support staff used every day.',
     },
     tags: ['AWS EKS', 'Terraform', 'Kubernetes', 'React'],
+    csTags: ['Support tooling', 'Senior stakeholders', 'Banking'],
   },
   {
     id: 'izibiz',
@@ -175,9 +190,10 @@ export const chapters: Chapter[] = [
     },
     body: {
       eng: 'Led delivery of e-Ledger, e-SMM, e-Producer Receipt, a tax calculation engine and an SMS microservice across Flutter, Vue, JSP, Java Spring and PostgreSQL, running on Docker and Nginx with Graylog and Zabbix. Claude Code at every stage.',
-      cs: 'Owned regulated e-document products end to end, from requirements to release, plus partner integrations such as IdeaSoft. Used Claude Code across design, review, testing and docs so a lean team could deliver more.',
+      cs: 'Owned regulated e-document products end to end, from requirements to release, and partner integrations such as IdeaSoft. Built Claude Code into design, review, testing and documentation so a lean team could deliver more.',
     },
     tags: ['Flutter', 'Vue', 'Java Spring', 'PostgreSQL', 'Claude Code'],
+    csTags: ['Regulated products', 'Partner integrations', 'Requirements → release'],
   },
 ]
 
@@ -187,7 +203,10 @@ export const nowChapter = {
     eng: 'Next stop: your engineering team',
     cs: 'Next stop: your customers',
   } satisfies ByLens,
-  body: 'Based in Istanbul and open to new roles. I speak English and Turkish.',
+  body: {
+    cs: 'Based in Istanbul and looking for a customer success role where technical depth helps customers get more out of the product. Fluent in English and Turkish.',
+    eng: 'Based in Istanbul and open to full-stack and cloud roles. Fluent in English and Turkish.',
+  } satisfies ByLens,
 }
 
 export const toolkit: Record<Lens, { group: string; items: string[] }[]> = {
@@ -199,11 +218,11 @@ export const toolkit: Record<Lens, { group: string; items: string[] }[]> = {
     { group: 'AI and tools', items: ['Claude Code', 'TensorFlow', 'OpenCV', 'CUDA', 'NVIDIA Jetson', 'Git', 'Jira'] },
   ],
   cs: [
-    { group: 'With customers', items: ['Client management', 'Needs → requirements', 'Scope and timelines', 'Relationship building'] },
-    { group: 'Across teams', items: ['Client ⇄ dev team', 'Across time zones', 'Senior IT leadership', 'Support staff tooling'] },
-    { group: 'Languages', items: ['English', 'Turkish'] },
-    { group: 'Technical depth', items: ['Reads and writes code', 'APIs and integrations', 'AWS Certified', 'SQL', 'Jira'] },
-    { group: 'AI', items: ['Claude Code', 'AI-assisted docs and testing'] },
+    { group: 'Customer work', items: ['Client relationships', 'Needs → requirements', 'Scope and timelines', 'Stakeholder alignment'] },
+    { group: 'Communication', items: ['English and Turkish', 'Across time zones', 'Clear, actionable messaging', 'Documentation'] },
+    { group: 'Worked alongside', items: ['Dev teams', 'Support staff', 'Senior IT leadership', 'Integration partners'] },
+    { group: 'Technical depth', items: ['Reads and writes code', 'APIs and integrations', 'SQL', 'AWS Certified', 'Cloud and Kubernetes'] },
+    { group: 'Tools', items: ['Jira', 'Git', 'Claude Code', 'AI-assisted docs and testing'] },
   ],
 }
 
@@ -324,7 +343,7 @@ export const desk: DeskItem[] = [
 export const contact = {
   headline: 'Let’s build a bridge.',
   body: {
-    eng: 'Hiring for a full-stack or cloud role? I’d like to hear about the product and the team.',
     cs: 'Hiring for customer success? I’d like to hear about your customers and what success means for them.',
+    eng: 'Hiring for a full-stack or cloud role? I’d like to hear about the product and the team.',
   } satisfies ByLens,
 }

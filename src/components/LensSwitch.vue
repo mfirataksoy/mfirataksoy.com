@@ -59,7 +59,7 @@ const options = Object.entries(lensLabels) as [Lens, string][]
   background: var(--ink);
   transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
 }
-.lens__track[data-active='cs'] .lens__thumb {
+.lens__track[data-active='eng'] .lens__thumb {
   transform: translateX(100%);
 }
 .lens__option {

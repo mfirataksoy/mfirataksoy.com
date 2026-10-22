@@ -8,7 +8,7 @@ import LensSwitch from './LensSwitch.vue'
   <section id="top" class="hero" data-globe="hero">
     <div class="wrap hero__inner">
       <p class="kicker hero__kicker" data-hero>
-        <span class="hero__dot" aria-hidden="true" /> {{ hero.kicker }}
+        <span class="hero__dot" aria-hidden="true" /> {{ pick(hero.kicker) }}
       </p>
       <h1 class="hero__title">
         <span class="hero__name" data-hero>
