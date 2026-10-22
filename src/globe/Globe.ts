@@ -276,6 +276,7 @@ export class Globe {
     const routes: [PlaceKey, PlaceKey][] = [
       ['istanbul', 'fortWorth'],
       ['fortWorth', 'sanAntonio'],
+      ['fortWorth', 'newYork'],
       ['fortWorth', 'lasVegas'],
       ['lasVegas', 'istanbul'],
     ]

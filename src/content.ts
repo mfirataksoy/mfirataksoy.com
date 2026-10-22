@@ -4,13 +4,14 @@
 export type Lens = 'eng' | 'cs'
 export type ByLens = { eng: string; cs: string }
 
-export type PlaceKey = 'istanbul' | 'fortWorth' | 'sanAntonio' | 'lasVegas'
+export type PlaceKey = 'istanbul' | 'fortWorth' | 'sanAntonio' | 'lasVegas' | 'newYork'
 
 export const places: Record<PlaceKey, { label: string; lat: number; lon: number }> = {
   istanbul: { label: 'Istanbul', lat: 41.01, lon: 28.98 },
   fortWorth: { label: 'Fort Worth', lat: 32.75, lon: -97.33 },
   sanAntonio: { label: 'San Antonio', lat: 29.42, lon: -98.49 },
   lasVegas: { label: 'Las Vegas', lat: 36.17, lon: -115.14 },
+  newYork: { label: 'New York', lat: 40.71, lon: -74.01 },
 }
 
 export const profile = {
@@ -124,6 +125,24 @@ export const chapters: Chapter[] = [
     tags: ['Jetson Nano', 'TensorFlow', 'Firebase', '3D printing'],
   },
   {
+    id: 'csm',
+    years: '2022 – 2023',
+    place: 'New York · remote',
+    focus: 'newYork',
+    arc: ['fortWorth', 'newYork'],
+    org: 'Local-delivery platform',
+    role: 'Customer success manager (contract)',
+    title: {
+      eng: 'Between the client and the code',
+      cs: 'The client’s voice in the build',
+    },
+    body: {
+      eng: 'Managed a New York client’s delivery app for local shops from kickoff through development, turning what the client needed into requirements the dev team could build.',
+      cs: 'Owned the client relationship for a New York delivery app for local shops. Turned client needs into requirements and kept the client and the dev team aligned on scope and timelines across time zones.',
+    },
+    tags: ['Client management', 'Requirements', 'Across time zones'],
+  },
+  {
     id: 'creditone',
     years: '2023 – 2024',
     place: 'Las Vegas, NV',
@@ -179,7 +198,7 @@ export const toolkit: Record<Lens, { group: string; items: string[] }[]> = {
     { group: 'AI and tools', items: ['Claude Code', 'TensorFlow', 'OpenCV', 'CUDA', 'NVIDIA Jetson', 'Git', 'Jira'] },
   ],
   cs: [
-    { group: 'With customers', items: ['Needs → requirements', 'Scope and timelines', 'Stakeholder updates', 'Relationship building'] },
+    { group: 'With customers', items: ['Client management', 'Needs → requirements', 'Scope and timelines', 'Relationship building'] },
     { group: 'Across teams', items: ['Client ⇄ dev team', 'Across time zones', 'Senior IT leadership', 'Support staff tooling'] },
     { group: 'Languages', items: ['English', 'Turkish'] },
     { group: 'Technical depth', items: ['Reads and writes code', 'APIs and integrations', 'AWS Certified', 'SQL', 'Jira'] },

@@ -18,6 +18,7 @@ import { lens, pick } from '../useLens'
           :key="c.id"
           class="chapter"
           :data-chapter="c.id"
+          :class="{ 'chapter--bridge': c.id === 'csm' }"
         >
           <span class="chapter__node" aria-hidden="true" />
           <article class="chapter__card" data-reveal>
@@ -118,6 +119,10 @@ import { lens, pick } from '../useLens'
 }
 .chapter.is-active .chapter__card {
   border-color: rgba(255, 181, 71, 0.35);
+}
+.chapter--bridge .chapter__title {
+  font-style: italic;
+  color: var(--amber);
 }
 .chapter__meta {
   display: flex;
