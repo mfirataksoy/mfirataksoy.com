@@ -7,7 +7,7 @@ import { lens } from '../useLens'
   <section id="toolkit" class="toolkit" data-globe="dim">
     <div class="wrap">
       <header data-reveal>
-        <p class="kicker">02 · Toolkit</p>
+        <p class="kicker">03 · Toolkit</p>
         <h2 class="section-title">What I bring <em>across</em>.</h2>
       </header>
       <div data-reveal>

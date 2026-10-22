@@ -135,6 +135,7 @@ const arcFragment = /* glsl */ `
   uniform vec3 uTo;
   uniform float uDraw;
   uniform float uOpacity;
+  uniform float uFade;
   uniform float uTime;
   uniform float uBoth;
   varying float vU;
@@ -145,7 +146,7 @@ const arcFragment = /* glsl */ `
     float pulse = exp(-pow((vU - head) * 18.0, 2.0));
     float back = exp(-pow((vU - (1.0 - head)) * 18.0, 2.0)) * uBoth;
     float a = 0.35 + 0.65 * (pulse + back);
-    gl_FragColor = vec4(col + (pulse + back) * 0.6, a * uOpacity);
+    gl_FragColor = vec4(col + (pulse + back) * 0.6, a * uOpacity * uFade);
   }
 `
 
@@ -158,6 +159,7 @@ type Pin = {
   key: PlaceKey
   group: THREE.Group
   ring: THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>
+  dot: THREE.Mesh<THREE.CircleGeometry, THREE.MeshBasicMaterial>
   label: HTMLDivElement
   world: THREE.Vector3
 }
@@ -274,6 +276,7 @@ export class Globe {
     const routes: [PlaceKey, PlaceKey][] = [
       ['istanbul', 'fortWorth'],
       ['fortWorth', 'sanAntonio'],
+      ['fortWorth', 'newYork'],
       ['fortWorth', 'lasVegas'],
       ['lasVegas', 'istanbul'],
     ]
@@ -297,6 +300,7 @@ export class Globe {
           uTo: { value: new THREE.Color('#ff6a4d') },
           uDraw: { value: 0 },
           uOpacity: { value: 0 },
+          uFade: { value: 1 },
           uTime: { value: 0 },
           uBoth: { value: 0 },
         },
@@ -330,7 +334,7 @@ export class Globe {
       label.textContent = p.label
       label.dataset.place = key
       this.labelLayer.appendChild(label)
-      this.pins.push({ key, group, ring, label, world })
+      this.pins.push({ key, group, ring, dot, label, world })
     }
   }
 
@@ -345,7 +349,6 @@ export class Globe {
       lat = focus === 'hero' ? 26 : 36
       lon = focus === 'hero' ? -34 : -18
       dist = focus === 'hero' ? 5.6 : 6.0
-      this.activePlaces.add('istanbul').add('fortWorth')
     } else {
       const p = places[focus]
       lat = p.lat - 6
@@ -363,11 +366,13 @@ export class Globe {
     gsap.to(this.view, { lat, lon: this.view.lon + dLon, dist, duration: d, ease: 'power3.inOut', overwrite: 'auto' })
     gsap.to(this.view, { drift: focus === 'hero' ? 1 : 0, duration: d })
 
-    const nextArc = arc ? arcKey(arc[0], arc[1]) : focus === 'hero' ? arcKey('istanbul', 'fortWorth') : ''
+    // Wide views show the whole route network softly; a chapter lights up one route.
+    const network = !arc && (focus === 'hero' || focus === 'bridge')
+    const nextArc = arc ? arcKey(arc[0], arc[1]) : ''
     for (const a of this.arcs) {
       const on = a.key === nextArc
       const u = a.mesh.material.uniforms
-      u.uBoth.value = focus === 'bridge' ? 1 : 0
+      u.uBoth.value = 0
       gsap.killTweensOf(u.uDraw)
       if (on && a.key !== this.activeArc) {
         // A newly chosen route draws itself from the start.
@@ -376,7 +381,7 @@ export class Globe {
       } else if (!on) {
         u.uDraw.value = 1
       }
-      gsap.to(u.uOpacity, { value: on ? 1 : 0.12, duration: d * 0.6 })
+      gsap.to(u.uOpacity, { value: on ? 1 : network ? 0.45 : 0.12, duration: d * 0.6 })
     }
     this.activeArc = nextArc
   }
@@ -436,7 +441,10 @@ export class Globe {
     this.dots.material.uniforms.uTime.value = t
     this.dots.material.uniforms.uOpacity.value = v.opacity
     this.atmosphere.material.uniforms.uOpacity.value = 0.32 * v.opacity
-    for (const a of this.arcs) a.mesh.material.uniforms.uTime.value = this.reducedMotion ? 0.3 : t
+    for (const a of this.arcs) {
+      a.mesh.material.uniforms.uTime.value = this.reducedMotion ? 0.3 : t
+      a.mesh.material.uniforms.uFade.value = v.opacity
+    }
 
     this.root.updateMatrixWorld()
     const w = this.canvas.clientWidth
@@ -446,6 +454,7 @@ export class Globe {
       const s = 1 + ((t * 0.8) % 1) * 1.6
       pin.ring.scale.setScalar(on ? s : 1)
       pin.ring.material.opacity = on ? (1 - ((t * 0.8) % 1)) * v.opacity : 0
+      pin.dot.material.opacity = v.opacity
 
       pin.group.getWorldPosition(this.tmp)
       this.normal.copy(this.tmp).sub(this.root.position).normalize()

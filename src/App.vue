@@ -7,6 +7,7 @@ import { globe } from './globe/store'
 import GlobeStage from './components/GlobeStage.vue'
 import NavBar from './components/NavBar.vue'
 import HeroSection from './components/HeroSection.vue'
+import AboutSection from './components/AboutSection.vue'
 import JourneySection from './components/JourneySection.vue'
 import ToolkitSection from './components/ToolkitSection.vue'
 import ProjectsSection from './components/ProjectsSection.vue'
@@ -43,6 +44,17 @@ onMounted(async () => {
         if (!self.isActive) return
         globe.value?.focus('hero')
         globe.value?.setLayout(sideOrTop(), 1)
+      },
+    })
+
+    ScrollTrigger.create({
+      trigger: '#about',
+      start: 'top 60%',
+      end: 'bottom 50%',
+      onToggle: (self) => {
+        if (!self.isActive) return
+        globe.value?.focus('hero')
+        globe.value?.setLayout('side', 0.25)
       },
     })
 
@@ -109,6 +121,7 @@ onBeforeUnmount(() => ctx?.revert())
   <NavBar />
   <main class="page">
     <HeroSection />
+    <AboutSection />
     <JourneySection />
     <ToolkitSection />
     <ProjectsSection />

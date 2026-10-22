@@ -23,7 +23,7 @@ function reset(e: PointerEvent) {
   <section id="projects" class="projects" data-globe="dim">
     <div class="wrap">
       <header data-reveal>
-        <p class="kicker">03 · Projects</p>
+        <p class="kicker">04 · Projects</p>
         <h2 class="section-title">Things I <em>shipped</em> on the side.</h2>
       </header>
       <div class="projects__grid">

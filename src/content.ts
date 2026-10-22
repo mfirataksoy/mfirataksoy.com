@@ -4,13 +4,14 @@
 export type Lens = 'eng' | 'cs'
 export type ByLens = { eng: string; cs: string }
 
-export type PlaceKey = 'istanbul' | 'fortWorth' | 'sanAntonio' | 'lasVegas'
+export type PlaceKey = 'istanbul' | 'fortWorth' | 'sanAntonio' | 'lasVegas' | 'newYork'
 
 export const places: Record<PlaceKey, { label: string; lat: number; lon: number }> = {
   istanbul: { label: 'Istanbul', lat: 41.01, lon: 28.98 },
   fortWorth: { label: 'Fort Worth', lat: 32.75, lon: -97.33 },
   sanAntonio: { label: 'San Antonio', lat: 29.42, lon: -98.49 },
   lasVegas: { label: 'Las Vegas', lat: 36.17, lon: -115.14 },
+  newYork: { label: 'New York', lat: 40.71, lon: -74.01 },
 }
 
 export const profile = {
@@ -30,11 +31,11 @@ export const lensLabels: Record<Lens, string> = {
 }
 
 export const hero = {
-  kicker: 'Istanbul ⇄ Texas · open to work',
+  kicker: 'Based in Istanbul · open to work',
   headline: 'I build bridges',
   sub: {
     eng: 'between a product idea and the code that ships it. Full-stack engineer across Flutter, Vue, Java Spring and AWS, with Claude Code at every stage.',
-    cs: 'between customers and the engineers who serve them. Customer success with a software engineer’s toolkit, fluent in English and Turkish.',
+    cs: 'between customers and the engineers who serve them. Customer success with a software engineer’s toolkit.',
   } satisfies ByLens,
   role: {
     eng: 'Full-stack software engineer',
@@ -42,12 +43,27 @@ export const hero = {
   } satisfies ByLens,
 }
 
+export const about = {
+  photo: '/images/firat.jpg',
+  greeting: 'Hi, I’m Firat.',
+  body: {
+    eng: 'I’m a full-stack engineer who likes owning a product end to end: the Flutter app, the Vue dashboard, the Spring service behind them and the cluster they run on. Most recently I led regulated e-document products at İzibiz, with Claude Code built into every step so a small team could ship like a bigger one.',
+    cs: 'My best work happens where customers meet code: turning what a client needs into requirements, keeping teams aligned through launch, and building the tools support teams use every day. I’m a software engineer by training, so I can go deep on the technical side of every customer conversation.',
+  } satisfies ByLens,
+  facts: [
+    { value: '3+ years', label: 'shipping to production' },
+    { value: 'AWS', label: 'Certified Cloud Practitioner' },
+    { value: 'B.S. CS', label: 'Texas Christian University' },
+    { value: 'EN · TR', label: 'working languages' },
+  ],
+}
+
 export type Chapter = {
   id: string
   years: string
   place: string
   focus: PlaceKey | 'bridge'
-  arc: [PlaceKey, PlaceKey]
+  arc?: [PlaceKey, PlaceKey]
   org: string
   role: string
   title: ByLens
@@ -59,18 +75,17 @@ export const chapters: Chapter[] = [
   {
     id: 'tcu',
     years: '2018 – 2023',
-    place: 'Istanbul → Fort Worth, TX',
+    place: 'Fort Worth, TX',
     focus: 'fortWorth',
-    arc: ['istanbul', 'fortWorth'],
     org: 'Texas Christian University',
     role: 'B.S. Computer Science, minor in Mathematics',
     title: {
-      eng: 'Crossed an ocean for computer science',
-      cs: 'Learned to build things, and relationships',
+      eng: 'Where the code started',
+      cs: 'A technical foundation',
     },
     body: {
-      eng: 'Chancellor’s Scholar and Dean’s List at TCU. Computer science with a math minor, and the first lines of code that ended up in production.',
-      cs: 'Chancellor’s Scholar while spending four years at the front desk of TCU’s alumni center, welcoming alumni and supporting events alongside a full course load.',
+      eng: 'Computer science with a math minor at TCU as a Chancellor’s Scholar, on the Dean’s List, and the first lines of code that ended up in production.',
+      cs: 'Computer science with a math minor at TCU as a Chancellor’s Scholar. It’s why I can go deep on the technical side of a customer conversation.',
     },
     tags: ['Chancellor’s Scholar', 'Dean’s List'],
   },
@@ -79,7 +94,6 @@ export const chapters: Chapter[] = [
     years: '2019 – 2020',
     place: 'While at TCU',
     focus: 'bridge',
-    arc: ['fortWorth', 'istanbul'],
     org: 'Anlaş Otomasyon',
     role: 'Software engineer intern',
     title: {
@@ -113,18 +127,18 @@ export const chapters: Chapter[] = [
   {
     id: 'csm',
     years: '2022 – 2023',
-    place: 'Remote · US ⇄ Türkiye',
-    focus: 'bridge',
-    arc: ['fortWorth', 'istanbul'],
-    org: 'US local-delivery platform',
+    place: 'New York · remote',
+    focus: 'newYork',
+    arc: ['fortWorth', 'newYork'],
+    org: 'Local-delivery platform',
     role: 'Customer success manager (contract)',
     title: {
-      eng: 'The bridge, literally',
-      cs: 'The bridge, literally',
+      eng: 'Between the client and the code',
+      cs: 'Kickoff to launch for a New York client',
     },
     body: {
-      eng: 'Managed a US client’s delivery app for local shops from kickoff to launch, turning what the client needed into requirements a Turkey-based dev team could build.',
-      cs: 'Owned a US client’s delivery app for local shops from kickoff to launch. Turned client needs into requirements and kept a US client team and a Turkey-based dev team aligned on scope and timelines across time zones.',
+      eng: 'Managed a New York client’s delivery app for local shops from kickoff to launch, turning what the client needed into requirements the dev team could build.',
+      cs: 'Owned a New York client’s delivery app for local shops from kickoff to launch. Turned client needs into requirements and kept the client and the dev team aligned on scope and timelines across time zones.',
     },
     tags: ['Kickoff → launch', 'Requirements', 'Across time zones'],
   },
@@ -185,7 +199,7 @@ export const toolkit: Record<Lens, { group: string; items: string[] }[]> = {
   ],
   cs: [
     { group: 'With customers', items: ['Kickoff to launch', 'Needs → requirements', 'Scope and timelines', 'Stakeholder updates'] },
-    { group: 'Across teams', items: ['US ⇄ Türkiye time zones', 'Client ⇄ dev team', 'Senior IT leadership', 'Support staff tooling'] },
+    { group: 'Across teams', items: ['Client ⇄ dev team', 'Across time zones', 'Senior IT leadership', 'Support staff tooling'] },
     { group: 'Languages', items: ['English', 'Turkish'] },
     { group: 'Technical depth', items: ['Reads and writes code', 'APIs and integrations', 'AWS Certified', 'SQL', 'Jira'] },
     { group: 'AI', items: ['Claude Code', 'AI-assisted docs and testing'] },
@@ -231,7 +245,7 @@ export const projects: Project[] = [
     name: 'This website',
     year: '2026',
     kind: 'Open source',
-    body: 'A Three.js globe that follows my path between Istanbul and Texas as you scroll, with a lens switch for engineering and customer success readers.',
+    body: 'A Three.js globe that follows my career route as you scroll, with a lens switch for engineering and customer success readers.',
     stack: ['Vue 3', 'Three.js', 'GSAP', 'Vite'],
     link: { label: 'View on GitHub', href: 'https://github.com/mfirataksoy/mfirataksoy.com' },
   },

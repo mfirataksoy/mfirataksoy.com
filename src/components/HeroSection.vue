@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { hero, profile } from '../content'
+import { about, hero, profile } from '../content'
 import { lens, pick } from '../useLens'
 import LensSwitch from './LensSwitch.vue'
 </script>
@@ -11,7 +11,10 @@ import LensSwitch from './LensSwitch.vue'
         <span class="hero__dot" aria-hidden="true" /> {{ hero.kicker }}
       </p>
       <h1 class="hero__title">
-        <span class="hero__name" data-hero>{{ profile.name }}</span>
+        <span class="hero__name" data-hero>
+          <img class="hero__avatar" :src="about.photo" alt="" width="40" height="40" />
+          {{ profile.name }}
+        </span>
         <span class="hero__headline" data-hero>
           I build
           <em class="hero__bridges">
@@ -75,10 +78,19 @@ import LensSwitch from './LensSwitch.vue'
   font-weight: 400;
 }
 .hero__name {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   font: 500 clamp(15px, 1.4vw, 18px) / 1.2 var(--sans);
   color: var(--ink-soft);
   letter-spacing: 0.01em;
+}
+.hero__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 181, 71, 0.5);
 }
 .hero__headline {
   display: block;

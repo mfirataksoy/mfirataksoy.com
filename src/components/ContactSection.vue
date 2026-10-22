@@ -18,7 +18,7 @@ async function copyEmail() {
 <template>
   <section id="contact" class="contact" data-globe="bridge">
     <div class="wrap contact__inner">
-      <p class="kicker" data-reveal>04 · Contact</p>
+      <p class="kicker" data-reveal>05 · Contact</p>
       <h2 class="contact__title" data-reveal>{{ contact.headline }}</h2>
       <Transition name="swap" mode="out-in">
         <p :key="lens" class="contact__body">{{ pick(contact.body) }}</p>

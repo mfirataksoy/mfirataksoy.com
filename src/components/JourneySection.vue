@@ -7,8 +7,8 @@ import { lens, pick } from '../useLens'
   <section id="journey" class="journey">
     <div class="wrap">
       <header class="journey__head" data-reveal>
-        <p class="kicker">01 · The route</p>
-        <h2 class="section-title">Eight years, <em>two</em> continents.</h2>
+        <p class="kicker">02 · The route</p>
+        <h2 class="section-title">The route <em>so far</em>.</h2>
       </header>
 
       <ol class="journey__list">
