@@ -82,7 +82,7 @@ import { lens, pick } from '../useLens'
 .journey__fill {
   position: absolute;
   inset: 0;
-  background: linear-gradient(var(--amber), var(--coral));
+  background: linear-gradient(var(--gold), var(--gold-soft));
   transform-origin: top;
   transform: scaleY(var(--progress, 0));
 }
@@ -105,9 +105,9 @@ import { lens, pick } from '../useLens'
   transition: border-color 0.4s, background 0.4s, box-shadow 0.4s;
 }
 .chapter.is-active .chapter__node {
-  border-color: var(--amber);
-  background: var(--amber);
-  box-shadow: 0 0 0 6px rgba(255, 181, 71, 0.15);
+  border-color: var(--gold);
+  background: var(--gold);
+  box-shadow: 0 0 0 6px rgba(200, 164, 93, 0.15);
 }
 .chapter__card {
   width: 100%;
@@ -120,11 +120,11 @@ import { lens, pick } from '../useLens'
   transition: border-color 0.4s;
 }
 .chapter.is-active .chapter__card {
-  border-color: rgba(255, 181, 71, 0.35);
+  border-color: rgba(200, 164, 93, 0.35);
 }
 .chapter--bridge .chapter__title {
   font-style: italic;
-  color: var(--amber);
+  color: var(--gold);
 }
 .chapter__meta {
   display: flex;
@@ -134,7 +134,7 @@ import { lens, pick } from '../useLens'
   font: 500 12px/1.4 var(--mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--amber);
+  color: var(--gold);
 }
 .chapter__title {
   margin: 14px 0 0;
@@ -178,7 +178,7 @@ import { lens, pick } from '../useLens'
   }
   .chapter__card {
     padding: 22px 20px;
-    background: rgba(10, 15, 34, 0.86);
+    background: rgba(12, 23, 45, 0.86);
   }
 }
 </style>

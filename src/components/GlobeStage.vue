@@ -44,7 +44,7 @@ onBeforeUnmount(() => {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(7, 11, 22, 0.75) 100%);
+  background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(8, 17, 34, 0.75) 100%);
 }
 .stage__canvas {
   width: 100%;

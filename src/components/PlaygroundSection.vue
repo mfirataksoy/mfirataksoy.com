@@ -55,9 +55,9 @@ onBeforeUnmount(() => scene?.dispose())
   <section id="projects" class="play" data-globe="dim">
     <div class="wrap">
       <header data-reveal>
-        <p class="kicker">03 · Playground</p>
-        <h2 class="section-title">Have a look around <em>my desk</em>.</h2>
-        <p class="play__hint">{{ has3d ? 'Click anything on the desk.' : 'Tap an object to open its story.' }}</p>
+        <p class="kicker">04 · Playground</p>
+        <h2 class="section-title">The work, <em>up close</em>.</h2>
+        <p class="play__hint">{{ has3d ? 'Select an object on the desk' : 'Select an object to read its story' }}</p>
       </header>
 
       <div class="play__grid" :class="{ 'play__grid--flat': !has3d }">
@@ -156,8 +156,8 @@ onBeforeUnmount(() => scene?.dispose())
   border-radius: var(--radius);
   border: 1px solid var(--line);
   background:
-    radial-gradient(70% 60% at 45% 40%, rgba(255, 181, 71, 0.08), transparent 70%),
-    rgba(10, 15, 34, 0.75);
+    radial-gradient(70% 60% at 45% 40%, rgba(200, 164, 93, 0.08), transparent 70%),
+    rgba(12, 23, 45, 0.75);
   overflow: hidden;
 }
 .play__canvas {
@@ -176,7 +176,7 @@ onBeforeUnmount(() => scene?.dispose())
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--bg);
-  background: var(--amber);
+  background: var(--gold);
   pointer-events: none;
   white-space: nowrap;
 }
@@ -192,7 +192,7 @@ onBeforeUnmount(() => scene?.dispose())
   padding: 9px 13px;
   border-radius: 999px;
   border: 1px solid var(--line-strong);
-  background: rgba(7, 11, 22, 0.6);
+  background: rgba(8, 17, 34, 0.6);
   color: var(--ink-soft);
   font: 500 14px/1 var(--sans);
   cursor: pointer;
@@ -203,23 +203,23 @@ onBeforeUnmount(() => scene?.dispose())
   border-color: var(--ink-soft);
 }
 .play__chip.is-on {
-  background: var(--amber);
-  border-color: var(--amber);
-  color: #1a1203;
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #0b1426;
 }
 .play__panel {
   margin-top: 18px;
   padding: 26px;
   border-radius: var(--radius);
   border: 1px solid var(--line);
-  background: rgba(10, 15, 34, 0.88);
+  background: rgba(12, 23, 45, 0.88);
 }
 .play__object {
   margin: 0;
   font: 500 12px/1 var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--amber);
+  color: var(--gold);
 }
 .play__title {
   margin: 12px 0 0;
@@ -249,7 +249,7 @@ onBeforeUnmount(() => scene?.dispose())
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  border: 2px solid var(--amber);
+  border: 2px solid var(--gold);
 }
 .play__points--tags {
   display: flex;
@@ -281,7 +281,7 @@ onBeforeUnmount(() => scene?.dispose())
   color: var(--muted);
 }
 .play__status {
-  color: var(--amber);
+  color: var(--gold);
 }
 .play__project h4 {
   margin: 8px 0 0;
@@ -303,11 +303,11 @@ onBeforeUnmount(() => scene?.dispose())
 .play__link {
   display: inline-block;
   margin-top: 14px;
-  color: var(--amber);
+  color: var(--gold);
   font-weight: 500;
   font-size: 15px;
   text-decoration: none;
-  border-bottom: 1px solid rgba(255, 181, 71, 0.4);
+  border-bottom: 1px solid rgba(200, 164, 93, 0.4);
 }
 @media (max-width: 1000px) {
   .play__grid {

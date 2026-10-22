@@ -226,6 +226,29 @@ export const toolkit: Record<Lens, { group: string; items: string[] }[]> = {
   ],
 }
 
+// Drafts for Fırat to rewrite in his own words.
+export const principles = {
+  title: 'How I think',
+  intro: 'A few ideas I keep coming back to, whatever the job title.',
+  items: [
+    {
+      n: 'I',
+      title: 'Understand before you build.',
+      body: 'Most problems are misunderstood long before they are misbuilt. I start by asking what the person is actually trying to do.',
+    },
+    {
+      n: 'II',
+      title: 'Clarity is a form of respect.',
+      body: 'A clear answer, a clear timeline, a clear no. People can plan around honesty; they can’t plan around vagueness.',
+    },
+    {
+      n: 'III',
+      title: 'Technology should serve people.',
+      body: 'Code is only worth what it changes for someone. I judge the work by the person on the other side of it.',
+    },
+  ],
+}
+
 export type Project = {
   name: string
   year: string

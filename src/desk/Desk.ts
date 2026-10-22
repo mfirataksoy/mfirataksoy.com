@@ -10,17 +10,18 @@ type Clickable = {
 }
 
 const C = {
-  top: '#202846',
-  edge: '#ffb547',
-  leg: '#141a32',
-  metal: '#c7cde0',
-  dark: '#1a1f2e',
-  graphite: '#2b3142',
-  pcb: '#1d6b4b',
-  amber: '#ffb547',
-  coral: '#ff6a4d',
-  blue: '#6f86e6',
-  green: '#4ade80',
+  top: '#16223f',
+  edge: '#c8a45d',
+  leg: '#0f182f',
+  metal: '#c9ccd3',
+  dark: '#171e30',
+  graphite: '#283044',
+  pcb: '#2d4a42',
+  gold: '#c8a45d',
+  ivory: '#ece7dc',
+  tin: '#9aa3b5',
+  sky: '#8fb4e6',
+  blue: '#7d8fbf',
 }
 
 const mat = (color: string, extra: THREE.MeshStandardMaterialParameters = {}) =>
@@ -56,7 +57,7 @@ function codeScreen() {
   const tex = screenTexture((ctx, w, h) => {
     ctx.fillStyle = '#0b1020'
     ctx.fillRect(0, 0, w, h * 2)
-    const colors = [C.amber, C.blue, '#e9ecf5', C.coral, '#8d9dd6']
+    const colors = [C.gold, C.blue, C.ivory, C.sky, '#5d6b8f']
     let y = 12
     let seed = 7
     const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280)
@@ -88,24 +89,10 @@ function chatScreen() {
       ctx.roundRect(x, y, bw, 34, 12)
       ctx.fill()
     }
-    bubble(14, 30, 130, '#2a3350')
-    bubble(w - 154, 80, 140, '#1f7a4f')
-    bubble(14, 130, 100, '#2a3350')
-    // a "sticker"
-    ctx.fillStyle = C.amber
-    ctx.beginPath()
-    ctx.arc(w - 70, 230, 34, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.fillStyle = '#0e1424'
-    ctx.beginPath()
-    ctx.arc(w - 82, 222, 5, 0, Math.PI * 2)
-    ctx.arc(w - 58, 222, 5, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.strokeStyle = '#0e1424'
-    ctx.lineWidth = 4
-    ctx.beginPath()
-    ctx.arc(w - 70, 232, 14, 0.2, Math.PI - 0.2)
-    ctx.stroke()
+    bubble(14, 30, 130, '#243150')
+    bubble(w - 154, 80, 140, '#3b5683')
+    bubble(14, 130, 100, '#243150')
+    bubble(w - 124, 180, 110, '#3b5683')
   }, 160, 300)
 }
 
@@ -160,7 +147,7 @@ export class Desk {
 
     this.selectedRing = new THREE.Mesh(
       new THREE.RingGeometry(0.62, 0.7, 48),
-      new THREE.MeshBasicMaterial({ color: C.amber, transparent: true, opacity: 0, side: THREE.DoubleSide }),
+      new THREE.MeshBasicMaterial({ color: C.gold, transparent: true, opacity: 0, side: THREE.DoubleSide }),
     )
     this.selectedRing.rotation.x = -Math.PI / 2
     this.selectedRing.position.y = 2.021
@@ -184,7 +171,7 @@ export class Desk {
 
   private buildLights() {
     this.scene.add(new THREE.HemisphereLight('#9fb0ff', '#0b1020', 0.9))
-    const key = new THREE.DirectionalLight('#ffffff', 1.4)
+    const key = new THREE.DirectionalLight('#f4f1ea', 1.3)
     key.position.set(5, 10, 3)
     key.castShadow = true
     key.shadow.mapSize.set(1024, 1024)
@@ -194,7 +181,7 @@ export class Desk {
     key.shadow.camera.bottom = -6
     key.shadow.radius = 4
     this.scene.add(key)
-    this.lampLight = new THREE.PointLight('#ffb05c', 6, 6, 1.6)
+    this.lampLight = new THREE.PointLight('#ffdcaa', 5, 6, 1.6)
     this.lampLight.position.set(-2.1, 3.3, -0.6)
     this.world.add(this.lampLight)
   }
@@ -278,13 +265,13 @@ export class Desk {
     const cam = box(0.18, 0.12, 0.14, mat(C.dark))
     cam.position.set(0.2, 1.04, -0.1)
     g.add(cam)
-    const lens = cyl(0.04, 0.04, 0.05, mat('#0b1020', { emissive: C.blue, emissiveIntensity: 0.8 }))
+    const lens = cyl(0.04, 0.04, 0.05, mat('#0b1020', { emissive: C.sky, emissiveIntensity: 0.8 }))
     lens.position.set(0.2, 0.96, -0.1)
     g.add(lens)
-    const can = cyl(0.13, 0.13, 0.32, mat(C.coral, { roughness: 0.4, metalness: 0.3 }))
+    const can = cyl(0.13, 0.13, 0.32, mat(C.tin, { roughness: 0.35, metalness: 0.6 }))
     can.position.set(0.2, 0.16, 0.6)
     g.add(can)
-    const label = cyl(0.132, 0.132, 0.14, mat('#f5efe6'))
+    const label = cyl(0.132, 0.132, 0.14, mat(C.ivory))
     label.position.set(0.2, 0.16, 0.6)
     g.add(label)
     g.position.set(1.85, 2.01, -0.75)
@@ -325,7 +312,7 @@ export class Desk {
     g.add(foot)
     const band = new THREE.Mesh(
       new THREE.TorusGeometry(0.36, 0.045, 12, 40, Math.PI),
-      mat(C.amber, { roughness: 0.4 }),
+      mat(C.gold, { roughness: 0.35, metalness: 0.6 }),
     )
     band.castShadow = true
     band.position.y = 0.92
@@ -359,7 +346,7 @@ export class Desk {
       slot.position.set(0, 0.32 + row * 0.34, 0.455)
       g.add(slot)
       for (let i = 0; i < 3; i++) {
-        const m = mat('#0b1020', { emissive: i === 0 ? C.green : C.amber, emissiveIntensity: 1 })
+        const m = mat('#0b1020', { emissive: i === 0 ? C.sky : C.gold, emissiveIntensity: 1 })
         this.leds.push(m)
         const led = box(0.05, 0.05, 0.02, m)
         led.position.set(-0.24 + i * 0.09, 0.32 + row * 0.34, 0.47)
@@ -387,7 +374,7 @@ export class Desk {
     lamp.add(arm2)
     const shade = new THREE.Mesh(
       new THREE.ConeGeometry(0.22, 0.3, 24, 1, true),
-      mat(C.amber, { side: THREE.DoubleSide, emissive: '#ff9a3c', emissiveIntensity: 0.5 }),
+      mat(C.gold, { side: THREE.DoubleSide, metalness: 0.5, roughness: 0.35, emissive: '#e2cc93', emissiveIntensity: 0.25 }),
     )
     shade.position.set(0.0, 1.35, 0.55)
     shade.rotation.x = 0.6
@@ -396,19 +383,19 @@ export class Desk {
     this.world.add(lamp)
 
     // Mug
-    const mug = cyl(0.13, 0.12, 0.26, mat('#e9ecf5'))
+    const mug = cyl(0.13, 0.12, 0.26, mat(C.ivory))
     mug.position.set(0.85, 2.14, 1.05)
     this.world.add(mug)
-    const handle = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.02, 8, 16), mat('#e9ecf5'))
+    const handle = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.02, 8, 16), mat(C.ivory))
     handle.position.set(0.99, 2.14, 1.05)
     this.world.add(handle)
 
     // Plant
-    const pot = cyl(0.2, 0.15, 0.3, mat(C.coral, { roughness: 0.8 }))
+    const pot = cyl(0.2, 0.15, 0.3, mat(C.ivory, { roughness: 0.9 }))
     pot.position.set(-3.6, 0.15, -1.2)
     this.world.add(pot)
     for (let i = 0; i < 6; i++) {
-      const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.7 + (i % 3) * 0.15, 6), mat('#3f8f63'))
+      const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.7 + (i % 3) * 0.15, 6), mat('#4d7562'))
       leaf.castShadow = true
       const a = (i / 6) * Math.PI * 2
       leaf.position.set(-3.6 + Math.cos(a) * 0.08, 0.6, -1.2 + Math.sin(a) * 0.08)
@@ -417,11 +404,11 @@ export class Desk {
     }
 
     // Notebook and pen
-    const book = box(0.7, 0.05, 0.95, mat('#2f3a66'))
+    const book = box(0.7, 0.05, 0.95, mat('#3a2f2a', { roughness: 0.8 }))
     book.position.set(-1.45, 2.04, -0.35)
     book.rotation.y = -0.2
     this.world.add(book)
-    const pen = cyl(0.018, 0.018, 0.6, mat(C.amber))
+    const pen = cyl(0.018, 0.018, 0.6, mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
     pen.rotation.set(Math.PI / 2, 0, 0.6)
     pen.position.set(-1.35, 2.09, -0.3)
     this.world.add(pen)
@@ -515,7 +502,7 @@ export class Desk {
       this.code.offset.y = (t * 0.04) % 1
       this.fan.rotation.y = t * 6
       this.leds.forEach((m, i) => (m.emissiveIntensity = 0.4 + 0.6 * (Math.sin(t * (2 + (i % 5)) + i) > 0.2 ? 1 : 0)))
-      this.lampLight.intensity = 6 + Math.sin(t * 1.3) * 0.3
+      this.lampLight.intensity = 5 + Math.sin(t * 1.3) * 0.2
       if (this.selected) this.selectedRing.scale.setScalar(1 + Math.sin(t * 3) * 0.04)
     }
     this.renderer.render(this.scene, this.camera)

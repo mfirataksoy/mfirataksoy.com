@@ -65,13 +65,8 @@ import LensSwitch from './LensSwitch.vue'
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
-  animation: ping 2.2s infinite;
-}
-@keyframes ping {
-  70% { box-shadow: 0 0 0 10px rgba(74, 222, 128, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+  background: var(--sky);
+  box-shadow: 0 0 0 4px rgba(143, 180, 230, 0.15);
 }
 .hero__title {
   margin: 22px 0 0;
@@ -90,7 +85,7 @@ import LensSwitch from './LensSwitch.vue'
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid rgba(255, 181, 71, 0.5);
+  border: 1px solid rgba(200, 164, 93, 0.5);
 }
 .hero__headline {
   display: block;
@@ -104,7 +99,7 @@ import LensSwitch from './LensSwitch.vue'
   position: relative;
   display: inline-block;
   font-style: italic;
-  color: var(--amber);
+  color: var(--gold);
 }
 .hero__arc {
   position: absolute;
@@ -116,8 +111,8 @@ import LensSwitch from './LensSwitch.vue'
 }
 .hero__arc path {
   fill: none;
-  stroke: var(--coral);
-  stroke-width: 3;
+  stroke: var(--gold-soft);
+  stroke-width: 2;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
   stroke-dasharray: 1;
@@ -162,7 +157,7 @@ import LensSwitch from './LensSwitch.vue'
 .hero__scroll i {
   width: 1px;
   height: 40px;
-  background: linear-gradient(var(--amber), transparent);
+  background: linear-gradient(var(--gold), transparent);
   animation: drip 2s infinite;
   transform-origin: top;
 }
@@ -173,7 +168,7 @@ import LensSwitch from './LensSwitch.vue'
 }
 @media (max-width: 760px) {
   .hero__sub {
-    text-shadow: 0 1px 16px rgba(7, 11, 22, 0.95);
+    text-shadow: 0 1px 16px rgba(8, 17, 34, 0.95);
   }
   .hero {
     align-items: flex-end;

@@ -7,7 +7,7 @@ import { lens } from '../useLens'
   <section id="toolkit" class="toolkit" data-globe="dim">
     <div class="wrap">
       <header data-reveal>
-        <p class="kicker">04 · Toolkit</p>
+        <p class="kicker">05 · Toolkit</p>
         <h2 class="section-title">What I bring <em>across</em>.</h2>
       </header>
       <div data-reveal>
@@ -43,19 +43,19 @@ import { lens } from '../useLens'
 }
 .toolkit__group {
   flex: 1 1 200px;
-  background: rgba(7, 11, 22, 0.88);
+  background: rgba(8, 17, 34, 0.88);
   padding: 26px 24px 28px;
   transition: background 0.3s;
 }
 .toolkit__group:hover {
-  background: rgba(16, 23, 48, 0.92);
+  background: rgba(19, 33, 62, 0.92);
 }
 .toolkit__group h3 {
   margin: 0 0 16px;
   font: 500 12px/1 var(--mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--amber);
+  color: var(--gold);
 }
 .toolkit__group ul {
   list-style: none;

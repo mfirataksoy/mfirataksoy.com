@@ -1,15 +1,17 @@
 :root {
-  --bg: #070b16;
-  --bg-raise: rgba(14, 20, 42, 0.72);
-  --ink: #e9ecf5;
-  --ink-soft: #b7bfd6;
-  --muted: #7e88a6;
-  --line: rgba(233, 236, 245, 0.1);
-  --line-strong: rgba(233, 236, 245, 0.22);
-  --amber: #ffb547;
-  --amber-soft: #ffd28a;
-  --coral: #ff6a4d;
-  --blue: #6f7fb3;
+  /* Navy for trust and technical depth, antique gold for achievement,
+     a soft sky blue for communication. Gold stays an accent. */
+  --bg: #081122;
+  --bg-raise: rgba(15, 27, 52, 0.72);
+  --ink: #ece7dc;
+  --ink-soft: #bcc3d1;
+  --muted: #7f8ba5;
+  --line: rgba(236, 231, 220, 0.1);
+  --line-strong: rgba(236, 231, 220, 0.22);
+  --gold: #c8a45d;
+  --gold-soft: #e2cc93;
+  --sky: #8fb4e6;
+  --blue: #7d8fbf;
 
   --serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
   --sans: 'Inter Variable', 'Inter', system-ui, -apple-system, sans-serif;
@@ -48,12 +50,12 @@ a {
 }
 
 ::selection {
-  background: var(--amber);
+  background: var(--gold);
   color: var(--bg);
 }
 
 :focus-visible {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -70,7 +72,7 @@ a {
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--amber);
+  color: var(--gold);
 }
 
 .section-title {
@@ -83,7 +85,7 @@ a {
 }
 
 .section-title em {
-  color: var(--amber);
+  color: var(--gold);
 }
 
 .btn {
@@ -108,14 +110,14 @@ a {
 }
 
 .btn--primary {
-  background: var(--amber);
-  border-color: var(--amber);
-  color: #1a1203;
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #0b1426;
 }
 
 .btn--primary:hover {
-  background: var(--amber-soft);
-  border-color: var(--amber-soft);
+  background: var(--gold-soft);
+  border-color: var(--gold-soft);
 }
 
 .tag {
@@ -152,12 +154,12 @@ a {
   font: 500 11px/1 var(--mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--amber-soft);
+  color: var(--gold-soft);
   padding: 6px 9px;
   margin: -34px 0 0 10px;
   border-radius: 999px;
-  background: rgba(7, 11, 22, 0.7);
-  border: 1px solid rgba(255, 181, 71, 0.35);
+  background: rgba(8, 17, 34, 0.7);
+  border: 1px solid rgba(200, 164, 93, 0.35);
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.4s;

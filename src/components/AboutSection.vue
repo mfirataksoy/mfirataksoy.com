@@ -62,18 +62,12 @@ import { lens, pick } from '../useLens'
   inset: 0;
   width: 100%;
   height: 100%;
-  transform: rotate(-90deg);
-  animation: spin 40s linear infinite;
 }
 .about__ring circle {
   fill: none;
-  stroke: var(--amber);
-  stroke-width: 0.8;
-  stroke-linecap: round;
-  stroke-dasharray: 0.62 0.38;
-}
-@keyframes spin {
-  to { transform: rotate(270deg); }
+  stroke: var(--gold);
+  stroke-width: 0.4;
+  opacity: 0.7;
 }
 .about__body {
   max-width: 620px;

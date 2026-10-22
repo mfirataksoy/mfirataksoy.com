@@ -10,6 +10,7 @@ import HeroSection from './components/HeroSection.vue'
 import AboutSection from './components/AboutSection.vue'
 import JourneySection from './components/JourneySection.vue'
 import ToolkitSection from './components/ToolkitSection.vue'
+import PrinciplesSection from './components/PrinciplesSection.vue'
 import PlaygroundSection from './components/PlaygroundSection.vue'
 import ContactSection from './components/ContactSection.vue'
 
@@ -86,7 +87,7 @@ onMounted(async () => {
     }
 
     ScrollTrigger.create({
-      trigger: '#projects',
+      trigger: '#principles',
       start: 'top 60%',
       endTrigger: '#toolkit',
       end: 'bottom 40%',
@@ -123,6 +124,7 @@ onBeforeUnmount(() => ctx?.revert())
     <HeroSection />
     <AboutSection />
     <JourneySection />
+    <PrinciplesSection />
     <PlaygroundSection />
     <ToolkitSection />
     <ContactSection />

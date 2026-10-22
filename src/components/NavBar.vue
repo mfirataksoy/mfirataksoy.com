@@ -22,8 +22,8 @@ const links = [
       <a href="#top" class="nav__mark" aria-label="Firat Aksoy, back to top">
         <svg viewBox="0 0 40 24" width="40" height="24" aria-hidden="true">
           <path d="M3 20 Q20 -4 37 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
-          <circle cx="3" cy="20" r="3" fill="var(--amber)" />
-          <circle cx="37" cy="20" r="3" fill="var(--coral)" />
+          <circle cx="3" cy="20" r="3" fill="var(--gold)" />
+          <circle cx="37" cy="20" r="3" fill="var(--gold-soft)" />
         </svg>
         <span>firat aksoy</span>
       </a>
@@ -46,7 +46,7 @@ const links = [
   border-bottom: 1px solid transparent;
 }
 .nav.is-scrolled {
-  background: rgba(7, 11, 22, 0.72);
+  background: rgba(8, 17, 34, 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom-color: var(--line);
@@ -86,14 +86,15 @@ const links = [
   gap: 6px;
   text-decoration: none;
   font: 500 13px/1 var(--mono);
-  color: var(--amber);
+  color: var(--ink-soft);
   padding: 9px 13px;
-  border: 1px dashed rgba(255, 181, 71, 0.5);
+  border: 1px solid var(--line-strong);
   border-radius: 999px;
-  transition: background 0.2s;
+  transition: color 0.2s, border-color 0.2s;
 }
 .nav__classic:hover {
-  background: rgba(255, 181, 71, 0.1);
+  color: var(--gold-soft);
+  border-color: rgba(200, 164, 93, 0.5);
 }
 @media (max-width: 760px) {
   .nav__links {

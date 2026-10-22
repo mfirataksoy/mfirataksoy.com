@@ -96,7 +96,7 @@ const dotFragment = /* glsl */ `
     if (dot(c, c) > 0.25) discard;
     float twinkle = 0.75 + 0.25 * sin(uTime * 1.3 + vSeed * 40.0);
     float edge = smoothstep(0.0, 0.55, vFacing);
-    vec3 col = mix(uColor, uHighlight, step(0.985, vSeed) * twinkle);
+    vec3 col = mix(uColor, uHighlight, step(0.994, vSeed) * twinkle);
     gl_FragColor = vec4(col, edge * uOpacity * twinkle);
   }
 `
@@ -241,8 +241,8 @@ export class Globe {
       uniforms: {
         uSize: { value: small ? 2.2 : 2.6 },
         uPixelRatio: { value: this.renderer.getPixelRatio() },
-        uColor: { value: new THREE.Color('#8d9dd6') },
-        uHighlight: { value: new THREE.Color('#ffd28a') },
+        uColor: { value: new THREE.Color('#7f92c4') },
+        uHighlight: { value: new THREE.Color('#e2cc93') },
         uOpacity: { value: 1 },
         uTime: { value: 0 },
       },
@@ -253,7 +253,7 @@ export class Globe {
     // Dark core hides dots on the far side.
     const core = new THREE.Mesh(
       new THREE.SphereGeometry(0.985, 64, 64),
-      new THREE.MeshBasicMaterial({ color: '#0a0f22' }),
+      new THREE.MeshBasicMaterial({ color: '#0b1730' }),
     )
     this.spin.add(core)
 
@@ -266,7 +266,7 @@ export class Globe {
         depthWrite: false,
         side: THREE.BackSide,
         blending: THREE.AdditiveBlending,
-        uniforms: { uColor: { value: new THREE.Color('#5470e0') }, uOpacity: { value: 0.32 } },
+        uniforms: { uColor: { value: new THREE.Color('#4f74d6') }, uOpacity: { value: 0.32 } },
       }),
     )
     this.root.add(this.atmosphere)
@@ -296,8 +296,8 @@ export class Globe {
         depthWrite: false,
         blending: THREE.AdditiveBlending,
         uniforms: {
-          uFrom: { value: new THREE.Color('#ffb547') },
-          uTo: { value: new THREE.Color('#ff6a4d') },
+          uFrom: { value: new THREE.Color('#c8a45d') },
+          uTo: { value: new THREE.Color('#ead9ad') },
           uDraw: { value: 0 },
           uOpacity: { value: 0 },
           uFade: { value: 1 },
@@ -320,11 +320,11 @@ export class Globe {
       group.lookAt(world.clone().multiplyScalar(2))
       const dot = new THREE.Mesh(
         new THREE.CircleGeometry(0.012, 24),
-        new THREE.MeshBasicMaterial({ color: '#ffc46b', transparent: true }),
+        new THREE.MeshBasicMaterial({ color: '#e2cc93', transparent: true }),
       )
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(0.02, 0.026, 40),
-        new THREE.MeshBasicMaterial({ color: '#ffb547', transparent: true, opacity: 0, side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color: '#c8a45d', transparent: true, opacity: 0, side: THREE.DoubleSide }),
       )
       group.add(dot, ring)
       this.spin.add(group)

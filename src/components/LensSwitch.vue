@@ -46,7 +46,7 @@ const options = Object.entries(lensLabels) as [Lens, string][]
   padding: 4px;
   border-radius: 999px;
   border: 1px solid var(--line-strong);
-  background: rgba(7, 11, 22, 0.6);
+  background: rgba(8, 17, 34, 0.6);
   backdrop-filter: blur(8px);
 }
 .lens__thumb {
