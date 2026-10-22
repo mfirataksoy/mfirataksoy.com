@@ -4,14 +4,13 @@
 export type Lens = 'eng' | 'cs'
 export type ByLens = { eng: string; cs: string }
 
-export type PlaceKey = 'istanbul' | 'fortWorth' | 'sanAntonio' | 'lasVegas' | 'newYork'
+export type PlaceKey = 'istanbul' | 'fortWorth' | 'sanAntonio' | 'lasVegas'
 
 export const places: Record<PlaceKey, { label: string; lat: number; lon: number }> = {
   istanbul: { label: 'Istanbul', lat: 41.01, lon: 28.98 },
   fortWorth: { label: 'Fort Worth', lat: 32.75, lon: -97.33 },
   sanAntonio: { label: 'San Antonio', lat: 29.42, lon: -98.49 },
   lasVegas: { label: 'Las Vegas', lat: 36.17, lon: -115.14 },
-  newYork: { label: 'New York', lat: 40.71, lon: -74.01 },
 }
 
 export const profile = {
@@ -48,7 +47,7 @@ export const about = {
   greeting: 'Hi, I’m Firat.',
   body: {
     eng: 'I’m a full-stack engineer who likes owning a product end to end: the Flutter app, the Vue dashboard, the Spring service behind them and the cluster they run on. Most recently I led regulated e-document products at İzibiz, with Claude Code built into every step so a small team could ship like a bigger one.',
-    cs: 'My best work happens where customers meet code: turning what a client needs into requirements, keeping teams aligned through launch, and building the tools support teams use every day. I’m a software engineer by training, so I can go deep on the technical side of every customer conversation.',
+    cs: 'My best work happens where customers meet code: turning what a client needs into requirements, keeping people and teams aligned, and building the tools support teams use every day. I’m a software engineer by training, so I can go deep on the technical side of every customer conversation.',
   } satisfies ByLens,
   facts: [
     { value: '3+ years', label: 'shipping to production' },
@@ -81,11 +80,11 @@ export const chapters: Chapter[] = [
     role: 'B.S. Computer Science, minor in Mathematics',
     title: {
       eng: 'Where the code started',
-      cs: 'A technical foundation',
+      cs: 'A technical foundation, and a network',
     },
     body: {
       eng: 'Computer science with a math minor at TCU as a Chancellor’s Scholar, on the Dean’s List, and the first lines of code that ended up in production.',
-      cs: 'Computer science with a math minor at TCU as a Chancellor’s Scholar. It’s why I can go deep on the technical side of a customer conversation.',
+      cs: 'Computer science with a math minor as a Chancellor’s Scholar. Alongside the degree, four years at TCU’s alumni center building ties with alumni across industries.',
     },
     tags: ['Chancellor’s Scholar', 'Dean’s List'],
   },
@@ -123,24 +122,6 @@ export const chapters: Chapter[] = [
       cs: 'Led a smart-home grocery device from pitch to working prototype, designed 3D-printed enclosures for in-home testing, and pitched integrating it into H-E-B’s customer apps.',
     },
     tags: ['Jetson Nano', 'TensorFlow', 'Firebase', '3D printing'],
-  },
-  {
-    id: 'csm',
-    years: '2022 – 2023',
-    place: 'New York · remote',
-    focus: 'newYork',
-    arc: ['fortWorth', 'newYork'],
-    org: 'Local-delivery platform',
-    role: 'Customer success manager (contract)',
-    title: {
-      eng: 'Between the client and the code',
-      cs: 'Kickoff to launch for a New York client',
-    },
-    body: {
-      eng: 'Managed a New York client’s delivery app for local shops from kickoff to launch, turning what the client needed into requirements the dev team could build.',
-      cs: 'Owned a New York client’s delivery app for local shops from kickoff to launch. Turned client needs into requirements and kept the client and the dev team aligned on scope and timelines across time zones.',
-    },
-    tags: ['Kickoff → launch', 'Requirements', 'Across time zones'],
   },
   {
     id: 'creditone',
@@ -198,7 +179,7 @@ export const toolkit: Record<Lens, { group: string; items: string[] }[]> = {
     { group: 'AI and tools', items: ['Claude Code', 'TensorFlow', 'OpenCV', 'CUDA', 'NVIDIA Jetson', 'Git', 'Jira'] },
   ],
   cs: [
-    { group: 'With customers', items: ['Kickoff to launch', 'Needs → requirements', 'Scope and timelines', 'Stakeholder updates'] },
+    { group: 'With customers', items: ['Needs → requirements', 'Scope and timelines', 'Stakeholder updates', 'Relationship building'] },
     { group: 'Across teams', items: ['Client ⇄ dev team', 'Across time zones', 'Senior IT leadership', 'Support staff tooling'] },
     { group: 'Languages', items: ['English', 'Turkish'] },
     { group: 'Technical depth', items: ['Reads and writes code', 'APIs and integrations', 'AWS Certified', 'SQL', 'Jira'] },
