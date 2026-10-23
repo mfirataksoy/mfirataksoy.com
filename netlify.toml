@@ -15,3 +15,9 @@
   from = "/resume.pdf"
   to = "/Mehmet_Firat_Aksoy_Resume.pdf"
   status = 301
+
+# Browsers still ask for /favicon.ico by default.
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon-32.png"
+  status = 200

@@ -20,10 +20,12 @@ const links = [
   <header class="nav" :class="{ 'is-scrolled': scrolled }">
     <div class="wrap nav__inner">
       <a href="#top" class="nav__mark" aria-label="Firat Aksoy, back to top">
-        <svg viewBox="0 0 40 24" width="40" height="24" aria-hidden="true">
-          <path d="M3 20 Q20 -4 37 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
-          <circle cx="3" cy="20" r="3" fill="var(--gold)" />
-          <circle cx="37" cy="20" r="3" fill="var(--gold-soft)" />
+        <!-- The mark: a suspension bridge drawn as the Gemini glyph. -->
+        <svg viewBox="0 0 52 44" width="30" height="26" aria-hidden="true">
+          <g fill="none" stroke-linecap="round">
+            <path d="M6 6 Q26 16 46 6 M6 38 Q26 28 46 38" stroke="var(--gold)" stroke-width="3" />
+            <path d="M16 10 V34 M36 10 V34" stroke="var(--gold-soft)" stroke-width="3.6" />
+          </g>
         </svg>
         <span>firat aksoy</span>
       </a>
