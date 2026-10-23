@@ -141,6 +141,7 @@ export class Desk {
     this.buildLaptop()
     this.buildJetson()
     this.buildPhone()
+    this.buildCalendar()
     this.buildHeadset()
     this.buildServer()
     this.buildDecor()
@@ -300,6 +301,48 @@ export class Desk {
     g.position.set(1.35, 2.01, 0.95)
     g.rotation.y = -0.5
     this.register('phone', g)
+  }
+
+  private buildCalendar() {
+    const g = new THREE.Group()
+    const page = screenTexture((ctx, w, h) => {
+      ctx.fillStyle = C.ivory
+      ctx.fillRect(0, 0, w, h)
+      ctx.fillStyle = '#16223f'
+      ctx.fillRect(0, 0, w, 34)
+      ctx.fillStyle = C.ivory
+      ctx.font = '600 18px Georgia, serif'
+      ctx.fillText('İstanbul', 12, 23)
+      // A month grid with a few marked evenings.
+      for (let row = 0; row < 5; row++) {
+        for (let col = 0; col < 7; col++) {
+          const x = 12 + col * 33
+          const y = 46 + row * 22
+          const marked = [9, 12, 17, 23, 26].includes(row * 7 + col)
+          ctx.fillStyle = marked ? C.gold : '#c9c3b5'
+          ctx.fillRect(x, y, 22, 14)
+        }
+      }
+    }, 256, 160)
+    const paper = new THREE.MeshStandardMaterial({ map: page, roughness: 0.8 })
+    const back = mat('#d9d3c6', { roughness: 0.9 })
+    for (const side of [1, -1]) {
+      const leaf = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.52), side === 1 ? paper : back)
+      leaf.castShadow = true
+      leaf.position.set(0, 0.25, side * 0.12)
+      leaf.rotation.x = -side * 0.45
+      if (side === -1) leaf.rotation.y = Math.PI
+      g.add(leaf)
+    }
+    for (const x of [-0.25, 0, 0.25]) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.008, 8, 16), mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
+      ring.position.set(x, 0.5, 0)
+      ring.rotation.y = Math.PI / 2
+      g.add(ring)
+    }
+    g.position.set(-1.05, 2.01, 1.2)
+    g.rotation.y = 0.55
+    this.register('calendar', g)
   }
 
   private buildHeadset() {

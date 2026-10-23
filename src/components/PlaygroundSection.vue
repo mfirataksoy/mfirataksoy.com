@@ -86,6 +86,7 @@ onBeforeUnmount(() => scene?.dispose())
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
                 <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                   <template v-if="d.id === 'laptop'"><rect x="4" y="5" width="16" height="10" rx="1.5" /><path d="M2 19h20" /></template>
+                  <template v-else-if="d.id === 'calendar'"><rect x="4" y="5" width="16" height="15" rx="1.5" /><path d="M4 10h16M8 3v4M16 3v4" /></template>
                   <template v-else-if="d.id === 'jetson'"><rect x="4" y="9" width="16" height="9" rx="1" /><path d="M8 9V6h8v3M8 13h8" /></template>
                   <template v-else-if="d.id === 'phone'"><rect x="7" y="3" width="10" height="18" rx="2" /><path d="M11 18h2" /></template>
                   <template v-else-if="d.id === 'headset'"><path d="M4 15v-3a8 8 0 0 1 16 0v3" /><rect x="3" y="14" width="4" height="6" rx="1.5" /><rect x="17" y="14" width="4" height="6" rx="1.5" /></template>
@@ -116,9 +117,14 @@ onBeforeUnmount(() => scene?.dispose())
                 <ul class="play__stack">
                   <li v-for="s in p.stack" :key="s" class="tag">{{ s }}</li>
                 </ul>
-                <a v-if="p.link" :href="p.link.href" target="_blank" rel="noopener" class="play__link">
-                  {{ p.link.label }} <span aria-hidden="true">↗</span>
-                </a>
+                <div v-if="p.link || p.code" class="play__links">
+                  <a v-if="p.link" :href="p.link.href" target="_blank" rel="noopener" class="play__link">
+                    {{ p.link.label }} <span aria-hidden="true">↗</span>
+                  </a>
+                  <a v-if="p.code" :href="p.code" target="_blank" rel="noopener" class="play__link play__link--quiet">
+                    Code <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
               </div>
             </article>
           </Transition>
@@ -300,14 +306,22 @@ onBeforeUnmount(() => scene?.dispose())
   flex-wrap: wrap;
   gap: 8px;
 }
+.play__links {
+  display: flex;
+  gap: 18px;
+  margin-top: 14px;
+}
 .play__link {
   display: inline-block;
-  margin-top: 14px;
   color: var(--gold);
   font-weight: 500;
   font-size: 15px;
   text-decoration: none;
   border-bottom: 1px solid rgba(200, 164, 93, 0.4);
+}
+.play__link--quiet {
+  color: var(--ink-soft);
+  border-bottom-color: var(--line-strong);
 }
 @media (max-width: 1000px) {
   .play__grid {

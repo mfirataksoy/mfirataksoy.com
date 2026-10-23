@@ -256,6 +256,7 @@ export type Project = {
   body: string
   stack: string[]
   link?: { label: string; href: string }
+  code?: string
   status?: string
 }
 
@@ -271,16 +272,41 @@ export const projects: Project[] = [
     name: 'NoteWith.Me',
     year: '2021',
     kind: 'Open source',
-    body: 'Collaborative notes without accounts: open a page, share the URL, write together. Professors used it for online classes during the pandemic.',
+    body: 'Collaborative notes without accounts: open a page, share the URL, write together. Professors used it for online classes during the pandemic. Brought back online in 2026.',
     stack: ['Vue', 'Node.js', 'Express', 'MongoDB'],
-    link: { label: 'View on GitHub', href: 'https://github.com/mfirataksoy/notewith.me' },
-    status: 'Being revived',
+    link: { label: 'Open the app', href: 'https://notewith-me.netlify.app' },
+    code: 'https://github.com/mfirataksoy/notewith.me',
+  },
+  {
+    name: 'Film Fırtınası',
+    year: '2026',
+    kind: 'Side project',
+    body: 'A movie discovery site on TMDB data: official trailers, IMDb, TMDB and community ratings side by side, reviews, movie requests with voting, and an admin panel that adds films straight from TMDB.',
+    stack: ['Vue 3', 'TypeScript', 'Tailwind', 'Firebase'],
+    link: { label: 'Open the site', href: 'https://filmfirtinasi.vercel.app' },
+  },
+  {
+    name: 'Istanbul Etkinlik',
+    year: '2026',
+    kind: 'Personal tool',
+    body: 'Every morning it collects Istanbul’s concerts, talks, theatre, exhibitions and workshops from over a hundred sources and ranks them by my interests. No AI involved: every score can be explained.',
+    stack: ['Python', 'Vue 3', 'GitHub Actions', 'iCal feed'],
+    status: 'Private',
+  },
+  {
+    name: 'AcneAway',
+    year: '2025',
+    kind: 'Side project',
+    body: 'Upload a selfie and get a clear-skin retouch from an AI image pipeline, with Stripe checkout for credits. Now retired and kept as a showcase.',
+    stack: ['Vue 3', 'Firebase', 'Stripe', 'Replicate'],
+    link: { label: 'See the showcase', href: 'https://acneaway.vercel.app' },
+    status: 'Retired',
   },
   {
     name: 'StickerHub',
     year: '2021',
     kind: 'Side project',
-    body: 'WhatsApp and Telegram bots that sent people stickers on request, and a website built from stickers users sent back to the bot.',
+    body: 'WhatsApp and Telegram bots that sent people stickers on request, and a website built from stickers users sent back to the bot. Built with Bedirhan Celayir.',
     stack: ['Vue', 'Node.js', 'Firebase', 'Google Cloud'],
     status: 'Retired',
   },
@@ -288,13 +314,13 @@ export const projects: Project[] = [
     name: 'This website',
     year: '2026',
     kind: 'Open source',
-    body: 'A Three.js globe that follows my career route as you scroll, with a lens switch for engineering and customer success readers.',
+    body: 'A Three.js globe that follows my career route as you scroll, a desk you can click around, and a lens switch for customer success and engineering readers.',
     stack: ['Vue 3', 'Three.js', 'GSAP', 'Vite'],
     link: { label: 'View on GitHub', href: 'https://github.com/mfirataksoy/mfirataksoy.com' },
   },
 ]
 
-export type DeskKey = 'laptop' | 'jetson' | 'phone' | 'headset' | 'server'
+export type DeskKey = 'laptop' | 'calendar' | 'jetson' | 'phone' | 'headset' | 'server'
 
 export type DeskItem = {
   id: DeskKey
@@ -315,7 +341,17 @@ export const desk: DeskItem[] = [
       eng: 'Side projects are where I try new stacks before I need them at work.',
       cs: 'Side projects keep my hands on the code, so I know what I’m promising customers.',
     },
-    projects: ['NoteWith.Me', 'This website'],
+    projects: ['NoteWith.Me', 'Film Fırtınası', 'This website'],
+  },
+  {
+    id: 'calendar',
+    object: 'Calendar',
+    title: { eng: 'A scraper that plans my week', cs: 'A tool built for my own week' },
+    body: {
+      eng: 'Collectors pull events from over a hundred Istanbul sources every morning, respecting robots.txt, then dedupe them and score them against my interests with rules I can explain.',
+      cs: 'I wanted to stop missing good events, so I built a tool that reads Istanbul’s event pages every morning and tells me what’s worth my time, and why.',
+    },
+    projects: ['Istanbul Etkinlik'],
   },
   {
     id: 'jetson',
@@ -332,10 +368,10 @@ export const desk: DeskItem[] = [
     object: 'Phone',
     title: { eng: 'Mobile and chat', cs: 'Meeting people where they already are' },
     body: {
-      eng: 'Flutter is my go-to for mobile and what I shipped with at İzibiz. Before that, StickerHub lived inside WhatsApp and Telegram.',
-      cs: 'StickerHub didn’t ask anyone to install an app: it lived inside the WhatsApp and Telegram chats people already used.',
+      eng: 'Flutter is my go-to for mobile and what I shipped with at İzibiz. On the side, AcneAway turned a selfie into a retouched photo, and StickerHub lived inside WhatsApp and Telegram.',
+      cs: 'Products people reach from their phones: AcneAway turned a selfie into a retouched photo, and StickerHub didn’t ask anyone to install an app, it lived in the chats people already used.',
     },
-    projects: ['StickerHub'],
+    projects: ['AcneAway', 'StickerHub'],
   },
   {
     id: 'headset',
