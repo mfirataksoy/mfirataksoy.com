@@ -291,7 +291,15 @@ export const projects: Project[] = [
     kind: 'Personal tool',
     body: 'Every morning it collects Istanbul’s concerts, talks, theatre, exhibitions and workshops from over a hundred sources and ranks them by my interests. No AI involved: every score can be explained.',
     stack: ['Python', 'Vue 3', 'GitHub Actions', 'iCal feed'],
-    status: 'Private',
+    link: { label: 'Open the demo', href: 'https://istanbul-etkinlik-demo.pages.dev' },
+  },
+  {
+    name: 'Altyazı Portalı',
+    year: '2026',
+    kind: 'Side project',
+    body: 'Everyone gets their own video site: a portal that generates personal sites for watching YouTube videos with Turkish subtitles, all from one panel. A kids mode adds a teacher panel, time limits and games.',
+    stack: ['Vue 3', 'Express', 'Cloudflare R2 and Pages', 'Gemini'],
+    link: { label: 'Open the demo', href: 'https://altyazi-demo.pages.dev' },
   },
   {
     name: 'AcneAway',
@@ -321,7 +329,7 @@ export const projects: Project[] = [
   },
 ]
 
-export type DeskKey = 'laptop' | 'calendar' | 'jetson' | 'phone' | 'headset' | 'server'
+export type DeskKey = 'laptop' | 'monitor' | 'calendar' | 'jetson' | 'phone' | 'headset' | 'server'
 
 export type DeskItem = {
   id: DeskKey
@@ -343,6 +351,16 @@ export const desk: DeskItem[] = [
       cs: 'Side projects keep my hands on the code, so I know what I’m promising customers.',
     },
     projects: ['NoteWith.Me', 'Film Fırtınası', 'This website'],
+  },
+  {
+    id: 'monitor',
+    object: 'Monitor',
+    title: { eng: 'One panel, many sites', cs: 'A product shaped around its users' },
+    body: {
+      eng: 'A portal that spins up a separate subtitle site per person or class: a Vue front end, an Express API, content in Cloudflare R2, and each site deployed through the Cloudflare Pages API.',
+      cs: 'Each family or class gets its own video site with Turkish subtitles, and teachers get a kids mode with time limits and a panel of their own.',
+    },
+    projects: ['Altyazı Portalı'],
   },
   {
     id: 'calendar',

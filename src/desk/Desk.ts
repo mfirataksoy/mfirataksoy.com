@@ -142,6 +142,7 @@ export class Desk {
     this.buildJetson()
     this.buildPhone()
     this.buildCalendar()
+    this.buildMonitor()
     this.buildHeadset()
     this.buildServer()
     this.buildDecor()
@@ -301,6 +302,52 @@ export class Desk {
     g.position.set(1.35, 2.01, 0.95)
     g.rotation.y = -0.5
     this.register('phone', g)
+  }
+
+  private buildMonitor() {
+    const g = new THREE.Group()
+    const foot = box(0.5, 0.03, 0.32, mat(C.dark))
+    foot.position.y = 0.015
+    g.add(foot)
+    const neck = box(0.07, 0.42, 0.05, mat(C.dark))
+    neck.position.set(0, 0.24, -0.06)
+    g.add(neck)
+    const frame = box(1.3, 0.78, 0.05, mat('#121a2c', { metalness: 0.3, roughness: 0.4 }))
+    frame.position.set(0, 0.78, 0)
+    g.add(frame)
+    // A video with a subtitle line under it.
+    const video = screenTexture((ctx, w, h) => {
+      ctx.fillStyle = '#1b2a4a'
+      ctx.fillRect(0, 0, w, h)
+      ctx.fillStyle = '#2c4270'
+      ctx.beginPath()
+      ctx.moveTo(0, h * 0.75)
+      ctx.lineTo(w * 0.35, h * 0.45)
+      ctx.lineTo(w * 0.6, h * 0.62)
+      ctx.lineTo(w, h * 0.35)
+      ctx.lineTo(w, h)
+      ctx.lineTo(0, h)
+      ctx.fill()
+      ctx.fillStyle = 'rgba(236, 231, 220, 0.9)'
+      ctx.beginPath()
+      ctx.moveTo(w / 2 - 14, h / 2 - 20)
+      ctx.lineTo(w / 2 + 20, h / 2)
+      ctx.lineTo(w / 2 - 14, h / 2 + 20)
+      ctx.fill()
+      ctx.fillStyle = 'rgba(8, 17, 34, 0.75)'
+      ctx.fillRect(w * 0.2, h - 34, w * 0.6, 20)
+      ctx.fillStyle = C.gold
+      ctx.fillRect(w * 0.24, h - 28, w * 0.52, 8)
+    }, 256, 154)
+    const screen = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.22, 0.7),
+      new THREE.MeshBasicMaterial({ map: video, toneMapped: false }),
+    )
+    screen.position.set(0, 0.78, 0.026)
+    g.add(screen)
+    g.position.set(0.75, 2.01, -1.15)
+    g.rotation.y = 0.1
+    this.register('monitor', g)
   }
 
   private buildCalendar() {
