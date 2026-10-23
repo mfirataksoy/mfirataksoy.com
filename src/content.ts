@@ -308,6 +308,7 @@ export const projects: Project[] = [
     kind: 'Side project',
     body: 'WhatsApp and Telegram bots that sent people stickers on request, and a website built from stickers users sent back to the bot. Built with Bedirhan Celayir.',
     stack: ['Vue', 'Node.js', 'Firebase', 'Google Cloud'],
+    link: { label: 'See the farewell page', href: 'https://stickerhubio.netlify.app' },
     status: 'Retired',
   },
   {
