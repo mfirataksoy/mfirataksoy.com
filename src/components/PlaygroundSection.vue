@@ -86,6 +86,7 @@ onBeforeUnmount(() => scene?.dispose())
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
                 <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                   <template v-if="d.id === 'laptop'"><rect x="4" y="5" width="16" height="10" rx="1.5" /><path d="M2 19h20" /></template>
+                  <template v-else-if="d.id === 'monitor'"><rect x="3" y="4" width="18" height="12" rx="1.5" /><path d="M12 16v4M8 20h8M10.5 8.5v3.5l3-1.75z" /></template>
                   <template v-else-if="d.id === 'calendar'"><rect x="4" y="5" width="16" height="15" rx="1.5" /><path d="M4 10h16M8 3v4M16 3v4" /></template>
                   <template v-else-if="d.id === 'jetson'"><rect x="4" y="9" width="16" height="9" rx="1" /><path d="M8 9V6h8v3M8 13h8" /></template>
                   <template v-else-if="d.id === 'phone'"><rect x="7" y="3" width="10" height="18" rx="2" /><path d="M11 18h2" /></template>
