@@ -7,7 +7,7 @@ import type { Track } from './tracks'
 // and a role can override it with its own key.
 export type ByTrack = { cs: string; eng: string } & Partial<Record<Track, string>>
 
-export type PlaceKey = 'istanbul' | 'fortWorth' | 'sanAntonio' | 'lasVegas' | 'newYork'
+export type PlaceKey = 'istanbul' | 'fortWorth' | 'sanAntonio' | 'lasVegas' | 'newYork' | 'heart'
 
 export const places: Record<PlaceKey, { label: string; lat: number; lon: number }> = {
   istanbul: { label: 'Istanbul', lat: 41.01, lon: 28.98 },
@@ -15,6 +15,8 @@ export const places: Record<PlaceKey, { label: string; lat: number; lon: number 
   sanAntonio: { label: 'San Antonio', lat: 29.42, lon: -98.49 },
   lasVegas: { label: 'Las Vegas', lat: 36.17, lon: -115.14 },
   newYork: { label: 'New York', lat: 40.71, lon: -74.01 },
+  // Not a real place: a heart-shaped continent in the Indian Ocean where the route ends.
+  heart: { label: 'Your customers', lat: -16, lon: 75 },
 }
 
 export const profile = {
@@ -217,6 +219,13 @@ export const chapters: Chapter[] = [
     csTags: ['Regulated products', 'Partner integrations', 'Requirements → release'],
   },
 ]
+
+// Who waits at the end of the route, on the heart-shaped continent.
+export const heartLabel: ByTrack = {
+  cs: 'Your customers',
+  eng: 'Your team',
+  frontend: 'Your users',
+}
 
 export const nowChapter = {
   years: 'Now',

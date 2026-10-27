@@ -69,9 +69,29 @@ function buildLandMask(width = 1024, height = 512) {
   }
 }
 
-const dotVertex = /* glsl */ `
+// The heart curve, centred, as a polygon in its own units (about 32 wide, 29 tall).
+const HEART: [number, number][] = Array.from({ length: 240 }, (_, i) => {
+  const t = (i / 240) * Math.PI * 2
+  const x = 16 * Math.sin(t) ** 3
+  const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)
+  return [x, y + 2.5]
+})
+
+function inHeart(u: number, v: number) {
+  let inside = false
+  for (let i = 0, j = HEART.length - 1; i < HEART.length; j = i++) {
+    const [xi, yi] = HEART[i]
+    const [xj, yj] = HEART[j]
+    if (yi > v !== yj > v && u < ((xj - xi) * (v - yi)) / (yj - yi) + xi) inside = !inside
+  }
+  return inside
+}
+
+const heartVertex = /* glsl */ `
   uniform float uSize;
   uniform float uPixelRatio;
+  uniform float uZoom;
+  uniform float uPulse;
   attribute float aSeed;
   varying float vFacing;
   varying float vSeed;
@@ -80,7 +100,24 @@ const dotVertex = /* glsl */ `
     vec3 n = normalize(normalMatrix * position);
     vFacing = dot(n, normalize(-mv.xyz));
     vSeed = aSeed;
-    gl_PointSize = uSize * uPixelRatio * (1.0 / -mv.z) * 3.0;
+    gl_PointSize = uSize * uZoom * (1.0 + uPulse * 0.45) * uPixelRatio * (1.0 / -mv.z) * 3.0;
+    gl_Position = projectionMatrix * mv;
+  }
+`
+
+const dotVertex = /* glsl */ `
+  uniform float uSize;
+  uniform float uPixelRatio;
+  uniform float uZoom;
+  attribute float aSeed;
+  varying float vFacing;
+  varying float vSeed;
+  void main() {
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    vec3 n = normalize(normalMatrix * position);
+    vFacing = dot(n, normalize(-mv.xyz));
+    vSeed = aSeed;
+    gl_PointSize = uSize * uZoom * uPixelRatio * (1.0 / -mv.z) * 3.0;
     gl_Position = projectionMatrix * mv;
   }
 `
@@ -173,6 +210,8 @@ export class Globe {
   private root = new THREE.Group()
   private spin = new THREE.Group()
   private dots!: THREE.Points<THREE.BufferGeometry, THREE.ShaderMaterial>
+  private heart!: THREE.Points<THREE.BufferGeometry, THREE.ShaderMaterial>
+  private heartState = { show: 0 }
   private atmosphere!: THREE.Mesh<THREE.SphereGeometry, THREE.ShaderMaterial>
   private arcs: Arc[] = []
   private pins: Pin[] = []
@@ -203,6 +242,7 @@ export class Globe {
     this.camera.position.set(0, 0, this.view.dist)
 
     this.buildGlobe()
+    this.buildHeart()
     this.buildArcs()
     this.buildPins()
 
@@ -242,6 +282,7 @@ export class Globe {
       uniforms: {
         uSize: { value: small ? 2.2 : 2.6 },
         uPixelRatio: { value: this.renderer.getPixelRatio() },
+        uZoom: { value: 1 },
         uColor: { value: new THREE.Color('#7f92c4') },
         uHighlight: { value: new THREE.Color('#e2cc93') },
         uOpacity: { value: 1 },
@@ -280,6 +321,7 @@ export class Globe {
       ['fortWorth', 'newYork'],
       ['fortWorth', 'lasVegas'],
       ['lasVegas', 'istanbul'],
+      ['istanbul', 'heart'],
     ]
     for (const [a, b] of routes) {
       const A = latLonToVec3(places[a].lat, places[a].lon)
@@ -312,6 +354,55 @@ export class Globe {
     }
   }
 
+  // A continent shaped like a heart, waiting at the end of the route.
+  private buildHeart() {
+    const { lat: lat0, lon: lon0 } = places.heart
+    const scale = 1.1
+    const small = window.innerWidth < 768
+    const samples = small ? 30000 : 60000
+    const golden = Math.PI * (3 - Math.sqrt(5))
+    const positions: number[] = []
+    const seeds: number[] = []
+    for (let i = 0; i < samples; i++) {
+      const lat = Math.asin(1 - (2 * (i + 0.5)) / samples) / DEG
+      if (Math.abs(lat - lat0) > 24) continue
+      const lon = ((((i * golden) / DEG) % 360) + 360) % 360 - 180
+      const u = ((lon - lon0) * Math.cos(lat0 * DEG)) / scale
+      const v = (lat - lat0) / scale
+      if (!inHeart(u, v)) continue
+      const p = latLonToVec3(lat, lon, 1.001)
+      positions.push(p.x, p.y, p.z)
+      seeds.push(Math.random())
+    }
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    geo.setAttribute('aSeed', new THREE.Float32BufferAttribute(seeds, 1))
+    const mat = new THREE.ShaderMaterial({
+      vertexShader: heartVertex,
+      fragmentShader: dotFragment,
+      transparent: true,
+      depthWrite: false,
+      uniforms: {
+        uSize: { value: 3.2 },
+        uPixelRatio: { value: this.renderer.getPixelRatio() },
+        uZoom: { value: 1 },
+        uPulse: { value: 0 },
+        uColor: { value: new THREE.Color('#dcb468') },
+        uHighlight: { value: new THREE.Color('#f3e2b3') },
+        uOpacity: { value: 0 },
+        uTime: { value: 0 },
+      },
+    })
+    this.heart = new THREE.Points(geo, mat)
+    this.spin.add(this.heart)
+  }
+
+  /** Change the text of a place label, e.g. who waits at the heart. */
+  setPlaceLabel(key: PlaceKey, text: string) {
+    const pin = this.pins.find((p) => p.key === key)
+    if (pin) pin.label.textContent = text
+  }
+
   private buildPins() {
     for (const key of Object.keys(places) as PlaceKey[]) {
       const p = places[key]
@@ -327,6 +418,8 @@ export class Globe {
         new THREE.RingGeometry(0.02, 0.026, 40),
         new THREE.MeshBasicMaterial({ color: '#c8a45d', transparent: true, opacity: 0, side: THREE.DoubleSide }),
       )
+      // The heart is drawn by its own dots; it only needs a label.
+      if (key === 'heart') dot.visible = ring.visible = false
       group.add(dot, ring)
       this.spin.add(group)
 
@@ -347,7 +440,13 @@ export class Globe {
     this.activePlaces.clear()
     this.showLabels = focus !== 'hero'
     this.focusPlace = focus
-    if (focus === 'bridge' || focus === 'hero') {
+    if (focus === 'heart') {
+      // Frame Istanbul and the heart together so the last route reads as one move.
+      lat = 4
+      lon = 64
+      dist = 4.4
+      this.activePlaces.add('heart')
+    } else if (focus === 'bridge' || focus === 'hero') {
       lat = focus === 'hero' ? 26 : 36
       lon = focus === 'hero' ? -34 : -18
       dist = focus === 'hero' ? 5.6 : 6.0
@@ -365,6 +464,7 @@ export class Globe {
     let dLon = lon - this.view.lon
     dLon = ((dLon + 540) % 360) - 180
     const d = this.reducedMotion ? 0 : 1.6
+    gsap.to(this.heartState, { show: focus === 'heart' ? 1 : 0, duration: this.reducedMotion ? 0 : 1.2, delay: focus === 'heart' ? d * 0.5 : 0 })
     gsap.to(this.view, { lat, lon: this.view.lon + dLon, dist, duration: d, ease: 'power3.inOut', overwrite: 'auto' })
     gsap.to(this.view, { drift: focus === 'hero' ? 1 : 0, duration: d })
 
@@ -383,7 +483,9 @@ export class Globe {
       } else if (!on) {
         u.uDraw.value = 1
       }
-      gsap.to(u.uOpacity, { value: on ? 1 : network ? 0.45 : 0.12, duration: d * 0.6 })
+      // The road to the heart only exists once the heart does.
+      const rest = a.key.includes('heart') ? 0 : network ? 0.45 : 0.12
+      gsap.to(u.uOpacity, { value: on ? 1 : rest, duration: d * 0.6 })
     }
     this.activeArc = nextArc
   }
@@ -446,6 +548,16 @@ export class Globe {
 
     this.dots.material.uniforms.uTime.value = t
     this.dots.material.uniforms.uOpacity.value = v.opacity
+    // Phones pull the camera far back; keep the dots the same size on screen.
+    const zoom = z / v.dist
+    this.dots.material.uniforms.uZoom.value = zoom
+    this.heart.material.uniforms.uZoom.value = zoom
+    // A double heartbeat about once a second.
+    const beat = t % 1.15
+    const pulse = this.reducedMotion ? 0 : Math.exp(-(((beat - 0.08) / 0.06) ** 2)) + 0.7 * Math.exp(-(((beat - 0.3) / 0.06) ** 2))
+    this.heart.material.uniforms.uPulse.value = pulse
+    this.heart.material.uniforms.uTime.value = t
+    this.heart.material.uniforms.uOpacity.value = this.heartState.show * v.opacity * (0.85 + 0.15 * pulse)
     this.atmosphere.material.uniforms.uOpacity.value = 0.32 * v.opacity
     for (const a of this.arcs) {
       a.mesh.material.uniforms.uTime.value = this.reducedMotion ? 0.3 : t
