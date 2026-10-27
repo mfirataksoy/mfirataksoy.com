@@ -11,7 +11,7 @@ onMounted(() => {
   try {
     globe.value = new Globe(canvas.value!, labels.value!)
     globe.value.focus('hero')
-    globe.value.setLayout('side')
+    globe.value.setLayout(window.matchMedia('(max-width: 760px)').matches ? 'top' : 'side')
     if (import.meta.env.DEV) Object.assign(window, { __globe: globe.value })
   } catch (err) {
     console.warn('Globe disabled:', err)

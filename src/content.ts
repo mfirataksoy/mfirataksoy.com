@@ -1,8 +1,11 @@
 // Every word on the site lives here. Text that differs by hiring lens is a
 // { eng, cs } pair; everything else is a plain string.
 
-export type Lens = 'eng' | 'cs'
-export type ByLens = { eng: string; cs: string }
+import type { Track } from './tracks'
+
+// `cs` is customer success; `eng` is the default for every engineering role,
+// and a role can override it with its own key.
+export type ByTrack = { cs: string; eng: string } & Partial<Record<Track, string>>
 
 export type PlaceKey = 'istanbul' | 'fortWorth' | 'sanAntonio' | 'lasVegas' | 'newYork'
 
@@ -25,22 +28,20 @@ export const profile = {
   location: 'Istanbul, Türkiye',
 }
 
-// Customer success comes first: it's the default lens and the first option.
-export const lensLabels: Record<Lens, string> = {
-  cs: 'Customer success',
-  eng: 'Engineering',
-}
-
 export const hero = {
   kicker: {
     cs: 'Customer success · Istanbul · open to work',
     eng: 'Full-stack engineer · Istanbul · open to work',
-  } satisfies ByLens,
+    backend: 'Backend engineer · Istanbul · open to work',
+    frontend: 'Frontend engineer · Istanbul · open to work',
+  } satisfies ByTrack,
   headline: 'I build bridges',
   sub: {
     cs: 'between customers and the teams that serve them. A customer success manager with a software engineer’s background, so I can go deep on the technical side of every conversation.',
     eng: 'between a product idea and the code that ships it. Full-stack engineer across Flutter, Vue, Java Spring and AWS, with Claude Code at every stage.',
-  } satisfies ByLens,
+    backend: 'between business rules and the services that run them. Backend engineer in Java Spring and PostgreSQL, from a tax engine to an SMS microservice, shipped on Docker and AWS EKS.',
+    frontend: 'between people and the products they use. Frontend engineer across Vue, React and Flutter, turning complex flows into screens that feel simple.',
+  } satisfies ByTrack,
 }
 
 export const about = {
@@ -49,7 +50,9 @@ export const about = {
   body: {
     cs: 'I trained as a software engineer, and the part of every project I cared about most was the people using it. As a customer success manager for a New York delivery platform, I owned the client relationship and turned what they needed into work the dev team could build. At Credit One Bank I built the app the support team used every day. Now I want to help customers succeed full time, with the technical depth to back it up.',
     eng: 'I’m a full-stack engineer who likes owning a product end to end: the Flutter app, the Vue dashboard, the Spring service behind them and the cluster they run on. Most recently I led regulated e-document products at İzibiz, with Claude Code built into every step so a small team could ship like a bigger one.',
-  } satisfies ByLens,
+    backend: 'I’m a backend engineer who likes systems that are correct before they are clever. At İzibiz I built a tax calculation engine, an SMS microservice and regulated e-document services on Java Spring and PostgreSQL, ran them on Docker and Nginx and watched them with Graylog and Zabbix. Before that I onboarded banking applications onto AWS EKS with Terraform at Credit One.',
+    frontend: 'I’m a frontend engineer who has shipped across Vue, React and Flutter: e-document products on web and mobile at İzibiz, an internal React app a bank’s support team used every day, and side projects from collaborative notes to a movie discovery site.',
+  } satisfies ByTrack,
   facts: {
     cs: [
       { value: 'CSM', label: 'for a New York delivery platform' },
@@ -60,6 +63,18 @@ export const about = {
     eng: [
       { value: '3+ years', label: 'shipping to production' },
       { value: 'AWS', label: 'Certified Cloud Practitioner' },
+      { value: 'B.S. CS', label: 'Texas Christian University' },
+      { value: 'EN · TR', label: 'working languages' },
+    ],
+    backend: [
+      { value: '3+ years', label: 'shipping to production' },
+      { value: 'Spring', label: 'Java and PostgreSQL services' },
+      { value: 'AWS', label: 'Certified Cloud Practitioner' },
+      { value: 'B.S. CS', label: 'Texas Christian University' },
+    ],
+    frontend: [
+      { value: '3+ years', label: 'shipping to production' },
+      { value: 'Vue · React', label: 'and Flutter for mobile' },
       { value: 'B.S. CS', label: 'Texas Christian University' },
       { value: 'EN · TR', label: 'working languages' },
     ],
@@ -74,8 +89,8 @@ export type Chapter = {
   arc?: [PlaceKey, PlaceKey]
   org: string
   role: string
-  title: ByLens
-  body: ByLens
+  title: ByTrack
+  body: ByTrack
   tags: string[]
   // Customer-facing tags for the customer success lens; falls back to `tags`.
   csTags?: string[]
@@ -168,9 +183,11 @@ export const chapters: Chapter[] = [
     title: {
       eng: 'Banking workloads on Kubernetes',
       cs: 'Built the tool support used every day',
+      frontend: 'An app the support team used every day',
     },
     body: {
       eng: 'In the Information Management Leadership Program: onboarded applications onto the bank’s hybrid cloud with Terraform, deployed to AWS EKS, and watched cluster health for production banking services.',
+      frontend: 'Built an internal React application the bank’s customer support staff used every day, while rotating through cloud work: onboarding applications to AWS EKS with Terraform.',
       cs: 'Selected for the bank’s two-year IT leadership program and partnered with senior IT leaders on planning and delivery. Built the internal React app the bank’s customer support staff used every day.',
     },
     tags: ['AWS EKS', 'Terraform', 'Kubernetes', 'React'],
@@ -187,9 +204,13 @@ export const chapters: Chapter[] = [
     title: {
       eng: 'Regulated products, end to end',
       cs: 'From regulation to a product people use',
+      backend: 'A tax engine and the services around it',
+      frontend: 'Regulated products on web and mobile',
     },
     body: {
       eng: 'Led delivery of e-Ledger, e-SMM, e-Producer Receipt, a tax calculation engine and an SMS microservice across Flutter, Vue, JSP, Java Spring and PostgreSQL, running on Docker and Nginx with Graylog and Zabbix. Claude Code at every stage.',
+      backend: 'Built a tax calculation engine, an SMS microservice and the services behind e-Ledger, e-SMM and e-Producer Receipt on Java Spring and PostgreSQL, plus partner integrations such as IdeaSoft. Containerized with Docker and Nginx, monitored with Graylog and Zabbix.',
+      frontend: 'Shipped regulated e-document products across Flutter mobile and Vue and JSP web, from requirements to release, with Claude Code at every stage.',
       cs: 'Owned regulated e-document products end to end, from requirements to release, and partner integrations such as IdeaSoft. Built Claude Code into design, review, testing and documentation so a lean team could deliver more.',
     },
     tags: ['Flutter', 'Vue', 'Java Spring', 'PostgreSQL', 'Claude Code'],
@@ -201,15 +222,21 @@ export const nowChapter = {
   years: 'Now',
   title: {
     eng: 'Next stop: your engineering team',
+    backend: 'Next stop: your backend team',
+    frontend: 'Next stop: your product team',
     cs: 'Next stop: your customers',
-  } satisfies ByLens,
+  } satisfies ByTrack,
   body: {
     cs: 'Based in Istanbul and looking for a customer success role where technical depth helps customers get more out of the product. Fluent in English and Turkish.',
     eng: 'Based in Istanbul and open to full-stack and cloud roles. Fluent in English and Turkish.',
-  } satisfies ByLens,
+    backend: 'Based in Istanbul and open to backend and platform roles. Fluent in English and Turkish.',
+    frontend: 'Based in Istanbul and open to frontend and mobile roles. Fluent in English and Turkish.',
+  } satisfies ByTrack,
 }
 
-export const toolkit: Record<Lens, { group: string; items: string[] }[]> = {
+type ToolGroup = { group: string; items: string[] }
+
+export const toolkit: { cs: ToolGroup[]; eng: ToolGroup[] } & Partial<Record<Track, ToolGroup[]>> = {
   eng: [
     { group: 'Languages', items: ['Java', 'Dart', 'TypeScript', 'JavaScript', 'Python', 'SQL'] },
     { group: 'Frameworks', items: ['Spring', 'Flutter', 'Vue.js', 'React', 'Node.js', 'Express', 'JSP', 'Tailwind'] },
@@ -217,35 +244,26 @@ export const toolkit: Record<Lens, { group: string; items: string[] }[]> = {
     { group: 'Cloud and DevOps', items: ['AWS EKS', 'Kubernetes', 'Terraform', 'Docker', 'Nginx', 'Graylog', 'Zabbix', 'CI/CD'] },
     { group: 'AI and tools', items: ['Claude Code', 'TensorFlow', 'OpenCV', 'CUDA', 'NVIDIA Jetson', 'Git', 'Jira'] },
   ],
+  backend: [
+    { group: 'Languages', items: ['Java', 'SQL', 'Python', 'TypeScript'] },
+    { group: 'Backend', items: ['Spring', 'Node.js', 'Express', 'REST APIs', 'Microservices', 'JSP'] },
+    { group: 'Data', items: ['PostgreSQL', 'MS SQL', 'MongoDB', 'Firebase'] },
+    { group: 'Cloud and DevOps', items: ['AWS EKS', 'Kubernetes', 'Terraform', 'Docker', 'Nginx', 'CI/CD'] },
+    { group: 'Observability and tools', items: ['Graylog', 'Zabbix', 'Claude Code', 'Git', 'Jira'] },
+  ],
+  frontend: [
+    { group: 'Languages', items: ['TypeScript', 'JavaScript', 'Dart', 'HTML and CSS'] },
+    { group: 'Frameworks', items: ['Vue.js', 'React', 'Flutter', 'Tailwind', 'JSP'] },
+    { group: 'App plumbing', items: ['Pinia', 'Firebase Auth', 'REST APIs', 'Stripe'] },
+    { group: 'Craft', items: ['Three.js', 'GSAP', 'Vite', 'Responsive layouts'] },
+    { group: 'Tools', items: ['Claude Code', 'Git', 'Jira'] },
+  ],
   cs: [
     { group: 'Customer work', items: ['Client relationships', 'Needs → requirements', 'Scope and timelines', 'Stakeholder alignment'] },
     { group: 'Communication', items: ['English and Turkish', 'Across time zones', 'Clear, actionable messaging', 'Documentation'] },
     { group: 'Worked alongside', items: ['Dev teams', 'Support staff', 'Senior IT leadership', 'Integration partners'] },
     { group: 'Technical depth', items: ['Reads and writes code', 'APIs and integrations', 'SQL', 'AWS Certified', 'Cloud and Kubernetes'] },
     { group: 'Tools', items: ['Jira', 'Git', 'Claude Code', 'AI-assisted docs and testing'] },
-  ],
-}
-
-// Drafts for Fırat to rewrite in his own words.
-export const principles = {
-  title: 'How I think',
-  intro: 'A few ideas I keep coming back to, whatever the job title.',
-  items: [
-    {
-      n: 'I',
-      title: 'Understand before you build.',
-      body: 'Most problems are misunderstood long before they are misbuilt. I start by asking what the person is actually trying to do.',
-    },
-    {
-      n: 'II',
-      title: 'Clarity is a form of respect.',
-      body: 'A clear answer, a clear timeline, a clear no. People can plan around honesty; they can’t plan around vagueness.',
-    },
-    {
-      n: 'III',
-      title: 'Technology should serve people.',
-      body: 'Code is only worth what it changes for someone. I judge the work by the person on the other side of it.',
-    },
   ],
 }
 
@@ -258,6 +276,9 @@ export type Project = {
   link?: { label: string; href: string }
   code?: string
   status?: string
+  // A screenshot shown in the playground, and the desk screen it appears on.
+  preview?: string
+  screen?: 'laptop' | 'monitor' | 'phone'
 }
 
 export const projects: Project[] = [
@@ -275,6 +296,8 @@ export const projects: Project[] = [
     body: 'Collaborative notes without accounts: open a page, share the URL, write together. Professors used it for online classes during the pandemic. Brought back online in 2026.',
     stack: ['Vue', 'Node.js', 'Express', 'MongoDB'],
     link: { label: 'Open the app', href: 'https://notewith-me.netlify.app' },
+    preview: '/previews/notewithme.jpg',
+    screen: 'laptop',
     code: 'https://github.com/mfirataksoy/notewith.me',
   },
   {
@@ -284,6 +307,8 @@ export const projects: Project[] = [
     body: 'A movie discovery site on TMDB data: official trailers, IMDb, TMDB and community ratings side by side, reviews, movie requests with voting, and an admin panel that adds films straight from TMDB.',
     stack: ['Vue 3', 'TypeScript', 'Tailwind', 'Firebase'],
     link: { label: 'Open the site', href: 'https://filmfirtinasi.vercel.app' },
+    preview: '/previews/filmfirtinasi.jpg',
+    screen: 'laptop',
   },
   {
     name: 'Istanbul Etkinlik',
@@ -292,6 +317,7 @@ export const projects: Project[] = [
     body: 'Every morning it collects Istanbul’s concerts, talks, theatre, exhibitions and workshops from over a hundred sources and ranks them by my interests. No AI involved: every score can be explained.',
     stack: ['Python', 'Vue 3', 'GitHub Actions', 'iCal feed'],
     link: { label: 'Open the demo', href: 'https://istanbul-etkinlik-demo.pages.dev' },
+    preview: '/previews/istanbul.jpg',
   },
   {
     name: 'Altyazı Portalı',
@@ -300,6 +326,8 @@ export const projects: Project[] = [
     body: 'Everyone gets their own video site: a portal that generates personal sites for watching YouTube videos with Turkish subtitles, all from one panel. A kids mode adds a teacher panel, time limits and games.',
     stack: ['Vue 3', 'Express', 'Cloudflare R2 and Pages', 'Gemini'],
     link: { label: 'Open the demo', href: 'https://altyazi-demo.pages.dev' },
+    preview: '/previews/altyazi.jpg',
+    screen: 'monitor',
   },
   {
     name: 'AcneAway',
@@ -308,6 +336,8 @@ export const projects: Project[] = [
     body: 'Upload a selfie and get a clear-skin retouch from an AI image pipeline, with Stripe checkout for credits. Now retired and kept as a showcase.',
     stack: ['Vue 3', 'Firebase', 'Stripe', 'Replicate'],
     link: { label: 'See the showcase', href: 'https://acneaway.vercel.app' },
+    preview: '/previews/acneaway.jpg',
+    screen: 'phone',
     status: 'Retired',
   },
   {
@@ -317,6 +347,8 @@ export const projects: Project[] = [
     body: 'WhatsApp and Telegram bots that sent people stickers on request, and a website built from stickers users sent back to the bot. Built with Bedirhan Celayir.',
     stack: ['Vue', 'Node.js', 'Firebase', 'Google Cloud'],
     link: { label: 'See the farewell page', href: 'https://stickerhubio.netlify.app' },
+    preview: '/previews/stickerhub.jpg',
+    screen: 'phone',
     status: 'Retired',
   },
   {
@@ -326,16 +358,18 @@ export const projects: Project[] = [
     body: 'A Three.js globe that follows my career route as you scroll, a desk you can click around, and a lens switch for customer success and engineering readers.',
     stack: ['Vue 3', 'Three.js', 'GSAP', 'Vite'],
     link: { label: 'View on GitHub', href: 'https://github.com/mfirataksoy/mfirataksoy.com' },
+    preview: '/previews/thissite.jpg',
+    screen: 'laptop',
   },
 ]
 
-export type DeskKey = 'laptop' | 'monitor' | 'calendar' | 'jetson' | 'phone' | 'headset' | 'server'
+export type DeskKey = 'laptop' | 'monitor' | 'calendar' | 'fridge' | 'phone' | 'headset' | 'server'
 
 export type DeskItem = {
   id: DeskKey
   object: string
-  title: ByLens
-  body: ByLens
+  title: ByTrack
+  body: ByTrack
   points?: string[]
   projects?: string[]
 }
@@ -373,9 +407,9 @@ export const desk: DeskItem[] = [
     projects: ['Istanbul Etkinlik'],
   },
   {
-    id: 'jetson',
-    object: 'Jetson Nano',
-    title: { eng: 'Computer vision on the edge', cs: 'A device built for real homes' },
+    id: 'fridge',
+    object: 'Fridge',
+    title: { eng: 'Computer vision in the kitchen', cs: 'A device built for real homes' },
     body: {
       eng: 'At H-E-B I led a smart-home grocery device: CNN models trained in TensorFlow and Keras, running in real time on an NVIDIA Jetson Nano with CUDA and OpenCV.',
       cs: 'At H-E-B I took a smart-home grocery device from pitch to a prototype people could test at home, with an app flow that linked it to their H-E-B account.',
@@ -423,5 +457,7 @@ export const contact = {
   body: {
     cs: 'Hiring for customer success? I’d like to hear about your customers and what success means for them.',
     eng: 'Hiring for a full-stack or cloud role? I’d like to hear about the product and the team.',
-  } satisfies ByLens,
+    backend: 'Hiring for a backend role? I’d like to hear about the systems and the team.',
+    frontend: 'Hiring for a frontend role? I’d like to hear about the product and the people who use it.',
+  } satisfies ByTrack,
 }

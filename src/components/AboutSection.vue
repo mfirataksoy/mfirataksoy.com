@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { about } from '../content'
-import { lens, pick } from '../useLens'
+import { track, pick, pickList } from '../useLens'
 </script>
 
 <template>
@@ -17,11 +17,11 @@ import { lens, pick } from '../useLens'
         <h2 class="section-title" data-reveal>{{ about.greeting }}</h2>
         <div data-reveal>
           <Transition name="swap" mode="out-in">
-            <p :key="lens" class="about__body">{{ pick(about.body) }}</p>
+            <p :key="track" class="about__body">{{ pick(about.body) }}</p>
           </Transition>
         </div>
         <dl class="about__facts" data-reveal>
-          <div v-for="f in about.facts[lens]" :key="f.label">
+          <div v-for="f in pickList(about.facts)" :key="f.label">
             <dt>{{ f.value }}</dt>
             <dd>{{ f.label }}</dd>
           </div>

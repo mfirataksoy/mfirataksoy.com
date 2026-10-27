@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { chapters, nowChapter } from '../content'
-import { lens, pick } from '../useLens'
+import { track, pick } from '../useLens'
 </script>
 
 <template>
@@ -26,14 +26,14 @@ import { lens, pick } from '../useLens'
               <span>{{ c.years }}</span><span aria-hidden="true">·</span><span>{{ c.place }}</span>
             </p>
             <Transition name="swap" mode="out-in">
-              <h3 :key="lens" class="chapter__title">{{ pick(c.title) }}</h3>
+              <h3 :key="track" class="chapter__title">{{ pick(c.title) }}</h3>
             </Transition>
             <p class="chapter__org">{{ c.org }} — {{ c.role }}</p>
             <Transition name="swap" mode="out-in">
-              <p :key="lens" class="chapter__body">{{ pick(c.body) }}</p>
+              <p :key="track" class="chapter__body">{{ pick(c.body) }}</p>
             </Transition>
             <ul class="chapter__tags">
-              <li v-for="t in (lens === 'cs' && c.csTags) || c.tags" :key="t" class="tag">{{ t }}</li>
+              <li v-for="t in (track === 'cs' && c.csTags) || c.tags" :key="t" class="tag">{{ t }}</li>
             </ul>
           </article>
         </li>
@@ -42,10 +42,10 @@ import { lens, pick } from '../useLens'
           <article class="chapter__card" data-reveal>
             <p class="chapter__meta"><span>{{ nowChapter.years }}</span><span aria-hidden="true">·</span><span>Istanbul</span></p>
             <Transition name="swap" mode="out-in">
-              <h3 :key="lens" class="chapter__title">{{ pick(nowChapter.title) }}</h3>
+              <h3 :key="track" class="chapter__title">{{ pick(nowChapter.title) }}</h3>
             </Transition>
             <Transition name="swap" mode="out-in">
-              <p :key="lens" class="chapter__body">{{ pick(nowChapter.body) }}</p>
+              <p :key="track" class="chapter__body">{{ pick(nowChapter.body) }}</p>
             </Transition>
           </article>
         </li>
@@ -171,14 +171,22 @@ import { lens, pick } from '../useLens'
   .chapter__node {
     left: -33px;
   }
+  /* The globe sits in the top band on phones; cards stay in the lower part. */
   .chapter {
-    min-height: 92vh;
+    min-height: 100svh;
     align-items: flex-end;
-    padding-bottom: 8vh;
+    padding-bottom: 5svh;
   }
   .chapter__card {
-    padding: 22px 20px;
-    background: rgba(12, 23, 45, 0.86);
+    padding: 20px 18px;
+    background: rgba(12, 23, 45, 0.9);
+  }
+  .chapter__title {
+    font-size: 28px;
+  }
+  .chapter__body {
+    font-size: 15.5px;
+    line-height: 1.55;
   }
 }
 </style>

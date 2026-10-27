@@ -96,6 +96,14 @@ function chatScreen() {
   }, 160, 300)
 }
 
+export type ScreenKey = 'laptop' | 'monitor' | 'phone'
+
+type Screen = {
+  mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
+  idle: THREE.Texture
+  aspect: number
+}
+
 export class Desk {
   private renderer: THREE.WebGLRenderer
   private scene = new THREE.Scene()
@@ -117,7 +125,12 @@ export class Desk {
 
   // Animated bits.
   private code!: THREE.CanvasTexture
-  private fan!: THREE.Mesh
+  private screens: Partial<Record<ScreenKey, Screen>> = {}
+  private loader = new THREE.TextureLoader()
+  private textures = new Map<string, Promise<THREE.Texture>>()
+  private fridgeDoor!: THREE.Group
+  private fridgeLight!: THREE.PointLight
+  private fridgeInner!: THREE.MeshStandardMaterial
   private leds: THREE.MeshStandardMaterial[] = []
   private lampLight!: THREE.PointLight
 
@@ -133,13 +146,13 @@ export class Desk {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace
 
     this.camera.position.set(9, 8.2, 9)
-    this.camera.lookAt(0, 1.4, 0)
+    this.camera.lookAt(0, 2.0, 0)
     this.scene.add(this.world)
 
     this.buildLights()
     this.buildDesk()
     this.buildLaptop()
-    this.buildJetson()
+    this.buildFridge()
     this.buildPhone()
     this.buildCalendar()
     this.buildMonitor()
@@ -235,50 +248,88 @@ export class Desk {
     )
     screen.position.set(0, 0.56, 0.021)
     lid.add(screen)
+    this.screens.laptop = { mesh: screen, idle: this.code, aspect: 1.56 / 0.96 }
     g.add(lid)
     g.position.set(-0.4, 2.01, 0.2)
     g.rotation.y = 0.35
     this.register('laptop', g)
   }
 
-  private buildJetson() {
+  // H-E-B's smart grocery device lived with people's groceries, so it gets a
+  // fridge: the door opens on click and a little camera scans the shelves.
+  private buildFridge() {
     const g = new THREE.Group()
-    const pcb = box(0.95, 0.05, 0.75, mat(C.pcb, { roughness: 0.5 }))
-    pcb.position.y = 0.025
-    g.add(pcb)
-    const sink = box(0.55, 0.12, 0.5, mat(C.graphite, { metalness: 0.5 }))
-    sink.position.y = 0.11
-    g.add(sink)
-    for (let i = -2; i <= 2; i++) {
-      const fin = box(0.04, 0.12, 0.5, mat('#3a4156', { metalness: 0.5 }))
-      fin.position.set(i * 0.11, 0.23, 0)
-      g.add(fin)
+    const W = 1.5
+    const H = 3.3
+    const D = 1.15
+    const shell = mat('#d9dde4', { roughness: 0.35, metalness: 0.25 })
+    const inner = mat('#eef0f2', { roughness: 0.6, emissive: '#fff4dc', emissiveIntensity: 0 })
+    this.fridgeInner = inner
+    const back = box(W, H, 0.06, inner)
+    back.position.set(0, H / 2, -D / 2 + 0.03)
+    g.add(back)
+    for (const side of [-1, 1]) {
+      const wall = box(0.06, H, D, shell)
+      wall.position.set(side * (W / 2 - 0.03), H / 2, 0)
+      g.add(wall)
     }
-    this.fan = cyl(0.17, 0.17, 0.03, mat('#11151f'), 6)
-    this.fan.position.y = 0.31
-    g.add(this.fan)
-    // Camera on a little arm, looking at a can of beans.
-    const pole = cyl(0.025, 0.025, 1.1, mat(C.dark))
-    pole.position.set(0.62, 0.55, -0.1)
-    g.add(pole)
-    const arm = box(0.5, 0.04, 0.04, mat(C.dark))
-    arm.position.set(0.4, 1.1, -0.1)
-    g.add(arm)
-    const cam = box(0.18, 0.12, 0.14, mat(C.dark))
-    cam.position.set(0.2, 1.04, -0.1)
-    g.add(cam)
-    const lens = cyl(0.04, 0.04, 0.05, mat('#0b1020', { emissive: C.sky, emissiveIntensity: 0.8 }))
-    lens.position.set(0.2, 0.96, -0.1)
+    const top = box(W, 0.06, D, shell)
+    top.position.set(0, H - 0.03, 0)
+    g.add(top)
+    const bottom = box(W, 0.12, D, shell)
+    bottom.position.set(0, 0.06, 0)
+    g.add(bottom)
+    // Shelves and groceries.
+    const groceries = [C.gold, C.sky, C.ivory, '#9fb59a', C.tin, '#c98b6b']
+    for (let i = 0; i < 4; i++) {
+      const y = 0.45 + i * 0.72
+      const shelf = box(W - 0.12, 0.03, D - 0.12, mat('#cfd6de', { transparent: true, opacity: 0.85 }))
+      shelf.position.set(0, y, 0.02)
+      g.add(shelf)
+      for (let j = 0; j < 3; j++) {
+        const color = groceries[(i * 3 + j) % groceries.length]
+        const item =
+          (i + j) % 2
+            ? cyl(0.09, 0.09, 0.34, mat(color, { roughness: 0.4 }))
+            : box(0.26, 0.38, 0.18, mat(color, { roughness: 0.7 }))
+        item.position.set(-0.42 + j * 0.42, y + 0.2, -0.1 + ((i + j) % 3) * 0.08)
+        g.add(item)
+      }
+    }
+    // The scanner: a small camera at the top, looking down at the shelves.
+    const scanner = box(0.32, 0.12, 0.2, mat(C.dark))
+    scanner.position.set(0, H - 0.16, 0.2)
+    g.add(scanner)
+    const lens = cyl(0.045, 0.045, 0.05, mat('#0b1020', { emissive: C.sky, emissiveIntensity: 1 }))
+    lens.position.set(0, H - 0.24, 0.24)
     g.add(lens)
-    const can = cyl(0.13, 0.13, 0.32, mat(C.tin, { roughness: 0.35, metalness: 0.6 }))
-    can.position.set(0.2, 0.16, 0.6)
-    g.add(can)
-    const label = cyl(0.132, 0.132, 0.14, mat(C.ivory))
-    label.position.set(0.2, 0.16, 0.6)
-    g.add(label)
-    g.position.set(1.85, 2.01, -0.75)
-    g.rotation.y = -0.3
-    this.register('jetson', g)
+    this.fridgeLight = new THREE.PointLight('#fff1d6', 0, 3, 1.5)
+    this.fridgeLight.position.set(0, H - 0.5, 0.3)
+    g.add(this.fridgeLight)
+    // The door hangs on its left edge.
+    const hinge = new THREE.Group()
+    hinge.position.set(-W / 2, 0, D / 2)
+    const door = box(W, H - 0.04, 0.09, shell)
+    door.position.set(W / 2, H / 2, 0.045)
+    hinge.add(door)
+    const seam = box(W - 0.04, 0.015, 0.01, mat('#a9b0bb'))
+    seam.position.set(W / 2, H * 0.68, 0.095)
+    hinge.add(seam)
+    const handle = box(0.05, 0.8, 0.06, mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
+    handle.position.set(W - 0.14, H * 0.5, 0.13)
+    hinge.add(handle)
+    g.add(hinge)
+    this.fridgeDoor = hinge
+    g.position.set(-3.15, 0, -2.45)
+    g.rotation.y = 0.12
+    this.register('fridge', g)
+  }
+
+  private setFridgeOpen(open: boolean) {
+    const d = this.reducedMotion ? 0 : 0.9
+    gsap.to(this.fridgeDoor.rotation, { y: open ? -1.75 : 0, duration: d, ease: open ? 'power3.out' : 'power2.inOut' })
+    gsap.to(this.fridgeLight, { intensity: open ? 2.4 : 0, duration: d * 0.6 })
+    gsap.to(this.fridgeInner, { emissiveIntensity: open ? 0.35 : 0, duration: d * 0.6 })
   }
 
   private buildPhone() {
@@ -298,6 +349,7 @@ export class Desk {
     )
     screen.position.set(0, 0.42, 0.026)
     phone.add(screen)
+    this.screens.phone = { mesh: screen, idle: screen.material.map!, aspect: 0.37 / 0.74 }
     g.add(phone)
     g.position.set(1.35, 2.01, 0.95)
     g.rotation.y = -0.5
@@ -345,6 +397,7 @@ export class Desk {
     )
     screen.position.set(0, 0.78, 0.026)
     g.add(screen)
+    this.screens.monitor = { mesh: screen, idle: video, aspect: 1.22 / 0.7 }
     g.position.set(0.75, 2.01, -1.15)
     g.rotation.y = 0.1
     this.register('monitor', g)
@@ -504,10 +557,47 @@ export class Desk {
     this.world.add(pen)
   }
 
+  /** Put a site screenshot on a device's screen, or its idle animation back with null. */
+  showScreen(key: ScreenKey, url: string | null) {
+    const screen = this.screens[key]
+    if (!screen) return
+    if (!url) {
+      screen.mesh.material.map = screen.idle
+      screen.mesh.material.needsUpdate = true
+      if (!this.visible) this.renderOnce()
+      return
+    }
+    let tex = this.textures.get(url)
+    if (!tex) {
+      tex = this.loader.loadAsync(url).then((t) => {
+        t.colorSpace = THREE.SRGBColorSpace
+        t.anisotropy = 4
+        // Cover the screen, keeping the top of the page in view.
+        const img = t.image as HTMLImageElement
+        const imgAspect = img.width / img.height
+        if (imgAspect > screen.aspect) {
+          t.repeat.set(screen.aspect / imgAspect, 1)
+          t.offset.set((1 - t.repeat.x) / 2, 0)
+        } else {
+          t.repeat.set(1, imgAspect / screen.aspect)
+          t.offset.set(0, 1 - t.repeat.y)
+        }
+        return t
+      })
+      this.textures.set(url, tex)
+    }
+    tex.then((t) => {
+      screen.mesh.material.map = t
+      screen.mesh.material.needsUpdate = true
+      if (!this.visible) this.renderOnce()
+    })
+  }
+
   /** Highlight the object whose story is open in the panel. */
   select(id: DeskKey) {
     const item = this.items.find((i) => i.id === id)
     if (!item) return
+    if (id === 'fridge' || this.selected?.id === 'fridge') this.setFridgeOpen(id === 'fridge')
     this.selected = item
     const p = item.group.position
     const ring = this.selectedRing
@@ -554,6 +644,13 @@ export class Desk {
   }
 
   private lift(item: Clickable, up: boolean) {
+    // A fridge doesn't hop; its door opens a crack instead.
+    if (item.id === 'fridge') {
+      if (this.selected?.id !== 'fridge') {
+        gsap.to(this.fridgeDoor.rotation, { y: up ? -0.18 : 0, duration: this.reducedMotion ? 0 : 0.35 })
+      }
+      return
+    }
     gsap.to(item.group.position, {
       y: item.base.y + (up ? 0.18 : 0),
       duration: this.reducedMotion ? 0 : 0.35,
@@ -567,7 +664,7 @@ export class Desk {
     if (!w || !h) return
     this.renderer.setSize(w, h, false)
     // Fit the desk: keep a fixed world height, widen for wide canvases.
-    const view = 5.7
+    const view = 5.9
     const aspect = w / h
     const half = aspect >= 1.25 ? view / 2 : (view * 1.25) / aspect / 2
     this.camera.left = -half * aspect
@@ -590,7 +687,6 @@ export class Desk {
       this.world.rotation.y += (this.sway.x * 0.12 - this.world.rotation.y) * 0.05
       this.world.rotation.x += (-this.sway.y * 0.04 - this.world.rotation.x) * 0.05
       this.code.offset.y = (t * 0.04) % 1
-      this.fan.rotation.y = t * 6
       this.leds.forEach((m, i) => (m.emissiveIntensity = 0.4 + 0.6 * (Math.sin(t * (2 + (i % 5)) + i) > 0.2 ? 1 : 0)))
       this.lampLight.intensity = 5 + Math.sin(t * 1.3) * 0.2
       if (this.selected) this.selectedRing.scale.setScalar(1 + Math.sin(t * 3) * 0.04)

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { about, hero, profile } from '../content'
-import { lens, pick } from '../useLens'
-import LensSwitch from './LensSwitch.vue'
+import { tracks } from '../tracks'
+import { track, pick } from '../useLens'
 </script>
 
 <template>
@@ -26,11 +26,10 @@ import LensSwitch from './LensSwitch.vue'
         </span>
       </h1>
       <Transition name="swap" mode="out-in">
-        <p :key="lens" class="hero__sub" data-hero>{{ pick(hero.sub) }}</p>
+        <p :key="track" class="hero__sub" data-hero>{{ pick(hero.sub) }}</p>
       </Transition>
-      <div class="hero__lens" data-hero><LensSwitch /></div>
       <div class="hero__actions" data-hero>
-        <a class="btn btn--primary" :href="profile.resume" download>
+        <a class="btn btn--primary" :href="tracks[track].resume" download>
           Download resume
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 4v12m0 0 5-5m-5 5-5-5M5 20h14" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </a>
@@ -129,9 +128,6 @@ import LensSwitch from './LensSwitch.vue'
   line-height: 1.55;
   color: var(--ink-soft);
   min-height: 3.1em;
-}
-.hero__lens {
-  margin-top: 32px;
 }
 .hero__actions {
   display: flex;
