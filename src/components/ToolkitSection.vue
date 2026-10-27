@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { toolkit } from '../content'
-import { lens } from '../useLens'
+import { track, pickList } from '../useLens'
 </script>
 
 <template>
   <section id="toolkit" class="toolkit" data-globe="dim">
     <div class="wrap">
       <header data-reveal>
-        <p class="kicker">05 · Toolkit</p>
+        <p class="kicker">04 · Toolkit</p>
         <h2 class="section-title">What I bring <em>across</em>.</h2>
       </header>
       <div data-reveal>
       <Transition name="swap" mode="out-in">
-        <div :key="lens" class="toolkit__grid">
-          <div v-for="g in toolkit[lens]" :key="g.group" class="toolkit__group">
+        <div :key="track" class="toolkit__grid">
+          <div v-for="g in pickList(toolkit)" :key="g.group" class="toolkit__group">
             <h3>{{ g.group }}</h3>
             <ul>
               <li v-for="item in g.items" :key="item">{{ item }}</li>

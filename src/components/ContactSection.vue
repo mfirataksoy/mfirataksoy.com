@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { contact, profile } from '../content'
-import { lens, pick } from '../useLens'
+import { tracks } from '../tracks'
+import { track, pick } from '../useLens'
 
 const copied = ref(false)
 async function copyEmail() {
@@ -18,15 +19,15 @@ async function copyEmail() {
 <template>
   <section id="contact" class="contact" data-globe="bridge">
     <div class="wrap contact__inner">
-      <p class="kicker" data-reveal>06 · Contact</p>
+      <p class="kicker" data-reveal>05 · Contact</p>
       <h2 class="contact__title" data-reveal>{{ contact.headline }}</h2>
       <Transition name="swap" mode="out-in">
-        <p :key="lens" class="contact__body">{{ pick(contact.body) }}</p>
+        <p :key="track" class="contact__body">{{ pick(contact.body) }}</p>
       </Transition>
       <div class="contact__actions" data-reveal>
         <a class="btn btn--primary" :href="`mailto:${profile.email}`">Email me</a>
         <button type="button" class="btn" @click="copyEmail">{{ copied ? 'Copied' : 'Copy email' }}</button>
-        <a class="btn" :href="profile.resume" download>Resume (PDF)</a>
+        <a class="btn" :href="tracks[track].resume" download>Resume (PDF)</a>
       </div>
       <ul class="contact__links" data-reveal>
         <li><a :href="profile.linkedin" target="_blank" rel="noopener">LinkedIn ↗</a></li>

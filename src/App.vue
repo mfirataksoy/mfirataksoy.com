@@ -6,11 +6,11 @@ import { chapters } from './content'
 import { globe } from './globe/store'
 import GlobeStage from './components/GlobeStage.vue'
 import NavBar from './components/NavBar.vue'
+import RolePicker from './components/RolePicker.vue'
 import HeroSection from './components/HeroSection.vue'
 import AboutSection from './components/AboutSection.vue'
 import JourneySection from './components/JourneySection.vue'
 import ToolkitSection from './components/ToolkitSection.vue'
-import PrinciplesSection from './components/PrinciplesSection.vue'
 import PlaygroundSection from './components/PlaygroundSection.vue'
 import ContactSection from './components/ContactSection.vue'
 
@@ -87,7 +87,7 @@ onMounted(async () => {
     }
 
     ScrollTrigger.create({
-      trigger: '#principles',
+      trigger: '#projects',
       start: 'top 60%',
       endTrigger: '#toolkit',
       end: 'bottom 40%',
@@ -120,11 +120,11 @@ onBeforeUnmount(() => ctx?.revert())
 <template>
   <GlobeStage />
   <NavBar />
+  <RolePicker />
   <main class="page">
     <HeroSection />
     <AboutSection />
     <JourneySection />
-    <PrinciplesSection />
     <PlaygroundSection />
     <ToolkitSection />
     <ContactSection />

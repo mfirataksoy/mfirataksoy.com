@@ -1,31 +1,46 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { desk, projects, type DeskKey } from '../content'
-import { lens, pick } from '../useLens'
-import type { Desk } from '../desk/Desk'
+import { desk, projects, type DeskKey, type Project } from '../content'
+import { track, pick } from '../useLens'
+import type { Track } from '../tracks'
+import type { Desk, ScreenKey } from '../desk/Desk'
 
 const canvas = ref<HTMLCanvasElement>()
-const selected = ref<DeskKey>(lens.value === 'cs' ? 'headset' : 'laptop')
+// Each role meets the object that tells its story best first.
+const leadObject: Record<Track, DeskKey> = { cs: 'headset', backend: 'server', fullstack: 'laptop', frontend: 'laptop' }
+const selected = ref<DeskKey>(leadObject[track.value])
 const hover = ref<{ id: DeskKey; x: number; y: number } | null>(null)
 const has3d = ref(true)
 let scene: Desk | null = null
 
 const item = computed(() => desk.find((d) => d.id === selected.value)!)
-// Customer success readers meet the headset first.
-const ordered = computed(() =>
-  lens.value === 'cs' ? [...desk].sort((a, b) => Number(b.id === 'headset') - Number(a.id === 'headset')) : desk,
-)
+const ordered = computed(() => {
+  const lead = leadObject[track.value]
+  return [...desk].sort((a, b) => Number(b.id === lead) - Number(a.id === lead))
+})
 const itemProjects = computed(() => (item.value.projects ?? []).map((n) => projects.find((p) => p.name === n)!).filter(Boolean))
+// Projects with a screenshot show as previews; the chosen one also lights up its device on the desk.
+const previewProjects = computed(() => itemProjects.value.filter((p) => p.preview))
+const plainProjects = computed(() => itemProjects.value.filter((p) => !p.preview))
+const active = ref<Project | null>(null)
+const firstSentence = (text: string) => text.split(/(?<=\.)\s/)[0]
+
+function show(p: Project | null) {
+  active.value = p
+  for (const key of ['laptop', 'monitor', 'phone'] as ScreenKey[]) scene?.showScreen(key, null)
+  if (p?.screen && p.preview) scene?.showScreen(p.screen, p.preview)
+}
+active.value = previewProjects.value[0] ?? null
+
 const hoverLabel = computed(() => desk.find((d) => d.id === hover.value?.id)?.object)
 
 function choose(id: DeskKey) {
   selected.value = id
   scene?.select(id)
+  show(previewProjects.value[0] ?? null)
 }
 
-watch(lens, (l) => {
-  if (l === 'cs' && selected.value === 'laptop') choose('headset')
-})
+watch(track, (t) => choose(leadObject[t]))
 
 onMounted(async () => {
   // Phones get the 2D picker only; the 3D desk is a desktop treat.
@@ -41,6 +56,7 @@ onMounted(async () => {
       (id, x, y) => (hover.value = id ? { id, x, y } : null),
     )
     scene.select(selected.value)
+    show(previewProjects.value[0] ?? null)
     if (import.meta.env.DEV) Object.assign(window, { __desk: scene })
   } catch (err) {
     console.warn('Desk disabled:', err)
@@ -55,7 +71,7 @@ onBeforeUnmount(() => scene?.dispose())
   <section id="projects" class="play" data-globe="dim">
     <div class="wrap">
       <header data-reveal>
-        <p class="kicker">04 · Playground</p>
+        <p class="kicker">03 · Playground</p>
         <h2 class="section-title">The work, <em>up close</em>.</h2>
         <p class="play__hint">{{ has3d ? 'Select an object on the desk' : 'Select an object to read its story' }}</p>
       </header>
@@ -88,7 +104,7 @@ onBeforeUnmount(() => scene?.dispose())
                   <template v-if="d.id === 'laptop'"><rect x="4" y="5" width="16" height="10" rx="1.5" /><path d="M2 19h20" /></template>
                   <template v-else-if="d.id === 'monitor'"><rect x="3" y="4" width="18" height="12" rx="1.5" /><path d="M12 16v4M8 20h8M10.5 8.5v3.5l3-1.75z" /></template>
                   <template v-else-if="d.id === 'calendar'"><rect x="4" y="5" width="16" height="15" rx="1.5" /><path d="M4 10h16M8 3v4M16 3v4" /></template>
-                  <template v-else-if="d.id === 'jetson'"><rect x="4" y="9" width="16" height="9" rx="1" /><path d="M8 9V6h8v3M8 13h8" /></template>
+                  <template v-else-if="d.id === 'fridge'"><rect x="6" y="2.5" width="12" height="19" rx="1.5" /><path d="M6 9h12M9 5v2M9 12v4" /></template>
                   <template v-else-if="d.id === 'phone'"><rect x="7" y="3" width="10" height="18" rx="2" /><path d="M11 18h2" /></template>
                   <template v-else-if="d.id === 'headset'"><path d="M4 15v-3a8 8 0 0 1 16 0v3" /><rect x="3" y="14" width="4" height="6" rx="1.5" /><rect x="17" y="14" width="4" height="6" rx="1.5" /></template>
                   <template v-else><rect x="5" y="3" width="14" height="18" rx="1.5" /><path d="M8 8h3M8 12h3M8 16h3" /><circle cx="15.5" cy="8" r=".6" /></template>
@@ -99,7 +115,7 @@ onBeforeUnmount(() => scene?.dispose())
           </div>
 
           <Transition name="swap" mode="out-in">
-            <article :key="`${selected}-${lens}`" id="desk-panel" class="play__panel" role="tabpanel">
+            <article :key="`${selected}-${track}`" id="desk-panel" class="play__panel" role="tabpanel">
               <p class="play__object">{{ item.object }}</p>
               <h3 class="play__title">{{ pick(item.title) }}</h3>
               <p class="play__body">{{ pick(item.body) }}</p>
@@ -108,7 +124,39 @@ onBeforeUnmount(() => scene?.dispose())
                 <li v-for="p in item.points" :key="p">{{ p }}</li>
               </ul>
 
-              <div v-for="p in itemProjects" :key="p.name" class="play__project">
+              <div v-if="previewProjects.length" class="play__shots" :class="{ 'play__shots--phone': previewProjects[0].screen === 'phone', 'play__shots--one': previewProjects.length === 1 }">
+                <button
+                  v-for="p in previewProjects"
+                  :key="p.name"
+                  type="button"
+                  class="play__shot"
+                  :class="{ 'is-on': active?.name === p.name }"
+                  :aria-pressed="active?.name === p.name"
+                  @click="show(p)"
+                >
+                  <img :src="p.preview" :alt="`${p.name} screenshot`" loading="lazy" />
+                  <span class="play__shot-name">{{ p.name }}</span>
+                </button>
+              </div>
+
+              <div v-if="active" class="play__project play__project--active">
+                <div class="play__project-top">
+                  <span>{{ active.kind }} · {{ active.year }}</span>
+                  <span v-if="active.status" class="play__status">{{ active.status }}</span>
+                </div>
+                <h4>{{ active.name }}</h4>
+                <p>{{ firstSentence(active.body) }}</p>
+                <div v-if="active.link || active.code" class="play__links">
+                  <a v-if="active.link" :href="active.link.href" target="_blank" rel="noopener" class="play__link">
+                    {{ active.link.label }} <span aria-hidden="true">↗</span>
+                  </a>
+                  <a v-if="active.code" :href="active.code" target="_blank" rel="noopener" class="play__link play__link--quiet">
+                    Code <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </div>
+
+              <div v-for="p in plainProjects" :key="p.name" class="play__project">
                 <div class="play__project-top">
                   <span>{{ p.kind }} · {{ p.year }}</span>
                   <span v-if="p.status" class="play__status">{{ p.status }}</span>
@@ -159,7 +207,7 @@ onBeforeUnmount(() => scene?.dispose())
 }
 .play__stage {
   position: relative;
-  aspect-ratio: 4 / 3.1;
+  aspect-ratio: 1;
   border-radius: var(--radius);
   border: 1px solid var(--line);
   background:
@@ -323,6 +371,58 @@ onBeforeUnmount(() => scene?.dispose())
 .play__link--quiet {
   color: var(--ink-soft);
   border-bottom-color: var(--line-strong);
+}
+.play__shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+.play__shots--phone {
+  grid-template-columns: repeat(auto-fill, minmax(110px, 140px));
+}
+.play__shots--one {
+  grid-template-columns: 1fr;
+}
+.play__shot {
+  position: relative;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(8, 17, 34, 0.6);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.play__shot:hover {
+  transform: translateY(-2px);
+}
+.play__shot.is-on {
+  border-color: var(--gold);
+}
+.play__shot img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+}
+.play__shots--phone .play__shot img {
+  aspect-ratio: 9 / 16;
+}
+.play__shot-name {
+  display: block;
+  padding: 8px 10px;
+  font: 500 12px/1.2 var(--mono);
+  color: var(--ink-soft);
+}
+.play__shot.is-on .play__shot-name {
+  color: var(--gold-soft);
+}
+.play__project--active {
+  border-top: 0;
+  padding-top: 0;
 }
 @media (max-width: 1000px) {
   .play__grid {

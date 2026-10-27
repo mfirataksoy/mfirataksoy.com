@@ -188,6 +188,7 @@ export class Globe {
   private activeArc = ''
   private activePlaces = new Set<PlaceKey>()
   private showLabels = false
+  private focusPlace: Focus = 'hero'
 
   constructor(private canvas: HTMLCanvasElement, private labelLayer: HTMLElement) {
     this.reducedMotion =
@@ -345,6 +346,7 @@ export class Globe {
     let dist: number
     this.activePlaces.clear()
     this.showLabels = focus !== 'hero'
+    this.focusPlace = focus
     if (focus === 'bridge' || focus === 'hero') {
       lat = focus === 'hero' ? 26 : 36
       lon = focus === 'hero' ? -34 : -18
@@ -390,7 +392,8 @@ export class Globe {
   setLayout(layout: Layout, opacity = 1) {
     const d = this.reducedMotion ? 0 : 1.2
     const x = layout === 'side' ? 0.25 : 0
-    const y = layout === 'top' ? 0.8 : 0
+    // On phones y is a fraction of the visible half-height; 'top' parks the globe in the upper band.
+    const y = layout === 'top' ? 0.5 : 0
     gsap.to(this.view, { x, y, opacity, duration: d, ease: 'power2.inOut' })
   }
 
@@ -434,9 +437,12 @@ export class Globe {
 
     // Narrow screens keep the globe smaller so it never crowds the text.
     const narrow = this.camera.aspect < 0.8
-    this.camera.position.z = v.dist * (narrow ? 1.55 : 1)
+    const halfFov = Math.tan((this.camera.fov / 2) * DEG)
+    // Phones: size the globe by screen width so it never spills off the sides.
+    const z = narrow ? ((v.dist / 3.7) * 1.25) / (halfFov * this.camera.aspect) : v.dist
+    this.camera.position.z = z
     // x is a fraction of camera distance so the globe keeps its place on screen while zooming.
-    this.root.position.set(narrow ? 0 : v.x * v.dist, v.y * (narrow ? 1.3 : 1), 0)
+    this.root.position.set(narrow ? 0 : v.x * v.dist, narrow ? v.y * halfFov * z : v.y, 0)
 
     this.dots.material.uniforms.uTime.value = t
     this.dots.material.uniforms.uOpacity.value = v.opacity
@@ -459,7 +465,9 @@ export class Globe {
       pin.group.getWorldPosition(this.tmp)
       this.normal.copy(this.tmp).sub(this.root.position).normalize()
       this.toCam.copy(this.camera.position).sub(this.tmp).normalize()
-      const visible = on && this.showLabels && this.normal.dot(this.toCam) > 0.15 && v.opacity > 0.5
+      // Phones have room for one label: the place in focus.
+      const roomy = !narrow || pin.key === this.focusPlace
+      const visible = on && roomy && this.showLabels && this.normal.dot(this.toCam) > 0.15 && v.opacity > 0.5
       this.tmp.project(this.camera)
       pin.label.style.transform = `translate(${((this.tmp.x + 1) / 2) * w}px, ${((1 - this.tmp.y) / 2) * h}px)`
       pin.label.classList.toggle('is-on', visible)
