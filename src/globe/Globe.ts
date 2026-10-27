@@ -198,6 +198,8 @@ type Pin = {
   ring: THREE.Mesh<THREE.RingGeometry, THREE.MeshBasicMaterial>
   dot: THREE.Mesh<THREE.CircleGeometry, THREE.MeshBasicMaterial>
   label: HTMLDivElement
+  /** Measured label width; 0 until the next frame measures it. */
+  labelWidth: number
   world: THREE.Vector3
 }
 
@@ -400,7 +402,9 @@ export class Globe {
   /** Change the text of a place label, e.g. who waits at the heart. */
   setPlaceLabel(key: PlaceKey, text: string) {
     const pin = this.pins.find((p) => p.key === key)
-    if (pin) pin.label.textContent = text
+    if (!pin) return
+    pin.label.textContent = text
+    pin.labelWidth = 0
   }
 
   private buildPins() {
@@ -428,7 +432,7 @@ export class Globe {
       label.textContent = p.label
       label.dataset.place = key
       this.labelLayer.appendChild(label)
-      this.pins.push({ key, group, ring, dot, label, world })
+      this.pins.push({ key, group, ring, dot, label, labelWidth: 0, world })
     }
   }
 
@@ -581,7 +585,12 @@ export class Globe {
       const roomy = !narrow || pin.key === this.focusPlace
       const visible = on && roomy && this.showLabels && this.normal.dot(this.toCam) > 0.15 && v.opacity > 0.5
       this.tmp.project(this.camera)
-      pin.label.style.transform = `translate(${((this.tmp.x + 1) / 2) * w}px, ${((1 - this.tmp.y) / 2) * h}px)`
+      const x = ((this.tmp.x + 1) / 2) * w
+      const y = ((1 - this.tmp.y) / 2) * h
+      // Labels sit right of their pin; near the right edge they flip to the left side.
+      if (!pin.labelWidth) pin.labelWidth = pin.label.offsetWidth
+      const flip = x + 10 + pin.labelWidth > w - 12
+      pin.label.style.transform = `translate(${flip ? Math.max(x - 20 - pin.labelWidth, -2) : x}px, ${y}px)`
       pin.label.classList.toggle('is-on', visible)
     }
 
