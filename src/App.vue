@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, watchEffect } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { chapters } from './content'
+import { chapters, heartLabel, type PlaceKey } from './content'
 import { globe } from './globe/store'
+import { pick } from './useLens'
 import GlobeStage from './components/GlobeStage.vue'
 import NavBar from './components/NavBar.vue'
 import RolePicker from './components/RolePicker.vue'
@@ -15,6 +16,9 @@ import PlaygroundSection from './components/PlaygroundSection.vue'
 import ContactSection from './components/ContactSection.vue'
 
 gsap.registerPlugin(ScrollTrigger)
+
+// Who waits at the end of the route depends on who is reading.
+watchEffect(() => globe.value?.setPlaceLabel('heart', pick(heartLabel)))
 
 const reduced =
   window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
@@ -59,7 +63,7 @@ onMounted(async () => {
       },
     })
 
-    const allChapters = [...chapters.map((c) => ({ id: c.id, focus: c.focus, arc: c.arc })), { id: 'now', focus: 'istanbul' as const, arc: undefined }]
+    const allChapters = [...chapters.map((c) => ({ id: c.id, focus: c.focus, arc: c.arc })), { id: 'now', focus: 'heart' as const, arc: ['istanbul', 'heart'] as [PlaceKey, PlaceKey] }]
     for (const c of allChapters) {
       const el = document.querySelector<HTMLElement>(`[data-chapter="${c.id}"]`)
       if (!el) continue
