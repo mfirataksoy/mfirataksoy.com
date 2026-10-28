@@ -26,7 +26,7 @@ export default async (req: Request, context: Context) => {
 
   const ipHash = await hashIp(context.ip)
   const limited = await overLimit([
-    { key: `chat/ip/${ipHash}/10m`, max: 15, windowSeconds: 600 },
+    { key: `chat/ip/${ipHash}/10m`, max: 20, windowSeconds: 600 },
     { key: `chat/ip/${ipHash}/day`, max: 80, windowSeconds: 86400 },
     { key: 'chat/all/day', max: Number(process.env.CHAT_DAILY_LIMIT ?? 2000), windowSeconds: 86400 },
   ])

@@ -15,6 +15,7 @@ export const firatKnowledge = `
 - Role pages on the site: https://mfirataksoy.com/customersuccess, /fullstack, /backend, /frontend
 
 ## What he is looking for (availability)
+- His role at İzibiz ended in October 2026. He is not employed anywhere right now; he is looking for his next role.
 - Open to work now and available to start immediately.
 - Roles: customer success (where technical depth helps customers get more out of the product), full-stack, backend/platform, frontend/mobile, and cloud roles.
 - Open to: office or hybrid work in Istanbul, remote work for companies anywhere in the world, and relocating abroad for the right role.

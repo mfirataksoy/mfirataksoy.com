@@ -5,3 +5,4 @@ dist
 .vite
 .env
 .netlify
+deno.lock
