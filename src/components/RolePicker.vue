@@ -3,13 +3,6 @@ import { nextTick, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
 import { chooseTrack, needsChoice } from '../useLens'
 import { trackOrder, tracks, type Track } from '../tracks'
 
-const blurbs: Record<Track, string> = {
-  cs: 'Client relationships, onboarding, and the technical side of every conversation.',
-  fullstack: 'Flutter and Vue on the front, Java Spring and AWS behind them.',
-  backend: 'Java Spring, PostgreSQL, microservices, Docker and EKS.',
-  frontend: 'Vue, React and Flutter interfaces people find simple.',
-}
-
 const first = ref<HTMLButtonElement[]>([])
 
 // Keep the page underneath still while the question is open.
@@ -42,9 +35,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   <Transition name="picker">
     <div v-if="needsChoice" class="picker" role="dialog" aria-modal="true" aria-labelledby="picker-title">
       <div class="picker__card">
-        <p class="kicker">Before we start</p>
         <h2 id="picker-title" class="picker__title">What brings you <em>here</em>?</h2>
-        <p class="picker__sub">Pick the role you’re hiring for. The stories, projects and resume follow your answer.</p>
         <div class="picker__options">
           <button
             v-for="t in trackOrder"
@@ -55,7 +46,6 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
             @click="pick(t)"
           >
             <span class="picker__label">{{ tracks[t].label }}</span>
-            <span class="picker__blurb">{{ blurbs[t] }}</span>
             <span class="picker__arrow" aria-hidden="true">→</span>
           </button>
         </div>
@@ -78,7 +68,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   -webkit-backdrop-filter: blur(10px);
 }
 .picker__card {
-  width: min(560px, 100%);
+  width: min(720px, 100%);
   max-height: calc(100svh - 32px);
   overflow-y: auto;
   padding: clamp(24px, 4vw, 40px);
@@ -87,28 +77,31 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   background: rgba(12, 23, 45, 0.96);
 }
 .picker__title {
-  margin: 14px 0 0;
-  font: 400 clamp(36px, 5vw, 52px) / 1 var(--serif);
+  margin: 0;
+  font: 400 clamp(40px, 6vw, 64px) / 1 var(--serif);
 }
 .picker__title em {
   color: var(--gold);
 }
-.picker__sub {
-  margin: 14px 0 0;
-  color: var(--ink-soft);
-}
 .picker__options {
   display: grid;
-  gap: 10px;
-  margin-top: 26px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 32px;
+}
+@media (max-width: 560px) {
+  .picker__options {
+    grid-template-columns: 1fr;
+  }
 }
 .picker__option {
   position: relative;
-  display: grid;
-  gap: 4px;
+  display: flex;
+  align-items: center;
+  min-height: 96px;
   text-align: left;
-  padding: 16px 48px 16px 18px;
-  border-radius: 14px;
+  padding: 24px 56px 24px 26px;
+  border-radius: 16px;
   border: 1px solid var(--line);
   background: rgba(8, 17, 34, 0.6);
   color: var(--ink);
@@ -121,15 +114,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   background: rgba(200, 164, 93, 0.08);
 }
 .picker__label {
-  font: 400 24px/1.1 var(--serif);
-}
-.picker__blurb {
-  font-size: 14px;
-  color: var(--muted);
+  font: 400 clamp(26px, 3.4vw, 32px) / 1.1 var(--serif);
 }
 .picker__arrow {
   position: absolute;
-  right: 18px;
+  right: 24px;
+  font-size: 20px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--gold);
@@ -139,7 +129,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   transform: translate(4px, -50%);
 }
 .picker__skip {
-  margin-top: 18px;
+  margin-top: 22px;
   border: 0;
   background: none;
   padding: 6px 0;
