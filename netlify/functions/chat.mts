@@ -4,7 +4,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { Config, Context } from '@netlify/functions'
 import { clean, json, readWidgetRequest, EMAIL } from '../chat/http'
-import { MODEL, draftTool, systemPrompt } from '../chat/prompt'
+import { MODEL, draftTool, systemPrompt, takeSticker } from '../chat/prompt'
 import { hashIp, isId, loadConversation, newId, overLimit, saveConversation, type ContactDraft, type Conversation } from '../chat/store'
 
 const MAX_MESSAGE = 1000
@@ -56,12 +56,13 @@ export default async (req: Request, context: Context) => {
     return json({ error: 'unavailable' }, 503, origin)
   }
 
-  if (!reply.trim()) reply = fallback[lang]
+  const { text, sticker } = takeSticker(reply)
+  reply = text || fallback[lang]
   if (draft) conversation.draft = draft
   conversation.updatedAt = new Date().toISOString()
   await saveConversation(conversation)
 
-  return json({ conversationId: conversation.id, reply, draft }, 200, origin)
+  return json({ conversationId: conversation.id, reply, draft, sticker }, 200, origin)
 }
 
 const client = new Anthropic()

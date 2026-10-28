@@ -19,6 +19,7 @@
   const pageLang = (data.lang || document.documentElement.lang || navigator.language || 'en').toLowerCase()
   const lang = pageLang.startsWith('tr') ? 'tr' : 'en'
   const storageKey = `firat-chat:${site}`
+  const STICKERS = ['wave', 'wink', 'party', 'coffee', 'thinking', 'laptop', 'heart', 'rocket']
 
   const t = {
     tr: {
@@ -120,6 +121,8 @@
   .msg.bot { background: var(--bubble); border-top-left-radius: 4px; align-self: flex-start; }
   .msg.me { background: var(--accent); color: #0b1730; border-top-right-radius: 4px; align-self: flex-end; }
   .msg.info { align-self: center; background: transparent; color: var(--muted); font-size: 13.5px; text-align: center; }
+  .sticker { align-self: flex-start; width: 112px; height: 112px; margin: -2px 0 2px 4px; animation: pop .35s cubic-bezier(.3,1.6,.6,1); }
+  @keyframes pop { from { transform: scale(.4) rotate(-8deg); opacity: 0 } to { transform: none; opacity: 1 } }
   .msg a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--text); font-size: 13.5px; }
@@ -148,7 +151,7 @@
     .launcher { right: 14px; bottom: 14px; }
     .card input, .card textarea, form textarea { font-size: 16px; } /* no iOS zoom on focus */
   }
-  @media (prefers-reduced-motion: reduce) { .launcher, .typing i { transition: none; animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .launcher, .typing i, .sticker { transition: none; animation: none; } }
 </style>
 <div class="wrap">
   <button class="launcher" type="button" aria-haspopup="dialog"><span class="dot"></span><span></span></button>
@@ -205,6 +208,16 @@
   }
 
   function bubble(kind, text) {
+    if (kind === 'sticker') {
+      if (!STICKERS.includes(text)) return
+      const img = document.createElement('img')
+      img.className = 'sticker'
+      img.src = `${api}/chat/stickers/${text}.svg`
+      img.alt = ''
+      log.append(img)
+      img.addEventListener('load', () => (log.scrollTop = log.scrollHeight))
+      return img
+    }
     const el = document.createElement('div')
     el.className = `msg ${kind}`
     linkify(el, text)
@@ -274,6 +287,7 @@
       if (res.conversationId) state.conversationId = res.conversationId
       if (res.status === 200 && res.reply) {
         add('bot', res.reply)
+        if (res.sticker) add('sticker', res.sticker)
         if (res.draft) contactCard(res.draft)
       } else if (res.status === 429) {
         add('info', res.error === 'conversation_full' ? t.full : t.limited)
@@ -357,6 +371,7 @@
         if (res.status !== 200) throw new Error(String(res.status))
         card.remove()
         add('info', t.sent)
+        add('sticker', 'party')
       } catch (e) {
         err.textContent = String(e.message) === '429' ? t.limited : t.down
         submit.disabled = false
