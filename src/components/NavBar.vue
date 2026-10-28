@@ -30,9 +30,9 @@ const links = [
         <span>firat aksoy</span>
       </a>
       <nav class="nav__links" aria-label="Sections">
-        <a v-for="l in links" :key="l.href" :href="l.href">{{ l.label }}</a>
+        <a v-for="l in links" :key="l.href" :href="l.href" data-event="nav_click" :data-target="l.label">{{ l.label }}</a>
       </nav>
-      <a :href="profile.classic" class="nav__classic" title="Open my 2020 website">
+      <a :href="profile.classic" class="nav__classic" title="Open my 2020 website" data-event="classic_site_open" data-where="nav">
         <span aria-hidden="true">↺</span> 2020 site
       </a>
     </div>

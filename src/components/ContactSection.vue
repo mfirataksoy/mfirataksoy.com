@@ -3,9 +3,11 @@ import { ref } from 'vue'
 import { contact, profile } from '../content'
 import { tracks } from '../tracks'
 import { track, pick } from '../useLens'
+import { capture } from '../analytics'
 
 const copied = ref(false)
 async function copyEmail() {
+  capture('contact_click', { channel: 'copy_email' })
   try {
     await navigator.clipboard.writeText(profile.email)
     copied.value = true
@@ -25,19 +27,19 @@ async function copyEmail() {
         <p :key="track" class="contact__body">{{ pick(contact.body) }}</p>
       </Transition>
       <div class="contact__actions" data-reveal>
-        <a class="btn btn--primary" :href="`mailto:${profile.email}`">Email me</a>
+        <a class="btn btn--primary" :href="`mailto:${profile.email}`" data-event="contact_click" data-channel="email">Email me</a>
         <button type="button" class="btn" @click="copyEmail">{{ copied ? 'Copied' : 'Copy email' }}</button>
-        <a class="btn" :href="tracks[track].resume" download>Resume (PDF)</a>
+        <a class="btn" :href="tracks[track].resume" download data-event="resume_download" data-where="contact">Resume (PDF)</a>
       </div>
       <ul class="contact__links" data-reveal>
-        <li><a :href="profile.linkedin" target="_blank" rel="noopener">LinkedIn ↗</a></li>
-        <li><a :href="profile.github" target="_blank" rel="noopener">GitHub ↗</a></li>
+        <li><a :href="profile.linkedin" target="_blank" rel="noopener" data-event="contact_click" data-channel="linkedin">LinkedIn ↗</a></li>
+        <li><a :href="profile.github" target="_blank" rel="noopener" data-event="contact_click" data-channel="github">GitHub ↗</a></li>
         <li><span>{{ profile.location }}</span></li>
       </ul>
     </div>
     <footer class="footer wrap">
       <span>© 2026 {{ profile.name }} · Built with Vue, Three.js and Claude Code</span>
-      <a :href="profile.classic" class="footer__classic">
+      <a :href="profile.classic" class="footer__classic" data-event="classic_site_open" data-where="footer">
         <span aria-hidden="true">↺</span> Visit the 2020 version of this site
       </a>
     </footer>

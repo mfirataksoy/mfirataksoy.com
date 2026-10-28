@@ -2,6 +2,7 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
 import { chooseTrack, needsChoice } from '../useLens'
 import { trackOrder, tracks, type Track } from '../tracks'
+import { capture } from '../analytics'
 
 const first = ref<HTMLButtonElement[]>([])
 
@@ -11,11 +12,13 @@ watchEffect(() => {
 })
 
 function pick(t: Track) {
+  capture('role_picked', { role: t })
   chooseTrack(t)
 }
 
 // "Just looking" keeps the visitor on the home page with the default story.
 function browse() {
+  capture('role_skipped')
   chooseTrack('cs', false)
 }
 

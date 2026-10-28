@@ -4,6 +4,7 @@ import { desk, projects, type DeskKey, type Project } from '../content'
 import { track, pick } from '../useLens'
 import type { Track } from '../tracks'
 import type { Desk, ScreenKey } from '../desk/Desk'
+import { capture } from '../analytics'
 
 const canvas = ref<HTMLCanvasElement>()
 // Each role meets the object that tells its story best first.
@@ -34,7 +35,8 @@ active.value = previewProjects.value[0] ?? null
 
 const hoverLabel = computed(() => desk.find((d) => d.id === hover.value?.id)?.object)
 
-function choose(id: DeskKey) {
+function choose(id: DeskKey, from?: 'desk' | 'list') {
+  if (from) capture('desk_object_open', { object: id, from })
   selected.value = id
   scene?.select(id)
   show(previewProjects.value[0] ?? null)
@@ -52,7 +54,7 @@ onMounted(async () => {
     const { Desk } = await import('../desk/Desk')
     scene = new Desk(
       canvas.value!,
-      (id) => choose(id),
+      (id) => choose(id, 'desk'),
       (id, x, y) => (hover.value = id ? { id, x, y } : null),
     )
     scene.select(selected.value)
@@ -97,7 +99,7 @@ onBeforeUnmount(() => scene?.dispose())
               :class="{ 'is-on': d.id === selected }"
               :aria-selected="d.id === selected"
               aria-controls="desk-panel"
-              @click="choose(d.id)"
+              @click="choose(d.id, 'list')"
             >
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
                 <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -132,7 +134,7 @@ onBeforeUnmount(() => scene?.dispose())
                   class="play__shot"
                   :class="{ 'is-on': active?.name === p.name }"
                   :aria-pressed="active?.name === p.name"
-                  @click="show(p)"
+                  @click="show(p); capture('project_preview', { project: p.name })"
                 >
                   <img :src="p.preview" :alt="`${p.name} screenshot`" loading="lazy" />
                   <span class="play__shot-name">{{ p.name }}</span>
@@ -147,10 +149,10 @@ onBeforeUnmount(() => scene?.dispose())
                 <h4>{{ active.name }}</h4>
                 <p>{{ firstSentence(active.body) }}</p>
                 <div v-if="active.link || active.code" class="play__links">
-                  <a v-if="active.link" :href="active.link.href" target="_blank" rel="noopener" class="play__link">
+                  <a v-if="active.link" :href="active.link.href" target="_blank" rel="noopener" class="play__link" data-event="project_link" :data-project="active.name" data-kind="site">
                     {{ active.link.label }} <span aria-hidden="true">↗</span>
                   </a>
-                  <a v-if="active.code" :href="active.code" target="_blank" rel="noopener" class="play__link play__link--quiet">
+                  <a v-if="active.code" :href="active.code" target="_blank" rel="noopener" class="play__link play__link--quiet" data-event="project_link" :data-project="active.name" data-kind="code">
                     Code <span aria-hidden="true">↗</span>
                   </a>
                 </div>
@@ -167,10 +169,10 @@ onBeforeUnmount(() => scene?.dispose())
                   <li v-for="s in p.stack" :key="s" class="tag">{{ s }}</li>
                 </ul>
                 <div v-if="p.link || p.code" class="play__links">
-                  <a v-if="p.link" :href="p.link.href" target="_blank" rel="noopener" class="play__link">
+                  <a v-if="p.link" :href="p.link.href" target="_blank" rel="noopener" class="play__link" data-event="project_link" :data-project="p.name" data-kind="site">
                     {{ p.link.label }} <span aria-hidden="true">↗</span>
                   </a>
-                  <a v-if="p.code" :href="p.code" target="_blank" rel="noopener" class="play__link play__link--quiet">
+                  <a v-if="p.code" :href="p.code" target="_blank" rel="noopener" class="play__link play__link--quiet" data-event="project_link" :data-project="p.name" data-kind="code">
                     Code <span aria-hidden="true">↗</span>
                   </a>
                 </div>

@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { chapters, heartLabel, type PlaceKey } from './content'
 import { globe } from './globe/store'
 import { pick } from './useLens'
+import { captureOnce, startAnalytics } from './analytics'
 import GlobeStage from './components/GlobeStage.vue'
 import NavBar from './components/NavBar.vue'
 import RolePicker from './components/RolePicker.vue'
@@ -29,6 +30,7 @@ let ctx: gsap.Context | undefined
 
 onMounted(async () => {
   await nextTick()
+  startAnalytics()
   ctx = gsap.context(() => {
     if (!reduced) {
       gsap.from('[data-hero]', { y: 36, opacity: 0, duration: 1.1, ease: 'power3.out', stagger: 0.09, delay: 0.15 })
@@ -74,6 +76,7 @@ onMounted(async () => {
         onToggle: (self) => {
           el.classList.toggle('is-active', self.isActive)
           if (!self.isActive) return
+          captureOnce('chapter_viewed', c.id, { chapter: c.id })
           globe.value?.focus(c.focus, c.arc)
           globe.value?.setLayout(sideOrTop(), mobile.matches ? 0.9 : 1)
         },

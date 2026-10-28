@@ -29,11 +29,11 @@ import { track, pick } from '../useLens'
         <p :key="track" class="hero__sub" data-hero>{{ pick(hero.sub) }}</p>
       </Transition>
       <div class="hero__actions" data-hero>
-        <a class="btn btn--primary" :href="tracks[track].resume" download>
+        <a class="btn btn--primary" :href="tracks[track].resume" download data-event="resume_download" data-where="hero">
           Download resume
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 4v12m0 0 5-5m-5 5-5-5M5 20h14" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </a>
-        <a class="btn" href="#contact">Get in touch</a>
+        <a class="btn" href="#contact" data-event="contact_jump" data-where="hero">Get in touch</a>
       </div>
     </div>
     <a href="#journey" class="hero__scroll" aria-label="Scroll to journey">
