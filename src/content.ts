@@ -112,7 +112,7 @@ export const chapters: Chapter[] = [
     },
     body: {
       eng: 'Computer science with a math minor at TCU as a Chancellor’s Scholar, on the Dean’s List, and the first lines of code that ended up in production.',
-      cs: 'Computer science with a math minor as a Chancellor’s Scholar. Alongside the degree, four years at TCU’s alumni center building ties with alumni across industries.',
+      cs: 'Computer science with a math minor as a Chancellor’s Scholar. Alongside the degree, four years as an alumni relations and front desk specialist at TCU’s D.J. Kelly Alumni Center, welcoming guests and setting up events for 300+ attendees.',
     },
     tags: ['Chancellor’s Scholar', 'Dean’s List'],
     csTags: ['Chancellor’s Scholar', 'Alumni relations'],
@@ -168,7 +168,7 @@ export const chapters: Chapter[] = [
       cs: 'The client’s voice in the build',
     },
     body: {
-      eng: 'Managed a New York client’s delivery app for local shops from kickoff through development, turning what the client needed into requirements the dev team could build.',
+      eng: 'Managed a New York client’s delivery app for local shops through development, turning what the client needed into requirements the dev team could build.',
       cs: 'Owned the client relationship for a New York delivery app for local shops. Turned client needs into requirements and kept the client and the dev team aligned on scope and timelines across time zones.',
     },
     tags: ['Client management', 'Requirements', 'Across time zones'],
@@ -210,8 +210,8 @@ export const chapters: Chapter[] = [
       frontend: 'Regulated products on web and mobile',
     },
     body: {
-      eng: 'Led delivery of e-Ledger, e-SMM, e-Producer Receipt, a tax calculation engine and an SMS microservice across Flutter, Vue, JSP, Java Spring and PostgreSQL, running on Docker and Nginx with Graylog and Zabbix. Claude Code at every stage.',
-      backend: 'Built a tax calculation engine, an SMS microservice and the services behind e-Ledger, e-SMM and e-Producer Receipt on Java Spring and PostgreSQL, plus partner integrations such as IdeaSoft. Containerized with Docker and Nginx, monitored with Graylog and Zabbix.',
+      eng: 'Led delivery of e-Ledger, e-SMM, e-Creditnote and expense vouchers, a tax calculation engine and an SMS microservice across Flutter, Vue, JSP, Java Spring and PostgreSQL, running on Docker and Nginx with Graylog and Zabbix. Claude Code at every stage.',
+      backend: 'Built a tax calculation engine, an SMS microservice and the services behind e-Ledger, e-SMM, e-Creditnote and expense vouchers on Java Spring and PostgreSQL, plus partner integrations such as IdeaSoft. Containerized with Docker and Nginx, monitored with Graylog and Zabbix.',
       frontend: 'Shipped regulated e-document products across Flutter mobile and Vue and JSP web, from requirements to release, with Claude Code at every stage.',
       cs: 'Owned regulated e-document products end to end, from requirements to release, and partner integrations such as IdeaSoft. Built Claude Code into design, review, testing and documentation so a lean team could deliver more.',
     },
@@ -454,7 +454,7 @@ export const desk: DeskItem[] = [
     object: 'Server',
     title: { eng: 'Cloud and DevOps', cs: 'Technical depth with customers’ engineers' },
     body: {
-      eng: 'At Credit One I onboarded applications onto AWS EKS with Terraform and watched cluster health for production banking services. At İzibiz I containerized the stack with Docker and Nginx and set up Graylog and Zabbix.',
+      eng: 'At Credit One I onboarded applications onto AWS EKS with Terraform and watched cluster health for production banking services. At İzibiz I containerized the stack with Docker and Nginx and used Graylog and Zabbix to monitor logs and infrastructure.',
       cs: 'Enough cloud experience to talk infrastructure with a customer’s engineers: AWS EKS and Terraform at Credit One, Docker, Nginx and monitoring at İzibiz. AWS Certified Cloud Practitioner.',
     },
     points: ['AWS EKS', 'Kubernetes', 'Terraform', 'Docker', 'Nginx', 'Graylog', 'Zabbix'],
