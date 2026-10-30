@@ -81,7 +81,7 @@ How it is built: Vue 2 with Vuetify; an Express and Mongoose API on MongoDB Atla
     origins: [...netlifySite('stickerhubio')],
     project: `The visitor is on the StickerHub farewell page (https://stickerhubio.netlify.app). StickerHub was a 2021 side project Fırat built with Bedirhan Celayir; it is retired. The stickerhub.io domain now belongs to someone else and has nothing to do with Fırat. Answer questions about StickerHub first, then about Fırat.
 What it did: people browsed stickers by category or tag on the website and tapped one; WhatsApp or Telegram opened with the request already written, and a bot replied with the sticker. Stickers people sent to the bot were added to the site, and the bot replied with a link for tagging them. No app to install. The farewell page counts 305 user stickers, 13 categories and 2 chatbots.
-How it was built: a Vue 2, Vuetify and Firebase (Firestore and Storage) website on Netlify, and chatbots built with WhatsApp Web automation, Firebase and Google Cloud Storage. The farewell page is plain HTML, CSS and JavaScript and also serves the original 2021 site.`,
+How it was built: a Vue 2, Vuetify and Firebase (Firestore and Storage) website on Netlify, and chatbots built with WhatsApp Web automation, Firebase and Google Cloud Storage. The site visitors see now is the original 2021 app with a farewell added to its home page: its database is replaced by an in-memory stand-in, and the stickers are redrawn from their names because the original images were lost along with the old Firebase project. The chatbots no longer run.`,
   },
 ]
 
