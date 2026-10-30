@@ -2683,3 +2683,16 @@ BLOG Pagination
   margin-bottom: 30px; }
 
 /*# sourceMappingURL=styles.css.map */
+
+/* KVKK / privacy links */
+.contact-privacy,
+.footer-privacy {
+  margin: 12px 0 0;
+  font-size: 13px;
+  opacity: 0.75;
+}
+.contact-privacy a,
+.footer-privacy a {
+  color: inherit;
+  text-decoration: underline;
+}

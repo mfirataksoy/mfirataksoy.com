@@ -39,9 +39,12 @@ async function copyEmail() {
     </div>
     <footer class="footer wrap">
       <span>© 2026 {{ profile.name }} · Built with Vue, Three.js and Claude Code</span>
-      <a :href="profile.classic" class="footer__classic" data-event="classic_site_open" data-where="footer">
-        <span aria-hidden="true">↺</span> Visit the 2020 version of this site
-      </a>
+      <span class="footer__links">
+        <a href="/kvkk/" class="footer__privacy" data-event="privacy_open" data-where="footer">Privacy · KVKK</a>
+        <a :href="profile.classic" class="footer__classic" data-event="classic_site_open" data-where="footer">
+          <span aria-hidden="true">↺</span> Visit the 2020 version of this site
+        </a>
+      </span>
     </footer>
   </section>
 </template>
@@ -115,6 +118,17 @@ async function copyEmail() {
   gap: 16px;
   font-size: 13px;
   color: var(--muted);
+}
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer__privacy {
+  color: var(--muted);
+}
+.footer__privacy:hover {
+  color: var(--gold);
 }
 .footer__classic {
   color: var(--gold);
