@@ -21,3 +21,17 @@
   from = "/favicon.ico"
   to = "/favicon-32.png"
   status = 200
+
+# The chat widget's inbox is for Fırat only.
+[[headers]]
+  for = "/inbox/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+# Other sites load the widget from here; keep updates quick to reach them.
+[[headers]]
+  for = "/chat/widget.js"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+    Access-Control-Allow-Origin = "*"

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+<defs>
+  <filter id="o" x="-10%" y="-10%" width="120%" height="120%">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="4" result="d"/>
+    <feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
+    <feDropShadow in="w" dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".25" result="s"/>
+    <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#f6dc9c"/><stop offset="1" stop-color="#ecc673"/></radialGradient>
+</defs>
+<g filter="url(#o)" stroke-linecap="round" stroke-linejoin="round">
+
+  <path d="M60 50 Q80 38 100 50" fill="none" stroke="#c8a45d" stroke-width="5"/>
+  <path d="M70 46 V56 M90 46 V56" stroke="#e2cc93" stroke-width="5"/>
+  <ellipse cx="80" cy="96" rx="46" ry="42" fill="url(#g)" stroke="#b98a36" stroke-width="3"/><path d="M42 96 L24 78" stroke="#b98a36" stroke-width="13"/><path d="M42 96 L24 78" stroke="#ecc673" stroke-width="8"/><path d="M118 96 L136 78" stroke="#b98a36" stroke-width="13"/><path d="M118 96 L136 78" stroke="#ecc673" stroke-width="8"/><path d="M60 91 Q66 84 72 91 M88 91 Q94 84 100 91" fill="none" stroke="#0b1730" stroke-width="3.5"/><ellipse cx="56" cy="103" rx="7" ry="4.5" fill="#f39a8c" opacity="0.7"/><ellipse cx="104" cy="103" rx="7" ry="4.5" fill="#f39a8c" opacity="0.7"/><path d="M71 103 Q80 117 89 103 Z" fill="#0b1730"/><path d="M75 109 Q80 113 85 109" fill="none" stroke="#f39a8c" stroke-width="3"/><path d="M66 54 L80 18 L94 54 Z" fill="#7aa7ff" stroke="#0b1730" stroke-width="2.5"/><path d="M71 42 L89 42 M75 31 L85 31" stroke="#fff" stroke-width="4"/><circle cx="80" cy="16" r="5" fill="#f39a8c" stroke="#0b1730" stroke-width="2"/><rect x="22" y="40" width="7" height="4" rx="1.5" fill="#7aa7ff" transform="rotate(30 22 40)"/><rect x="38" y="22" width="7" height="4" rx="1.5" fill="#f39a8c" transform="rotate(-20 38 22)"/><rect x="122" y="26" width="7" height="4" rx="1.5" fill="#8fd6a8" transform="rotate(15 122 26)"/><rect x="140" y="44" width="7" height="4" rx="1.5" fill="#7aa7ff" transform="rotate(-35 140 44)"/><rect x="130" y="136" width="7" height="4" rx="1.5" fill="#f39a8c" transform="rotate(25 130 136)"/><rect x="20" y="132" width="7" height="4" rx="1.5" fill="#8fd6a8" transform="rotate(-10 20 132)"/><rect x="104" y="14" width="7" height="4" rx="1.5" fill="#f6dc9c" transform="rotate(40 104 14)"/>
+</g></svg>
