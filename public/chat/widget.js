@@ -5,6 +5,7 @@
  *
  * Options (data- attributes): site (id from netlify/chat/knowledge/sites.ts),
  * lang ("tr" | "en", default: page or browser language), accent (CSS color),
+ * bottom (px to lift the button, e.g. above a bottom tab bar),
  * api (default: where this script is served from).
  * Everything renders in a shadow root, so host page styles can't leak in or out.
  */
@@ -91,19 +92,21 @@
   host.style.cssText = 'position:fixed;z-index:2147483000;inset:auto 0 0 auto;'
   const root = host.attachShadow({ mode: 'open' })
   const accent = /^[#\w(),.%\s-]{1,40}$/.test(data.accent || '') ? data.accent : '#c8a45d'
+  const lift = Math.min(Math.max(Number(data.bottom) || 0, 0), 300)
 
   root.innerHTML = `
 <style>
   :host { all: initial; }
   * { box-sizing: border-box; }
-  .wrap { --accent: ${accent}; --bg: #0b1730; --panel: #0e1c38; --line: rgba(236,231,220,.12);
+  .wrap { --accent: ${accent}; --lift: ${lift}px; --bg: #0b1730; --panel: #0e1c38; --line: rgba(236,231,220,.12);
     --text: #ece7dc; --muted: rgba(236,231,220,.62); --bubble: rgba(236,231,220,.07);
     font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text); }
   button { font: inherit; cursor: pointer; }
-  .launcher { position: fixed; right: 20px; bottom: 20px; display: flex; align-items: center; gap: 10px;
+  .launcher { position: fixed; right: 20px; bottom: calc(20px + var(--lift) + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 10px;
     padding: 12px 18px 12px 14px; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 999px;
     background: var(--bg); color: var(--text); box-shadow: 0 10px 30px rgba(0,0,0,.35); transition: transform .15s; }
   .launcher:hover { transform: translateY(-2px); }
+  .launcher svg { display: none; }
   .launcher:focus-visible, button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent); }
   .panel { position: fixed; right: 20px; bottom: 20px; width: 380px; height: min(600px, calc(100vh - 40px));
@@ -148,13 +151,16 @@
   footer button { border: 0; background: none; color: var(--accent); padding: 0; font-size: 12px; white-space: nowrap; }
   @media (max-width: 480px) {
     .panel { inset: 0; width: auto; height: 100%; border-radius: 0; border: 0; }
-    .launcher { right: 14px; bottom: 14px; }
+    /* Phones: a round icon button, so it covers less of the host page. */
+    .launcher { right: 14px; bottom: calc(14px + var(--lift) + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; padding: 0; justify-content: center; }
+    .launcher .dot, .launcher .label { display: none; }
+    .launcher svg { display: block; }
     .card input, .card textarea, form textarea { font-size: 16px; } /* no iOS zoom on focus */
   }
   @media (prefers-reduced-motion: reduce) { .launcher, .typing i, .sticker { transition: none; animation: none; } }
 </style>
 <div class="wrap">
-  <button class="launcher" type="button" aria-haspopup="dialog"><span class="dot"></span><span></span></button>
+  <button class="launcher" type="button" aria-haspopup="dialog"><span class="dot"></span><span class="label"></span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h16v10H9l-4.5 3.5v-3.5H4z"/><circle cx="9" cy="10.5" r=".6" fill="currentColor"/><circle cx="12" cy="10.5" r=".6" fill="currentColor"/><circle cx="15" cy="10.5" r=".6" fill="currentColor"/></svg></button>
   <section class="panel" role="dialog" aria-modal="false" hidden>
     <header>
       <span class="dot" aria-hidden="true"></span>
@@ -178,7 +184,8 @@
   const input = $('form textarea')
   const sendButton = $('form .primary')
 
-  launcher.lastElementChild.textContent = t.launcher
+  launcher.querySelector('.label').textContent = t.launcher
+  launcher.setAttribute('aria-label', t.launcher)
   panel.setAttribute('aria-label', t.title)
   $('header strong').textContent = t.title
   $('header .who span').textContent = t.subtitle
