@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+<defs>
+  <filter id="o" x="-10%" y="-10%" width="120%" height="120%">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="4" result="d"/>
+    <feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="w"/>
+    <feDropShadow in="w" dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".25" result="s"/>
+    <feMerge><feMergeNode in="s"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#f6dc9c"/><stop offset="1" stop-color="#ecc673"/></radialGradient>
+</defs>
+<g filter="url(#o)" stroke-linecap="round" stroke-linejoin="round">
+
+  <path d="M60 50 Q80 38 100 50" fill="none" stroke="#c8a45d" stroke-width="5"/>
+  <path d="M70 46 V56 M90 46 V56" stroke="#e2cc93" stroke-width="5"/>
+  <ellipse cx="80" cy="96" rx="46" ry="42" fill="url(#g)" stroke="#b98a36" stroke-width="3"/><ellipse cx="66" cy="92" rx="5.5" ry="6" fill="#0b1730"/><ellipse cx="94" cy="92" rx="5.5" ry="6" fill="#0b1730"/>
+  <circle cx="67" cy="94" r="1.8" fill="#fff"/><circle cx="95" cy="94" r="1.8" fill="#fff"/><ellipse cx="56" cy="103" rx="7" ry="4.5" fill="#f39a8c" opacity="0.55"/><ellipse cx="104" cy="103" rx="7" ry="4.5" fill="#f39a8c" opacity="0.55"/><path d="M72 104 Q80 112 88 104" fill="none" stroke="#0b1730" stroke-width="3.5"/><path d="M44 106 L52 124" stroke="#b98a36" stroke-width="13"/><path d="M44 106 L52 124" stroke="#ecc673" stroke-width="8"/><path d="M116 106 L108 124" stroke="#b98a36" stroke-width="13"/><path d="M116 106 L108 124" stroke="#ecc673" stroke-width="8"/><path d="M50 118 H110 L118 144 H42 Z" fill="#2a3b63" stroke="#0b1730" stroke-width="3"/><path d="M36 144 H124" stroke="#0b1730" stroke-width="5"/><circle cx="80" cy="130" r="4" fill="#c8a45d"/><path d="M120 50 l-8 8 l8 8 M140 50 l8 8 l-8 8 M134 46 l-8 24" fill="none" stroke="#7aa7ff" stroke-width="4"/>
+</g></svg>

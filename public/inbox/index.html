@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Gelen kutusu · Fırat’ın yapay zekâsı</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style>
+      :root { --bg: #081122; --panel: #0e1c38; --line: rgba(236,231,220,.12); --text: #ece7dc; --muted: rgba(236,231,220,.6); --accent: #c8a45d; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+      main { max-width: 900px; margin: 0 auto; padding: 32px 16px 64px; }
+      h1 { font-size: 24px; margin: 0 0 4px; }
+      h2 { font-size: 17px; margin: 32px 0 12px; }
+      .muted { color: var(--muted); font-size: 13px; }
+      form.login { display: flex; gap: 8px; margin-top: 24px; max-width: 420px; }
+      input, select { font: inherit; color: var(--text); background: rgba(0,0,0,.25); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; }
+      input { flex: 1; }
+      button { font: inherit; cursor: pointer; border: 0; border-radius: 10px; padding: 9px 14px; background: var(--accent); color: #0b1730; font-weight: 600; }
+      button.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); font-weight: 400; }
+      .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+      .item { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; }
+      .item header { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+      .item header strong { font-size: 15px; }
+      .tag { font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+      .tag.sent { border-color: var(--accent); color: var(--accent); }
+      .body { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 8px; }
+      details summary { cursor: pointer; list-style: none; }
+      details summary::-webkit-details-marker { display: none; }
+      .line { display: grid; grid-template-columns: 74px 1fr; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); white-space: pre-wrap; overflow-wrap: anywhere; }
+      .line b { color: var(--muted); font-weight: 500; font-size: 13px; }
+      .line.visitor b { color: var(--accent); }
+      a { color: var(--accent); }
+      .error { color: #f0a58a; margin-top: 12px; }
+      @media (max-width: 520px) { .line { grid-template-columns: 1fr; gap: 2px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Gelen kutusu</h1>
+      <p class="muted">Sitelerdeki yapay zekâ sohbetleri ve sana bırakılan mesajlar.</p>
+
+      <form class="login" hidden>
+        <input type="password" autocomplete="current-password" placeholder="Şifre" aria-label="Şifre" required />
+        <button type="submit">Aç</button>
+      </form>
+      <p class="error" hidden></p>
+
+      <section class="content" hidden>
+        <div class="bar">
+          <select aria-label="Site"><option value="">Tüm siteler</option></select>
+          <span>
+            <button class="ghost refresh" type="button">Yenile</button>
+            <button class="ghost logout" type="button">Çıkış</button>
+          </span>
+        </div>
+        <h2>Mesajlar <span class="muted contacts-count"></span></h2>
+        <div class="contacts"></div>
+        <h2>Sohbetler <span class="muted convos-count"></span></h2>
+        <div class="convos"></div>
+      </section>
+    </main>
+
+    <script>
+      const $ = (s) => document.querySelector(s)
+      const KEY = 'firat-inbox'
+      let password = ''
+      try { password = sessionStorage.getItem(KEY) || '' } catch {}
+      let data = null
+
+      const el = (tag, cls, text) => {
+        const e = document.createElement(tag)
+        if (cls) e.className = cls
+        if (text != null) e.textContent = text
+        return e
+      }
+      const when = (iso) => new Date(iso).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' })
+
+      async function load() {
+        $('.error').hidden = true
+        const res = await fetch('/api/inbox', { headers: { Authorization: `Bearer ${password}` } })
+        if (res.status === 401 || res.status === 429 || res.status === 503) {
+          try { sessionStorage.removeItem(KEY) } catch {}
+          $('.login').hidden = false
+          $('.content').hidden = true
+          $('.error').hidden = false
+          $('.error').textContent = { 401: 'Şifre yanlış.', 429: 'Çok fazla yanlış deneme. 15 dakika sonra tekrar dene.', 503: 'INBOX_PASSWORD ayarlı değil (Netlify ortam değişkeni, en az 12 karakter).' }[res.status]
+          return
+        }
+        data = await res.json()
+        try { sessionStorage.setItem(KEY, password) } catch {}
+        $('.login').hidden = true
+        $('.content').hidden = false
+        const sites = [...new Set([...data.contacts, ...data.conversations].map((x) => x.site))].sort()
+        const select = $('select')
+        const current = select.value
+        select.length = 1
+        for (const s of sites) select.append(new Option(s, s))
+        select.value = sites.includes(current) ? current : ''
+        render()
+      }
+
+      function render() {
+        const site = $('select').value
+        const contacts = data.contacts.filter((c) => !site || c.site === site)
+        const convos = data.conversations.filter((c) => !site || c.site === site)
+        $('.contacts-count').textContent = `(${contacts.length})`
+        $('.convos-count').textContent = `(${convos.length})`
+
+        const list = $('.contacts')
+        list.textContent = ''
+        if (!contacts.length) list.append(el('p', 'muted', 'Henüz mesaj yok.'))
+        for (const c of contacts) {
+          const item = el('article', 'item')
+          const head = el('header')
+          head.append(el('strong', '', c.name))
+          const mail = el('a', '', c.email)
+          mail.href = `mailto:${c.email}?subject=${encodeURIComponent('Re: mesajın')}`
+          head.append(mail, el('span', 'tag', c.site), el('span', 'muted', when(c.createdAt)))
+          item.append(head, el('div', 'body', c.message))
+          list.append(item)
+        }
+
+        const box = $('.convos')
+        box.textContent = ''
+        if (!convos.length) box.append(el('p', 'muted', 'Henüz sohbet yok.'))
+        for (const c of convos) {
+          const item = el('details', 'item')
+          const summary = el('summary')
+          const head = el('header')
+          const first = c.lines.find((l) => l.role === 'visitor')
+          head.append(el('strong', '', first ? first.text.slice(0, 90) : '(boş)'))
+          head.append(el('span', 'tag', c.site))
+          if (c.contactIds.length) head.append(el('span', 'tag sent', 'mesaj gönderdi'))
+          head.append(el('span', 'muted', `${when(c.updatedAt)} · ${c.lines.filter((l) => l.role === 'visitor').length} soru${c.page ? ` · ${c.page}` : ''}`))
+          summary.append(head)
+          item.append(summary)
+          for (const line of c.lines) {
+            const row = el('div', `line ${line.role}`)
+            row.append(el('b', '', { visitor: 'Ziyaretçi', assistant: 'Asistan', draft: 'Taslak' }[line.role]), el('span', '', line.text))
+            item.append(row)
+          }
+          box.append(item)
+        }
+      }
+
+      $('.login').addEventListener('submit', (e) => {
+        e.preventDefault()
+        password = $('.login input').value
+        load()
+      })
+      $('select').addEventListener('change', render)
+      $('.refresh').addEventListener('click', load)
+      $('.logout').addEventListener('click', () => {
+        password = ''
+        try { sessionStorage.removeItem(KEY) } catch {}
+        location.reload()
+      })
+
+      if (password) load()
+      else $('.login').hidden = false
+    </script>
+  </body>
+</html>
