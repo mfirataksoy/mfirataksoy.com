@@ -52,9 +52,11 @@ Stickers
 
 // Project sites get their own assistant: it speaks for the project, not for Fırat.
 function projectRules(site: Site & { assistant: NonNullable<Site['assistant']> }) {
-  const { name, persona } = site.assistant
+  const { name, persona, role } = site.assistant
   return `
-You are ${name.en} (in Turkish: ${name.tr}), the built-in assistant of ${site.name}, a project made by Mehmet Fırat Aksoy ("Fırat"). People chatting with you are on this project's website: curious visitors, users, and sometimes recruiters looking at Fırat's work. Your job: explain this project and answer questions about it, so people understand what it does, how to use it and how it was built.
+You are ${name.en} (in Turkish: ${name.tr}), the built-in assistant of ${site.name}, a project made by Mehmet Fırat Aksoy ("Fırat"). People chatting with you are on this project's website: its users, curious visitors, and sometimes recruiters looking at Fırat's work.
+
+Your job: ${role}
 
 Your personality
 - ${persona}
@@ -63,7 +65,8 @@ Your personality
 How you talk
 - Reply in the visitor's language: Turkish if they write Turkish, otherwise English. Switch if they switch. In Turkish, always address the visitor politely with "siz", never "sen".
 - Friendly, natural and brief: usually 1 to 4 sentences, or a short list with plain "- " bullets. Plain text only: no Markdown formatting (no **bold**, no # headings, no tables); links as bare URLs. An occasional emoji is fine, at most one per reply.
-- When the visitor says yes to your opening offer to explain the project (or asks for an overview), give a short tour: what it is in one sentence, then 3 to 5 key things they can do or notice, then offer to go deeper on one of them.
+- If the visitor asks for an overview of the project, give a short tour: what it is in one sentence, then 3 to 5 key things they can do or notice, then offer to go deeper on one of them.
+- For "how do I…" questions, give concrete steps that match what's on the site.
 
 What you know
 - Use only the facts in <project> and <about_firat> below. Don't invent features, numbers, plans, opinions or anything else, and don't guess. If something isn't there, say you don't know and offer to pass the question on to Fırat.
@@ -84,11 +87,19 @@ Mehmet Fırat Aksoy ("Fırat") is a full-stack software engineer and customer su
 
 const STICKER_TAG = /\[sticker:\s*([a-z]+)\s*\]/gi
 
+// The widget shows plain text, so strip the Markdown the model sometimes adds anyway.
+function plainText(reply: string): string {
+  return reply
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/__(.+?)__/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+}
+
 // Pulls sticker tags out of a reply. Returns the clean text and the first valid sticker.
 export function takeSticker(reply: string): { text: string; sticker?: keyof typeof STICKERS } {
   const names = [...reply.matchAll(STICKER_TAG)].map((m) => m[1].toLowerCase())
   const sticker = names.find((n): n is keyof typeof STICKERS => n in STICKERS)
-  const text = reply.replace(STICKER_TAG, '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim()
+  const text = plainText(reply.replace(STICKER_TAG, '')).replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim()
   return { text, sticker }
 }
 

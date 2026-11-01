@@ -86,8 +86,20 @@
   const PROFILES = {
     filmfirtinasi: {
       accent: '#e5484d',
-      tr: { name: 'Film Fırtınası Asistanı', what: 'Film Fırtınası’nın', chips: ['Film nasıl istenir?', 'Puanlar nereden geliyor?'] },
-      en: { name: 'Film Fırtınası Assistant', what: 'Film Fırtınası’s', chips: ['How do I request a film?', 'Where do the ratings come from?'] },
+      tr: {
+        name: 'Film Fırtınası Asistanı',
+        greeting: 'Merhaba 👋 Ne izleyeceğinize karar veremediyseniz yardımcı olabilirim. Size bir film önereyim mi?',
+        yes: 'Evet, öner',
+        yesMessage: 'Bana bir film önerir misiniz?',
+        chips: ['Film nasıl istenir?', 'Puanlar nereden geliyor?'],
+      },
+      en: {
+        name: 'Film Fırtınası Assistant',
+        greeting: 'Hi 👋 Can’t decide what to watch? Want me to suggest a film?',
+        yes: 'Yes, suggest one',
+        yesMessage: 'Could you suggest a film for me?',
+        chips: ['How do I request a film?', 'Where do the ratings come from?'],
+      },
     },
     acneaway: {
       accent: '#d4574a',
@@ -96,8 +108,21 @@
     },
     notewithme: {
       accent: '#7c8cff',
-      tr: { name: 'Noteful Asistanı', what: 'Noteful’ın', chips: ['Editörde neler var?', 'Notu nasıl paylaşırım?', 'Şifre kilidi nasıl çalışıyor?'] },
-      en: { name: 'Noteful Assistant', what: 'Noteful’s', chips: ['What can the editor do?', 'How do I share a note?', 'How does the password lock work?'] },
+      delay: 8000, // people come here to write; greet a little later
+      tr: {
+        name: 'Noteful Asistanı',
+        greeting: 'Merhaba 👋 Editörle ilgili yardım lazım olursa buradayım. Kısayolları göstereyim mi?',
+        yes: 'Evet, göster',
+        yesMessage: 'Editörün kısayollarını gösterir misiniz?',
+        chips: ['Notu nasıl paylaşırım?', 'Şifre kilidi nasıl çalışıyor?'],
+      },
+      en: {
+        name: 'Noteful Assistant',
+        greeting: 'Hi 👋 Need a hand with the editor? Want me to show you the shortcuts?',
+        yes: 'Yes, show me',
+        yesMessage: 'Could you show me the editor shortcuts?',
+        chips: ['How do I share a note?', 'How does the password lock work?'],
+      },
     },
     stickerhub: {
       accent: '#3ecf8e',
@@ -106,13 +131,34 @@
     },
     altyazi: {
       accent: '#e2b84f',
-      tr: { name: 'Altyazı Portalı Asistanı', what: 'Altyazı Portalı’nın', chips: ['Nasıl site üretirim?', 'Çocuk modu nedir?', 'Öğretmen paneli ne yapar?'] },
-      en: { name: 'Subtitle Portal Assistant', what: 'the Subtitle Portal’s', chips: ['How do I make a site?', 'What is kids mode?', 'What does the teacher panel do?'] },
+      tr: {
+        name: 'Altyazı Portalı Asistanı',
+        greeting: 'Merhaba 👋 Kendi altyazılı video sitenizi bir dakikada üretmek ister misiniz? Adım adım göstereyim.',
+        yes: 'Evet, göster',
+        yesMessage: 'Kendi sitemi üretmek istiyorum, adım adım gösterir misiniz?',
+        chips: ['Çocuk modu nedir?', 'Öğretmen paneli ne yapar?'],
+      },
+      en: {
+        name: 'Subtitle Portal Assistant',
+        greeting: 'Hi 👋 Want to make your own subtitled video site in a minute? I’ll walk you through it.',
+        yes: 'Yes, show me',
+        yesMessage: 'I’d like to make my own site. Could you walk me through it?',
+        chips: ['What is kids mode?', 'What does the teacher panel do?'],
+      },
     },
     'istanbul-etkinlik': {
       accent: '#2b8ad8',
-      tr: { name: 'İstanbul Etkinlik Asistanı', what: 'İstanbul Etkinlik’in', chips: ['Puanlar nasıl veriliyor?', 'Etkinlikler nereden geliyor?'] },
-      en: { name: 'Istanbul Etkinlik Assistant', what: 'Istanbul Etkinlik’s', chips: ['How are events scored?', 'Where do the events come from?'] },
+      teaser: false, // the site has its own events assistant; don't pop up next to it
+      tr: {
+        greeting: 'Merhaba 👋 Sitenin nasıl çalıştığını merak ediyorsanız anlatabilirim. Etkinlik aramak için sitenin kendi “Asistana sor” düğmesini kullanabilirsiniz.',
+        yes: 'Nasıl çalışıyor?',
+        yesMessage: 'Bu site nasıl çalışıyor?',
+        name: 'İstanbul Etkinlik Asistanı', what: 'İstanbul Etkinlik’in', chips: ['Puanlar nasıl veriliyor?', 'Etkinlikler nereden geliyor?'] },
+      en: {
+        greeting: 'Hi 👋 Curious how this site works? I can explain. To find events, use the site’s own “Asistana sor” button.',
+        yes: 'How does it work?',
+        yesMessage: 'How does this site work?',
+        name: 'Istanbul Etkinlik Assistant', what: 'Istanbul Etkinlik’s', chips: ['How are events scored?', 'Where do the events come from?'] },
     },
   }
   const profile = PROFILES[site]
@@ -123,9 +169,9 @@
           launcher: p.name,
           title: p.name,
           subtitle: 'Fırat’ın bir projesi · yapay zekâ asistanı',
-          greeting: `Merhaba 👋 Ben ${p.what} asistanıyım. Size bu projeyi açıklamamı ister misiniz?`,
-          yes: 'Evet, anlatın',
-          yesMessage: 'Evet, bu projeyi bana anlatır mısınız?',
+          greeting: p.greeting || `Merhaba 👋 Ben ${p.what} asistanıyım. Size bu projeyi açıklamamı ister misiniz?`,
+          yes: p.yes || 'Evet, anlatın',
+          yesMessage: p.yesMessage || 'Evet, bu projeyi bana anlatır mısınız?',
           later: 'Şimdi değil',
           chips: p.chips,
           note: 'Yapay zekâ hata yapabilir. Sohbetler, projeyi yapan Fırat’ın görmesi için kaydedilir.',
@@ -134,9 +180,9 @@
           launcher: p.name,
           title: p.name,
           subtitle: 'A project by Fırat · AI assistant',
-          greeting: `Hi 👋 I’m ${p.what} assistant. Would you like me to explain this project?`,
-          yes: 'Yes, please',
-          yesMessage: 'Yes, could you explain this project to me?',
+          greeting: p.greeting || `Hi 👋 I’m ${p.what} assistant. Would you like me to explain this project?`,
+          yes: p.yes || 'Yes, please',
+          yesMessage: p.yesMessage || 'Yes, could you explain this project to me?',
           later: 'Not now',
           chips: p.chips,
           note: 'AI can make mistakes. Chats are saved so Fırat, who built this, can read them.',
@@ -628,7 +674,8 @@
     })
     teaser.querySelector('.later').addEventListener('click', () => hideTeaser(true))
     teaser.querySelector('.x').addEventListener('click', () => hideTeaser(true))
-    setTimeout(showTeaser, Number(data.delay) >= 0 && data.delay !== undefined ? Number(data.delay) : 3500)
+    const delay = data.delay !== undefined && Number(data.delay) >= 0 ? Number(data.delay) : profile.delay || 3500
+    if (profile.teaser !== false) setTimeout(showTeaser, delay)
   }
 
   launcher.addEventListener('click', () => {
