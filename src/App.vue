@@ -3,7 +3,7 @@ import { nextTick, onBeforeUnmount, onMounted, watchEffect } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { chapters, heartLabel, type PlaceKey } from './content'
-import { globe } from './globe/store'
+import { globe, globeBand } from './globe/store'
 import { pick } from './useLens'
 import { captureOnce, startAnalytics } from './analytics'
 import GlobeStage from './components/GlobeStage.vue'
@@ -65,14 +65,23 @@ onMounted(async () => {
       },
     })
 
+    // Phones: the route gets the map band; chapters switch once a card is well into the reading area under it.
+    ScrollTrigger.create({
+      trigger: '#journey',
+      start: 'top 40%',
+      end: 'bottom 45%',
+      onToggle: (self) => (globeBand.value = self.isActive && mobile.matches),
+    })
+    const chapterLine = () => (mobile.matches ? '72%' : '55%')
+
     const allChapters = [...chapters.map((c) => ({ id: c.id, focus: c.focus, arc: c.arc })), { id: 'now', focus: 'heart' as const, arc: ['istanbul', 'heart'] as [PlaceKey, PlaceKey] }]
     for (const c of allChapters) {
       const el = document.querySelector<HTMLElement>(`[data-chapter="${c.id}"]`)
       if (!el) continue
       ScrollTrigger.create({
         trigger: el,
-        start: 'top 55%',
-        end: 'bottom 55%',
+        start: () => `top ${chapterLine()}`,
+        end: () => `bottom ${chapterLine()}`,
         onToggle: (self) => {
           el.classList.toggle('is-active', self.isActive)
           if (!self.isActive) return
@@ -93,17 +102,18 @@ onMounted(async () => {
       })
     }
 
-    ScrollTrigger.create({
-      trigger: '#projects',
-      start: 'top 60%',
-      endTrigger: '#toolkit',
-      end: 'bottom 40%',
-      onToggle: (self) => {
-        if (!self.isActive) return
-        globe.value?.focus('bridge')
-        globe.value?.setLayout('side', 0.22)
-      },
-    })
+    for (const id of ['#projects', '#toolkit']) {
+      ScrollTrigger.create({
+        trigger: id,
+        start: 'top 60%',
+        end: 'bottom 40%',
+        onToggle: (self) => {
+          if (!self.isActive) return
+          globe.value?.focus('bridge')
+          globe.value?.setLayout('side', 0.22)
+        },
+      })
+    }
 
     ScrollTrigger.create({
       trigger: '#contact',
@@ -130,9 +140,9 @@ onBeforeUnmount(() => ctx?.revert())
   <RolePicker />
   <main class="page">
     <HeroSection />
-    <AboutSection />
     <JourneySection />
     <PlaygroundSection />
+    <AboutSection />
     <ToolkitSection />
     <ContactSection />
   </main>
