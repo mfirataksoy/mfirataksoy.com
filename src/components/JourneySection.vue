@@ -7,7 +7,7 @@ import { track, pick } from '../useLens'
   <section id="journey" class="journey">
     <div class="wrap">
       <header class="journey__head" data-reveal>
-        <p class="kicker">02 · The route</p>
+        <p class="kicker">01 · The route</p>
         <h2 class="section-title">The route <em>so far</em>.</h2>
       </header>
 
@@ -170,12 +170,20 @@ import { track, pick } from '../useLens'
   }
   .chapter__node {
     left: -33px;
+    top: calc(6svh + 30px);
   }
-  /* The globe sits in the top band on phones; cards stay in the lower part. */
-  .chapter {
-    min-height: 100svh;
-    align-items: flex-end;
-    padding-bottom: 5svh;
+  /* The globe holds the top band on phones; cards scroll up under it, one chapter at a time. */
+  .journey__list {
+    margin-top: 40px;
+  }
+  .chapter,
+  .chapter--now {
+    min-height: 0;
+    align-items: flex-start;
+    padding: 6svh 0 14svh;
+  }
+  .chapter--now {
+    padding-bottom: 30svh;
   }
   .chapter__card {
     padding: 20px 18px;

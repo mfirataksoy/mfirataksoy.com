@@ -6,6 +6,7 @@ import type { Track } from '../tracks'
 import type { Desk, ScreenKey } from '../desk/Desk'
 import { capture } from '../analytics'
 import { logInteractiveFallback } from '../posthog-logs'
+import DeskIcon from './DeskIcon.vue'
 
 const canvas = ref<HTMLCanvasElement>()
 // Each role meets the object that tells its story best first.
@@ -13,6 +14,7 @@ const leadObject: Record<Track, DeskKey> = { cs: 'headset', backend: 'server', f
 const selected = ref<DeskKey>(leadObject[track.value])
 const hover = ref<{ id: DeskKey; x: number; y: number } | null>(null)
 const has3d = ref(true)
+const touch = window.matchMedia('(hover: none)').matches
 let scene: Desk | null = null
 
 const item = computed(() => desk.find((d) => d.id === selected.value)!)
@@ -20,46 +22,73 @@ const ordered = computed(() => {
   const lead = leadObject[track.value]
   return [...desk].sort((a, b) => Number(b.id === lead) - Number(a.id === lead))
 })
-const itemProjects = computed(() => (item.value.projects ?? []).map((n) => projects.find((p) => p.name === n)!).filter(Boolean))
-// Projects with a screenshot show as previews; the chosen one also lights up its device on the desk.
-const previewProjects = computed(() => itemProjects.value.filter((p) => p.preview))
-const plainProjects = computed(() => itemProjects.value.filter((p) => !p.preview))
+// Every project once, in one list, grouped by the object it sits on.
+const objectOf = new Map(desk.flatMap((d) => (d.projects ?? []).map((n) => [n, d.id] as const)))
+const list = computed(() =>
+  ordered.value.flatMap((d) => (d.projects ?? []).map((n) => projects.find((p) => p.name === n)!).filter(Boolean)),
+)
 const active = ref<Project | null>(null)
+const rows = new Map<string, HTMLElement>()
+const tools = ref<HTMLElement>()
+const side = ref<HTMLElement>()
 const firstSentence = (text: string) => text.split(/(?<=\.)\s/)[0]
 
+// The open project also lights up its device on the desk when it has a screenshot.
 function show(p: Project | null) {
   active.value = p
   for (const key of ['laptop', 'monitor', 'phone'] as ScreenKey[]) scene?.showScreen(key, null)
   if (p?.screen && p.preview) scene?.showScreen(p.screen, p.preview)
 }
-active.value = previewProjects.value[0] ?? null
 
-const hoverLabel = computed(() => desk.find((d) => d.id === hover.value?.id)?.object)
+function firstOn(id: DeskKey) {
+  const mine = list.value.filter((p) => objectOf.get(p.name) === id)
+  return mine.find((p) => p.preview) ?? mine[0] ?? null
+}
 
-function choose(id: DeskKey, from?: 'desk' | 'list') {
+function choose(id: DeskKey, from?: 'desk' | 'tools') {
   if (from) capture('desk_object_open', { object: id, from })
   selected.value = id
   scene?.select(id)
-  show(previewProjects.value[0] ?? null)
+  const first = firstOn(id)
+  show(first)
+  if (!from) return
+  // Keep the chosen object's button in sight in the phone's swipeable toolbar.
+  const tool = tools.value?.querySelector<HTMLElement>(`[data-object="${id}"]`)
+  if (tool && tools.value!.scrollWidth > tools.value!.clientWidth) {
+    tools.value!.scrollTo({ left: tool.offsetLeft - 16, behavior: 'smooth' })
+  }
+  // Side by side, bring the object's projects (or its story) into view; on phones the list sits below and the page stays put.
+  if (window.matchMedia('(min-width: 1001px)').matches) {
+    const target = first ? rows.get(first.name) : side.value
+    target?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }
 }
 
+function open(p: Project) {
+  capture('project_preview', { project: p.name })
+  const id = objectOf.get(p.name)!
+  if (id !== selected.value) {
+    selected.value = id
+    scene?.select(id)
+  }
+  show(p)
+}
+
+show(firstOn(selected.value))
 watch(track, (t) => choose(leadObject[t]))
 
+const hoverLabel = computed(() => desk.find((d) => d.id === hover.value?.id)?.object)
+
 onMounted(async () => {
-  // Phones get the 2D picker only; the 3D desk is a desktop treat.
-  if (window.matchMedia('(max-width: 760px)').matches) {
-    has3d.value = false
-    return
-  }
   try {
     const { Desk } = await import('../desk/Desk')
     scene = new Desk(
       canvas.value!,
       (id) => choose(id, 'desk'),
-      (id, x, y) => (hover.value = id ? { id, x, y } : null),
+      (id, x, y) => (hover.value = id && !touch ? { id, x, y } : null),
     )
     scene.select(selected.value)
-    show(previewProjects.value[0] ?? null)
+    show(active.value)
     if (import.meta.env.DEV) Object.assign(window, { __desk: scene })
   } catch (err) {
     console.warn('Desk disabled:', err)
@@ -75,112 +104,85 @@ onBeforeUnmount(() => scene?.dispose())
   <section id="projects" class="play" data-globe="dim">
     <div class="wrap">
       <header data-reveal>
-        <p class="kicker">03 · Playground</p>
+        <p class="kicker">02 · Projects</p>
         <h2 class="section-title">The work, <em>up close</em>.</h2>
-        <p class="play__hint">{{ has3d ? 'Select an object on the desk' : 'Select an object to read its story' }}</p>
+        <p class="play__hint">{{ has3d ? (touch ? 'Tap an object on the desk' : 'Select an object on the desk') : 'Select an object to read its story' }}</p>
       </header>
 
       <div class="play__grid" :class="{ 'play__grid--flat': !has3d }">
-        <div v-show="has3d" class="play__stage" data-reveal>
-          <canvas ref="canvas" class="play__canvas" aria-hidden="true" />
-          <span
-            v-if="hover"
-            class="play__tip"
-            :style="{ transform: `translate(${hover.x}px, ${hover.y}px)` }"
-          >{{ hoverLabel }}</span>
-        </div>
-
-        <div class="play__side">
-          <div class="play__picker" role="tablist" aria-label="Objects on the desk">
+        <div class="play__desk" data-reveal>
+          <div v-show="has3d" class="play__stage">
+            <canvas ref="canvas" class="play__canvas" aria-hidden="true" />
+            <span
+              v-if="hover"
+              class="play__tip"
+              :style="{ transform: `translate(${hover.x}px, ${hover.y}px)` }"
+            >{{ hoverLabel }}</span>
+          </div>
+          <div ref="tools" class="play__tools" role="toolbar" aria-label="Objects on the desk">
             <button
               v-for="d in ordered"
               :key="d.id"
               type="button"
-              role="tab"
-              class="play__chip"
+              :data-object="d.id"
+              class="play__tool"
               :class="{ 'is-on': d.id === selected }"
-              :aria-selected="d.id === selected"
-              aria-controls="desk-panel"
-              @click="choose(d.id, 'list')"
+              :aria-pressed="d.id === selected"
+              @click="choose(d.id, 'tools')"
             >
-              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-                <g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <template v-if="d.id === 'laptop'"><rect x="4" y="5" width="16" height="10" rx="1.5" /><path d="M2 19h20" /></template>
-                  <template v-else-if="d.id === 'monitor'"><rect x="3" y="4" width="18" height="12" rx="1.5" /><path d="M12 16v4M8 20h8M10.5 8.5v3.5l3-1.75z" /></template>
-                  <template v-else-if="d.id === 'calendar'"><rect x="4" y="5" width="16" height="15" rx="1.5" /><path d="M4 10h16M8 3v4M16 3v4" /></template>
-                  <template v-else-if="d.id === 'fridge'"><rect x="6" y="2.5" width="12" height="19" rx="1.5" /><path d="M6 9h12M9 5v2M9 12v4" /></template>
-                  <template v-else-if="d.id === 'phone'"><rect x="7" y="3" width="10" height="18" rx="2" /><path d="M11 18h2" /></template>
-                  <template v-else-if="d.id === 'headset'"><path d="M4 15v-3a8 8 0 0 1 16 0v3" /><rect x="3" y="14" width="4" height="6" rx="1.5" /><rect x="17" y="14" width="4" height="6" rx="1.5" /></template>
-                  <template v-else><rect x="5" y="3" width="14" height="18" rx="1.5" /><path d="M8 8h3M8 12h3M8 16h3" /><circle cx="15.5" cy="8" r=".6" /></template>
-                </g>
-              </svg>
-              {{ d.object }}
+              <DeskIcon :id="d.id" :size="16" />
+              <span>{{ d.object }}</span>
             </button>
           </div>
+        </div>
 
+        <div ref="side" class="play__side">
           <Transition name="swap" mode="out-in">
-            <article :key="`${selected}-${track}`" id="desk-panel" class="play__panel" role="tabpanel">
-              <p class="play__object">{{ item.object }}</p>
+            <article :key="`${selected}-${track}`" class="play__note" aria-live="polite">
+              <p class="play__object"><DeskIcon :id="item.id" :size="14" /> {{ item.object }}</p>
               <h3 class="play__title">{{ pick(item.title) }}</h3>
               <p class="play__body">{{ pick(item.body) }}</p>
-
-              <ul v-if="item.points && !itemProjects.length" class="play__points" :class="{ 'play__points--tags': item.id === 'server' }">
+              <ul v-if="item.points" class="play__points" :class="{ 'play__points--tags': item.id === 'server' }">
                 <li v-for="p in item.points" :key="p">{{ p }}</li>
               </ul>
-
-              <div v-if="previewProjects.length" class="play__shots" :class="{ 'play__shots--phone': previewProjects[0].screen === 'phone', 'play__shots--one': previewProjects.length === 1 }">
-                <button
-                  v-for="p in previewProjects"
-                  :key="p.name"
-                  type="button"
-                  class="play__shot"
-                  :class="{ 'is-on': active?.name === p.name }"
-                  :aria-pressed="active?.name === p.name"
-                  @click="show(p); capture('project_preview', { project: p.name })"
-                >
-                  <img :src="p.preview" :alt="`${p.name} screenshot`" loading="lazy" />
-                  <span class="play__shot-name">{{ p.name }}</span>
-                </button>
-              </div>
-
-              <div v-if="active" class="play__project play__project--active">
-                <div class="play__project-top">
-                  <span>{{ active.kind }} · {{ active.year }}</span>
-                  <span v-if="active.status" class="play__status">{{ active.status }}</span>
-                </div>
-                <h4>{{ active.name }}</h4>
-                <p>{{ firstSentence(active.body) }}</p>
-                <div v-if="active.link || active.code" class="play__links">
-                  <a v-if="active.link" :href="active.link.href" target="_blank" rel="noopener" class="play__link" data-event="project_link" :data-project="active.name" data-kind="site">
-                    {{ active.link.label }} <span aria-hidden="true">↗</span>
-                  </a>
-                  <a v-if="active.code" :href="active.code" target="_blank" rel="noopener" class="play__link play__link--quiet" data-event="project_link" :data-project="active.name" data-kind="code">
-                    Code <span aria-hidden="true">↗</span>
-                  </a>
-                </div>
-              </div>
-
-              <div v-for="p in plainProjects" :key="p.name" class="play__project">
-                <div class="play__project-top">
-                  <span>{{ p.kind }} · {{ p.year }}</span>
-                  <span v-if="p.status" class="play__status">{{ p.status }}</span>
-                </div>
-                <h4>{{ p.name }}</h4>
-                <p>{{ p.body }}</p>
-                <ul class="play__stack">
-                  <li v-for="s in p.stack" :key="s" class="tag">{{ s }}</li>
-                </ul>
-                <div v-if="p.link || p.code" class="play__links">
-                  <a v-if="p.link" :href="p.link.href" target="_blank" rel="noopener" class="play__link" data-event="project_link" :data-project="p.name" data-kind="site">
-                    {{ p.link.label }} <span aria-hidden="true">↗</span>
-                  </a>
-                  <a v-if="p.code" :href="p.code" target="_blank" rel="noopener" class="play__link play__link--quiet" data-event="project_link" :data-project="p.name" data-kind="code">
-                    Code <span aria-hidden="true">↗</span>
-                  </a>
-                </div>
-              </div>
             </article>
           </Transition>
+
+          <p class="play__count">All projects · {{ list.length }}</p>
+          <ol class="work">
+            <li
+              v-for="p in list"
+              :key="p.name"
+              :ref="(el) => el && rows.set(p.name, el as HTMLElement)"
+              class="work__row"
+              :class="{ 'is-on': objectOf.get(p.name) === selected, 'is-open': active?.name === p.name }"
+            >
+              <button type="button" class="work__open" :aria-expanded="active?.name === p.name" @click="open(p)">
+                <span class="work__thumb" :class="{ 'work__thumb--phone': p.screen === 'phone' }">
+                  <img v-if="p.preview" :src="p.preview" alt="" loading="lazy" />
+                  <DeskIcon v-else :id="objectOf.get(p.name)!" :size="22" />
+                </span>
+                <span class="work__text">
+                  <span class="work__meta">
+                    {{ p.kind }} · {{ p.year }}<span v-if="p.status" class="work__status"> · {{ p.status }}</span>
+                  </span>
+                  <span class="work__name">{{ p.name }}</span>
+                  <span class="work__line">{{ active?.name === p.name ? p.body : firstSentence(p.body) }}</span>
+                </span>
+              </button>
+              <ul v-if="active?.name === p.name" class="work__stack">
+                <li v-for="s in p.stack" :key="s" class="tag">{{ s }}</li>
+              </ul>
+              <div v-if="p.link || p.code" class="work__links">
+                <a v-if="p.link" :href="p.link.href" target="_blank" rel="noopener" class="play__link" data-event="project_link" :data-project="p.name" data-kind="site">
+                  {{ p.link.label }} <span aria-hidden="true">↗</span>
+                </a>
+                <a v-if="p.code" :href="p.code" target="_blank" rel="noopener" class="play__link play__link--quiet" data-event="project_link" :data-project="p.name" data-kind="code">
+                  Code <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </li>
+          </ol>
         </div>
       </div>
     </div>
@@ -208,6 +210,11 @@ onBeforeUnmount(() => scene?.dispose())
 }
 .play__grid--flat {
   grid-template-columns: 1fr;
+}
+/* The desk stays in view while the list beside it scrolls past. */
+.play__desk {
+  position: sticky;
+  top: 92px;
 }
 .play__stage {
   position: relative;
@@ -239,41 +246,48 @@ onBeforeUnmount(() => scene?.dispose())
   pointer-events: none;
   white-space: nowrap;
 }
-.play__picker {
+.play__tools {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
+  margin-top: 12px;
 }
-.play__chip {
+.play__tool {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 13px;
+  gap: 7px;
+  padding: 7px 10px;
   border-radius: 999px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line);
   background: rgba(8, 17, 34, 0.6);
-  color: var(--ink-soft);
-  font: 500 14px/1 var(--sans);
+  color: var(--muted);
+  font: 500 12.5px/1 var(--sans);
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
-.play__chip:hover {
+.play__tool:hover {
   color: var(--ink);
-  border-color: var(--ink-soft);
+  border-color: var(--line-strong);
 }
-.play__chip.is-on {
+.play__tool.is-on {
   background: var(--gold);
   border-color: var(--gold);
   color: #0b1426;
 }
-.play__panel {
-  margin-top: 18px;
-  padding: 26px;
+.play__side {
+  scroll-margin-top: 96px;
+}
+.play__note {
+  padding: 22px 24px;
   border-radius: var(--radius);
   border: 1px solid var(--line);
   background: rgba(12, 23, 45, 0.88);
 }
 .play__object {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 0;
   font: 500 12px/1 var(--mono);
   letter-spacing: 0.1em;
@@ -281,24 +295,26 @@ onBeforeUnmount(() => scene?.dispose())
   color: var(--gold);
 }
 .play__title {
-  margin: 12px 0 0;
-  font: 400 clamp(28px, 3vw, 36px) / 1.05 var(--serif);
+  margin: 10px 0 0;
+  font: 400 clamp(26px, 2.6vw, 32px) / 1.08 var(--serif);
 }
 .play__body {
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   color: var(--ink-soft);
+  font-size: 16px;
 }
 .play__points {
-  margin: 18px 0 0;
+  margin: 16px 0 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 .play__points li {
   position: relative;
   padding-left: 20px;
   color: var(--ink);
+  font-size: 15px;
 }
 .play__points li::before {
   content: '';
@@ -325,50 +341,121 @@ onBeforeUnmount(() => scene?.dispose())
 .play__points--tags li::before {
   display: none;
 }
-.play__project {
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
+.play__count {
+  margin: 26px 0 10px;
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
-.play__project-top {
+.work {
+  --indent: 96px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.work__row {
+  /* Clear the fixed nav when the desk scrolls a row into view. */
+  scroll-margin: 96px 0 24px;
+  padding-bottom: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(12, 23, 45, 0.82);
+  transition: border-color 0.25s, background 0.25s;
+}
+.work__row.is-on {
+  border-color: rgba(200, 164, 93, 0.45);
+}
+.work__row.is-open {
+  border-color: var(--gold);
+  background: rgba(15, 27, 52, 0.95);
+}
+.work__open {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  font: 500 11px/1.4 var(--mono);
+  gap: 14px;
+  align-items: flex-start;
+  width: 100%;
+  padding: 14px 14px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.work__thumb {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 46px;
+  border-radius: 7px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(8, 17, 34, 0.7);
+  color: var(--gold);
+}
+.work__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+.work__thumb--phone img {
+  object-position: center 15%;
+}
+.work__text {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.work__meta {
+  font: 500 10.5px/1.4 var(--mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
 }
-.play__status {
+.work__status {
   color: var(--gold);
 }
-.play__project h4 {
-  margin: 8px 0 0;
-  font: 400 26px/1.1 var(--serif);
+.work__name {
+  font: 400 22px/1.1 var(--serif);
+  color: var(--ink);
 }
-.play__project p {
-  margin: 8px 0 0;
+.work__row.is-on .work__name {
+  color: var(--gold-soft);
+}
+.work__line {
+  font-size: 14.5px;
+  line-height: 1.45;
   color: var(--ink-soft);
-  font-size: 16px;
 }
-.play__stack {
+.work__row:not(.is-open) .work__line {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.work__stack {
   list-style: none;
+  margin: 12px 14px 0 var(--indent);
   padding: 0;
-  margin: 14px 0 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
-.play__links {
+.work__links {
   display: flex;
   gap: 18px;
-  margin-top: 14px;
+  margin: 10px 14px 0 var(--indent);
 }
 .play__link {
   display: inline-block;
   color: var(--gold);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 14px;
   text-decoration: none;
   border-bottom: 1px solid rgba(200, 164, 93, 0.4);
 }
@@ -376,61 +463,55 @@ onBeforeUnmount(() => scene?.dispose())
   color: var(--ink-soft);
   border-bottom-color: var(--line-strong);
 }
-.play__shots {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 10px;
-  margin-top: 20px;
-}
-.play__shots--phone {
-  grid-template-columns: repeat(auto-fill, minmax(110px, 140px));
-}
-.play__shots--one {
-  grid-template-columns: 1fr;
-}
-.play__shot {
-  position: relative;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  overflow: hidden;
-  background: rgba(8, 17, 34, 0.6);
-  cursor: pointer;
-  text-align: left;
-  transition: border-color 0.2s, transform 0.2s;
-}
-.play__shot:hover {
-  transform: translateY(-2px);
-}
-.play__shot.is-on {
-  border-color: var(--gold);
-}
-.play__shot img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-  object-position: top;
-}
-.play__shots--phone .play__shot img {
-  aspect-ratio: 9 / 16;
-}
-.play__shot-name {
-  display: block;
-  padding: 8px 10px;
-  font: 500 12px/1.2 var(--mono);
-  color: var(--ink-soft);
-}
-.play__shot.is-on .play__shot-name {
-  color: var(--gold-soft);
-}
-.play__project--active {
-  border-top: 0;
-  padding-top: 0;
-}
 @media (max-width: 1000px) {
   .play__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .play__desk {
+    position: static;
+  }
+}
+@media (max-width: 760px) {
+  .play {
+    padding-top: 90px;
+  }
+  .play__grid {
+    gap: 18px;
+    margin-top: 28px;
+  }
+  .play__stage {
+    aspect-ratio: 1 / 0.92;
+  }
+  /* One swipeable row of objects under the desk. */
+  .play__tools {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-right: -16px;
+    padding-right: 16px;
+    scrollbar-width: none;
+  }
+  .play__tools::-webkit-scrollbar {
+    display: none;
+  }
+  .play__tool {
+    flex: none;
+  }
+  .play__note {
+    padding: 18px;
+  }
+  .work {
+    --indent: 80px;
+  }
+  .work__open {
+    gap: 12px;
+    padding: 12px 12px 0;
+  }
+  .work__thumb {
+    width: 56px;
+    height: 40px;
+  }
+  .work__name {
+    font-size: 20px;
   }
 }
 </style>

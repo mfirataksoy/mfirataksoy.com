@@ -13,7 +13,7 @@ import { track, pick, pickList } from '../useLens'
         </svg>
       </figure>
       <div class="about__text">
-        <p class="kicker" data-reveal>01 · About</p>
+        <p class="kicker" data-reveal>03 · About</p>
         <h2 class="section-title" data-reveal>{{ about.greeting }}</h2>
         <div data-reveal>
           <Transition name="swap" mode="out-in">

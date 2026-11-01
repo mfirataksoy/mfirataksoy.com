@@ -498,8 +498,8 @@ export class Globe {
   setLayout(layout: Layout, opacity = 1) {
     const d = this.reducedMotion ? 0 : 1.2
     const x = layout === 'side' ? 0.25 : 0
-    // On phones y is a fraction of the visible half-height; 'top' parks the globe in the upper band.
-    const y = layout === 'top' ? 0.5 : 0
+    // On phones y is a fraction of the visible half-height; 'top' parks the globe in the upper band, clear of the nav.
+    const y = layout === 'top' ? 0.44 : 0
     gsap.to(this.view, { x, y, opacity, duration: d, ease: 'power2.inOut' })
   }
 

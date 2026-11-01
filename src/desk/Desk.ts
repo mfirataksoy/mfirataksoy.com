@@ -614,9 +614,14 @@ export class Desk {
     return this.items.find((i) => i.hit.includes(hits[0].object)) ?? null
   }
 
-  private onPointerMove = (e: PointerEvent) => {
+  private aim(e: MouseEvent) {
     const r = this.canvas.getBoundingClientRect()
     this.pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1)
+    return r
+  }
+
+  private onPointerMove = (e: PointerEvent) => {
+    const r = this.aim(e)
     this.sway.x = this.pointer.x
     this.sway.y = this.pointer.y
     const hit = this.pick()
@@ -638,7 +643,9 @@ export class Desk {
     this.onHover(null, 0, 0)
   }
 
-  private onClick = () => {
+  private onClick = (e: MouseEvent) => {
+    // A tap arrives without a pointermove first, so aim where the finger landed.
+    this.aim(e)
     const hit = this.pick()
     if (hit) this.onSelect(hit.id)
   }
