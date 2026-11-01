@@ -342,22 +342,20 @@
           }
        });
     
+        // Netlify Forms: post the form urlencoded to "/" (form-name is a hidden field).
         function submitForm(){
-          var name = $("#name").val();
-          var email = $("#email").val();
-          var message = $("#message").val();
           $.ajax({
               type: "POST",
-              url: "process.php",
-              data: "name=" + name + "&email=" + email + "&message=" + message,
-              success : function(text){
-                  if (text == "success"){
-                      formSuccess();
-                    } else {
-                      formError();
-                      submitMSG(false,text);
-                    }
-                }
+              url: "/",
+              contentType: "application/x-www-form-urlencoded",
+              data: $("#contactForm").serialize(),
+              success : function(){
+                  formSuccess();
+              },
+              error : function(){
+                  formError();
+                  submitMSG(false, "Sorry, the message could not be sent. Please email me instead.");
+              }
             });
         }
         function formSuccess(){

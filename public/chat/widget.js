@@ -47,6 +47,9 @@
       full: 'Bu sohbet çok uzadı. Sorunuzu doğrudan Fırat’a iletebilirsiniz.',
       down: 'Şu an cevap veremiyorum. Fırat’a mesaj bırakmak ister misiniz?',
       typing: 'Yazıyor',
+      privacy: 'Mesajların bir yapay zekâ (Anthropic, ABD) tarafından işlenir ve site sahibi tarafından okunabilir. Hassas bilgi paylaşma.',
+      privacyLink: 'KVKK',
+      privacyHref: '/kvkk/',
     },
     en: {
       launcher: 'Ask Fırat’s AI',
@@ -72,6 +75,9 @@
       full: 'This chat is getting long. You can send your question straight to Fırat.',
       down: 'I can’t answer right now. Would you like to leave Fırat a message?',
       typing: 'Typing',
+      privacy: 'Your messages are processed by an AI (Anthropic, USA) and can be read by the site owner. Don’t share sensitive information.',
+      privacyLink: 'Privacy',
+      privacyHref: '/kvkk/#en',
     },
   }[lang]
 
@@ -124,6 +130,8 @@
   .msg.bot { background: var(--bubble); border-top-left-radius: 4px; align-self: flex-start; }
   .msg.me { background: var(--accent); color: #0b1730; border-top-right-radius: 4px; align-self: flex-end; }
   .msg.info { align-self: center; background: transparent; color: var(--muted); font-size: 13.5px; text-align: center; }
+  .privacy { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.4; padding: 0 2px; }
+  .privacy a { color: var(--accent); text-underline-offset: 2px; }
   .sticker { align-self: flex-start; width: 112px; height: 112px; margin: -2px 0 2px 4px; animation: pop .35s cubic-bezier(.3,1.6,.6,1); }
   @keyframes pop { from { transform: scale(.4) rotate(-8deg); opacity: 0 } to { transform: none; opacity: 1 } }
   .msg a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
@@ -256,9 +264,24 @@
     log.append(chips)
   }
 
+  // KVKK: said once, before the visitor writes anything. The link goes to the
+  // notice of the site the widget is embedded on.
+  function renderPrivacy() {
+    const p = document.createElement('p')
+    p.className = 'privacy'
+    const a = document.createElement('a')
+    a.href = location.origin + t.privacyHref
+    a.target = '_blank'
+    a.rel = 'noopener'
+    a.textContent = t.privacyLink
+    p.append(t.privacy + ' ', a)
+    log.append(p)
+  }
+
   function renderLog() {
     log.textContent = ''
     bubble('bot', t.greeting)
+    if (!state.log.length) renderPrivacy()
     for (const entry of state.log) bubble(entry.kind, entry.text)
     if (!state.log.length) renderChips()
   }
