@@ -5,6 +5,7 @@ import { track, pick } from '../useLens'
 import type { Track } from '../tracks'
 import type { Desk, ScreenKey } from '../desk/Desk'
 import { capture } from '../analytics'
+import { logInteractiveFallback } from '../posthog-logs'
 
 const canvas = ref<HTMLCanvasElement>()
 // Each role meets the object that tells its story best first.
@@ -62,6 +63,7 @@ onMounted(async () => {
     if (import.meta.env.DEV) Object.assign(window, { __desk: scene })
   } catch (err) {
     console.warn('Desk disabled:', err)
+    logInteractiveFallback('desk')
     has3d.value = false
   }
 })

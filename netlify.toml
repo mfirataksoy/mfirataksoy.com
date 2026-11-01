@@ -4,6 +4,9 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # PostHog project token: a public client key that ends up in the bundle anyway.
+  VITE_POSTHOG_PROJECT_TOKEN = "phc_zz3FEQ6NNTeNJcS9WKTRDSnQod3FYjuXsJ7EPd77Cozq"
+  VITE_POSTHOG_HOST = "https://us.i.posthog.com"
 
 # The 2020 site lives under /classic; keep a short alias too.
 [[redirects]]
