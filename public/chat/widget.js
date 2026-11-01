@@ -5,7 +5,7 @@
  *
  * Options (data- attributes): site (id from netlify/chat/knowledge/sites.ts),
  * lang ("tr" | "en", default: page or browser language), accent (CSS color),
- * bottom (px to lift the button, e.g. above a bottom tab bar),
+ * bottom (px to lift the button, e.g. above a bottom tab bar), sound ("off" to start muted),
  * api (default: where this script is served from).
  * Everything renders in a shadow root, so host page styles can't leak in or out.
  */
@@ -81,6 +81,162 @@
     },
   }[lang]
 
+  // Project sites get their own assistant, which greets visitors with an offer
+  // to explain the project. mfirataksoy.com keeps "Fırat's AI" as above.
+  const PROFILES = {
+    filmfirtinasi: {
+      accent: '#e5484d',
+      tr: {
+        name: 'Film Fırtınası Asistanı',
+        greeting: 'Merhaba 👋 Ne izleyeceğinize karar veremediyseniz yardımcı olabilirim. Size bir film önereyim mi?',
+        yes: 'Evet, öner',
+        yesMessage: 'Bana bir film önerir misiniz?',
+        chips: ['Film nasıl istenir?', 'Puanlar nereden geliyor?'],
+      },
+      en: {
+        name: 'Film Fırtınası Assistant',
+        greeting: 'Hi 👋 Can’t decide what to watch? Want me to suggest a film?',
+        yes: 'Yes, suggest one',
+        yesMessage: 'Could you suggest a film for me?',
+        chips: ['How do I request a film?', 'Where do the ratings come from?'],
+      },
+    },
+    acneaway: {
+      accent: '#d4574a',
+      tr: { name: 'AcneAway Asistanı', what: 'AcneAway’in', chips: ['Nasıl çalışıyordu?', 'Neden emekli oldu?'] },
+      en: { name: 'AcneAway Assistant', what: 'AcneAway’s', chips: ['How did it work?', 'Why was it retired?'] },
+    },
+    notewithme: {
+      accent: '#7c8cff',
+      delay: 8000, // people come here to write; greet a little later
+      tr: {
+        name: 'Noteful Asistanı',
+        greeting: 'Merhaba 👋 Editörle ilgili yardım lazım olursa buradayım. Kısayolları göstereyim mi?',
+        yes: 'Evet, göster',
+        yesMessage: 'Editörün kısayollarını gösterir misiniz?',
+        chips: ['Notu nasıl paylaşırım?', 'Şifre kilidi nasıl çalışıyor?'],
+      },
+      en: {
+        name: 'Noteful Assistant',
+        greeting: 'Hi 👋 Need a hand with the editor? Want me to show you the shortcuts?',
+        yes: 'Yes, show me',
+        yesMessage: 'Could you show me the editor shortcuts?',
+        chips: ['How do I share a note?', 'How does the password lock work?'],
+      },
+    },
+    stickerhub: {
+      accent: '#3ecf8e',
+      tr: { name: 'StickerHub Asistanı', what: 'StickerHub’ın', chips: ['Botlar nasıl çalışıyordu?', 'Stickerlar neden çizim gibi?'] },
+      en: { name: 'StickerHub Assistant', what: 'StickerHub’s', chips: ['How did the bots work?', 'Why do the stickers look drawn?'] },
+    },
+    altyazi: {
+      accent: '#e2b84f',
+      tr: {
+        name: 'Altyazı Portalı Asistanı',
+        greeting: 'Merhaba 👋 Kendi altyazılı video sitenizi bir dakikada üretmek ister misiniz? Adım adım göstereyim.',
+        yes: 'Evet, göster',
+        yesMessage: 'Kendi sitemi üretmek istiyorum, adım adım gösterir misiniz?',
+        chips: ['Çocuk modu nedir?', 'Öğretmen paneli ne yapar?'],
+      },
+      en: {
+        name: 'Subtitle Portal Assistant',
+        greeting: 'Hi 👋 Want to make your own subtitled video site in a minute? I’ll walk you through it.',
+        yes: 'Yes, show me',
+        yesMessage: 'I’d like to make my own site. Could you walk me through it?',
+        chips: ['What is kids mode?', 'What does the teacher panel do?'],
+      },
+    },
+    'istanbul-etkinlik': {
+      accent: '#2b8ad8',
+      teaser: false, // the site has its own events assistant; don't pop up next to it
+      tr: {
+        greeting: 'Merhaba 👋 Sitenin nasıl çalıştığını merak ediyorsanız anlatabilirim. Etkinlik aramak için sitenin kendi “Asistana sor” düğmesini kullanabilirsiniz.',
+        yes: 'Nasıl çalışıyor?',
+        yesMessage: 'Bu site nasıl çalışıyor?',
+        name: 'İstanbul Etkinlik Asistanı', what: 'İstanbul Etkinlik’in', chips: ['Puanlar nasıl veriliyor?', 'Etkinlikler nereden geliyor?'] },
+      en: {
+        greeting: 'Hi 👋 Curious how this site works? I can explain. To find events, use the site’s own “Asistana sor” button.',
+        yes: 'How does it work?',
+        yesMessage: 'How does this site work?',
+        name: 'Istanbul Etkinlik Assistant', what: 'Istanbul Etkinlik’s', chips: ['How are events scored?', 'Where do the events come from?'] },
+    },
+  }
+  const profile = PROFILES[site]
+  if (profile) {
+    const p = profile[lang]
+    Object.assign(t, lang === 'tr'
+      ? {
+          launcher: p.name,
+          title: p.name,
+          subtitle: 'Fırat’ın bir projesi · yapay zekâ asistanı',
+          greeting: p.greeting || `Merhaba 👋 Ben ${p.what} asistanıyım. Size bu projeyi açıklamamı ister misiniz?`,
+          yes: p.yes || 'Evet, anlatın',
+          yesMessage: p.yesMessage || 'Evet, bu projeyi bana anlatır mısınız?',
+          later: 'Şimdi değil',
+          chips: p.chips,
+          note: 'Yapay zekâ hata yapabilir. Sohbetler, projeyi yapan Fırat’ın görmesi için kaydedilir.',
+        }
+      : {
+          launcher: p.name,
+          title: p.name,
+          subtitle: 'A project by Fırat · AI assistant',
+          greeting: p.greeting || `Hi 👋 I’m ${p.what} assistant. Would you like me to explain this project?`,
+          yes: p.yes || 'Yes, please',
+          yesMessage: p.yesMessage || 'Yes, could you explain this project to me?',
+          later: 'Not now',
+          chips: p.chips,
+          note: 'AI can make mistakes. Chats are saved so Fırat, who built this, can read them.',
+        })
+  }
+  Object.assign(t, lang === 'tr'
+    ? { mute: 'Sesi kapat', unmute: 'Sesi aç', dismiss: 'Kapat' }
+    : { mute: 'Mute sounds', unmute: 'Turn sounds on', dismiss: 'Dismiss' })
+
+  // Sound: a soft two-note chime made with Web Audio (no file to load).
+  // Browsers block audio until the visitor has interacted with the page, so a
+  // chime that can't play yet waits for their first click or key press.
+  const muteKey = 'firat-chat:muted'
+  let muted = data.sound === 'off' || !profile // mfirataksoy.com stays silent
+  try {
+    const saved = localStorage.getItem(muteKey)
+    if (saved !== null && profile) muted = saved === '1'
+  } catch {}
+  let audio = null
+  function chime(kind) {
+    if (muted) return
+    try {
+      audio ||= new (window.AudioContext || window.webkitAudioContext)()
+      if (audio.state === 'running') return play(kind)
+      if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return false
+      audio.resume().then(() => play(kind), () => {})
+      return true
+    } catch {
+      return false
+    }
+  }
+  function play(kind) {
+    try {
+      const notes = kind === 'hello' ? [880, 1320] : [1046]
+      const start = audio.currentTime + 0.02
+      notes.forEach((freq, i) => {
+        const osc = audio.createOscillator()
+        const gain = audio.createGain()
+        const at = start + i * 0.12
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        gain.gain.setValueAtTime(0.0001, at)
+        gain.gain.exponentialRampToValueAtTime(kind === 'hello' ? 0.12 : 0.07, at + 0.02)
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.35)
+        osc.connect(gain).connect(audio.destination)
+        osc.start(at)
+        osc.stop(at + 0.4)
+      })
+      return true
+    } catch {
+      return false
+    }
+  }
+
   // State that survives a reload of the same tab.
   let state = { open: false, conversationId: null, log: [] }
   try {
@@ -97,7 +253,7 @@
   host.id = 'firat-chat'
   host.style.cssText = 'position:fixed;z-index:2147483000;inset:auto 0 0 auto;'
   const root = host.attachShadow({ mode: 'open' })
-  const accent = /^[#\w(),.%\s-]{1,40}$/.test(data.accent || '') ? data.accent : '#c8a45d'
+  const accent = /^[#\w(),.%\s-]{1,40}$/.test(data.accent || '') ? data.accent : profile?.accent || '#c8a45d'
   const lift = Math.min(Math.max(Number(data.bottom) || 0, 0), 300)
 
   root.innerHTML = `
@@ -157,7 +313,21 @@
   form textarea { flex: 1; resize: none; height: 44px; max-height: 120px; }
   footer { display: flex; justify-content: space-between; gap: 10px; padding: 0 14px 12px; font-size: 11.5px; color: var(--muted); }
   footer button { border: 0; background: none; color: var(--accent); padding: 0; font-size: 12px; white-space: nowrap; }
+  .teaser { position: fixed; right: 20px; bottom: calc(84px + var(--lift) + env(safe-area-inset-bottom, 0px)); width: min(320px, calc(100vw - 40px));
+    background: var(--panel); border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: 16px; padding: 14px 14px 12px;
+    box-shadow: 0 18px 44px rgba(0,0,0,.4); animation: rise .35s cubic-bezier(.2,1.2,.4,1); }
+  .teaser[hidden], .badge[hidden] { display: none; }
+  .teaser p { margin: 0 26px 10px 0; }
+  .teaser .row { display: flex; gap: 8px; align-items: center; }
+  .teaser .row .icon { margin-left: auto; width: 30px; height: 30px; font-size: 16px; }
+  .teaser .x { position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; font-size: 18px; }
+  @keyframes rise { from { transform: translateY(12px) scale(.96); opacity: 0 } to { transform: none; opacity: 1 } }
+  .badge { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px;
+    background: var(--accent); color: #0b1730; font-size: 12px; font-weight: 700; line-height: 20px; text-align: center; }
+  .launcher.nudge { animation: nudge .6s ease 2; }
+  @keyframes nudge { 0%, 100% { transform: none } 30% { transform: translateY(-4px) rotate(-4deg) } 60% { transform: translateY(-2px) rotate(3deg) } }
   @media (max-width: 480px) {
+    .teaser { right: 14px; bottom: calc(76px + var(--lift) + env(safe-area-inset-bottom, 0px)); }
     .panel { inset: 0; width: auto; height: 100%; border-radius: 0; border: 0; }
     /* Phones: a round icon button, so it covers less of the host page. */
     .launcher { right: 14px; bottom: calc(14px + var(--lift) + env(safe-area-inset-bottom, 0px)); width: 52px; height: 52px; padding: 0; justify-content: center; }
@@ -165,14 +335,20 @@
     .launcher svg { display: block; }
     .card input, .card textarea, form textarea { font-size: 16px; } /* no iOS zoom on focus */
   }
-  @media (prefers-reduced-motion: reduce) { .launcher, .typing i, .sticker { transition: none; animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .launcher, .typing i, .sticker, .teaser { transition: none; animation: none; } }
 </style>
 <div class="wrap">
-  <button class="launcher" type="button" aria-haspopup="dialog"><span class="dot"></span><span class="label"></span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h16v10H9l-4.5 3.5v-3.5H4z"/><circle cx="9" cy="10.5" r=".6" fill="currentColor"/><circle cx="12" cy="10.5" r=".6" fill="currentColor"/><circle cx="15" cy="10.5" r=".6" fill="currentColor"/></svg></button>
+  <button class="launcher" type="button" aria-haspopup="dialog"><span class="dot"></span><span class="label"></span><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5h16v10H9l-4.5 3.5v-3.5H4z"/><circle cx="9" cy="10.5" r=".6" fill="currentColor"/><circle cx="12" cy="10.5" r=".6" fill="currentColor"/><circle cx="15" cy="10.5" r=".6" fill="currentColor"/></svg><span class="badge" hidden>1</span></button>
+  <div class="teaser" role="status" hidden>
+    <button class="icon x" type="button">×</button>
+    <p></p>
+    <div class="row"><button class="primary yes" type="button"></button><button class="ghost later" type="button"></button><button class="icon sound" type="button"></button></div>
+  </div>
   <section class="panel" role="dialog" aria-modal="false" hidden>
     <header>
       <span class="dot" aria-hidden="true"></span>
       <div class="who"><strong></strong><span></span></div>
+      <button class="icon sound" type="button"></button>
       <button class="icon close" type="button">×</button>
     </header>
     <div class="log" aria-live="polite"></div>
@@ -250,14 +426,15 @@
   function renderChips() {
     const chips = document.createElement('div')
     chips.className = 'chips'
-    for (const label of t.chips) {
+    const options = t.yes ? [[t.yes, t.yesMessage], ...t.chips.map((c) => [c, c])] : t.chips.map((c) => [c, c])
+    for (const [label, message] of options) {
       const chip = document.createElement('button')
       chip.type = 'button'
       chip.className = 'chip'
       chip.textContent = label
       chip.addEventListener('click', () => {
         chips.remove()
-        ask(label)
+        ask(message)
       })
       chips.append(chip)
     }
@@ -317,6 +494,7 @@
       if (res.conversationId) state.conversationId = res.conversationId
       if (res.status === 200 && res.reply) {
         add('bot', res.reply)
+        chime('reply')
         if (res.sticker) add('sticker', res.sticker)
         if (res.draft) contactCard(res.draft)
       } else if (res.status === 429) {
@@ -411,6 +589,7 @@
   }
 
   function setOpen(open) {
+    hideTeaser()
     state.open = open
     persist()
     panel.hidden = !open
@@ -425,7 +604,84 @@
     }
   }
 
-  launcher.addEventListener('click', () => setOpen(true))
+  // Mute toggles, in the panel header and on the greeting bubble.
+  const bell = (on) =>
+    on
+      ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9"/><path d="M10 19a2 2 0 0 0 4 0"/><path d="M3 3l18 18"/></svg>'
+  function renderSound() {
+    for (const b of root.querySelectorAll('.sound')) {
+      b.innerHTML = bell(!muted)
+      b.setAttribute('aria-label', muted ? t.unmute : t.mute)
+      b.title = muted ? t.unmute : t.mute
+      b.setAttribute('aria-pressed', String(muted))
+    }
+  }
+  for (const b of root.querySelectorAll('.sound')) {
+    b.addEventListener('click', () => {
+      muted = !muted
+      try {
+        localStorage.setItem(muteKey, muted ? '1' : '0')
+      } catch {}
+      renderSound()
+      if (!muted) chime('reply')
+    })
+  }
+  renderSound()
+  if (!profile) $('header .sound').hidden = true
+
+  // The greeting bubble: project sites only, once per visit, after a short pause.
+  const teaser = $('.teaser')
+  const badge = $('.badge')
+  const teaserKey = `${storageKey}:teaser`
+  function hideTeaser(forGood) {
+    teaser.hidden = true
+    badge.hidden = true
+    if (forGood) {
+      try {
+        sessionStorage.setItem(teaserKey, '1')
+      } catch {}
+    }
+  }
+  function showTeaser() {
+    if (state.open || state.log.length) return
+    try {
+      if (sessionStorage.getItem(teaserKey)) return
+    } catch {}
+    teaser.querySelector('p').textContent = t.greeting
+    teaser.hidden = false
+    badge.hidden = false
+    launcher.classList.add('nudge')
+    if (chime('hello') === false && !muted) {
+      // Not allowed to play yet: chime on the visitor's first interaction, if the bubble is still up.
+      const later = () => {
+        window.removeEventListener('pointerdown', later, true)
+        window.removeEventListener('keydown', later, true)
+        if (!teaser.hidden) setTimeout(() => chime('hello'), 0)
+      }
+      window.addEventListener('pointerdown', later, true)
+      window.addEventListener('keydown', later, true)
+    }
+  }
+  if (profile) {
+    teaser.querySelector('.yes').textContent = t.yes
+    teaser.querySelector('.later').textContent = t.later
+    teaser.querySelector('.x').setAttribute('aria-label', t.dismiss)
+    teaser.querySelector('.yes').addEventListener('click', () => {
+      hideTeaser(true)
+      setOpen(true)
+      ask(t.yesMessage)
+    })
+    teaser.querySelector('.later').addEventListener('click', () => hideTeaser(true))
+    teaser.querySelector('.x').addEventListener('click', () => hideTeaser(true))
+    const delay = data.delay !== undefined && Number(data.delay) >= 0 ? Number(data.delay) : profile.delay || 3500
+    if (profile.teaser !== false) setTimeout(showTeaser, delay)
+  }
+
+  launcher.addEventListener('click', () => {
+    hideTeaser(true)
+    setOpen(true)
+  })
   $('.close').addEventListener('click', () => setOpen(false))
   $('.leave').addEventListener('click', () => contactCard({}))
   panel.addEventListener('keydown', (e) => {
