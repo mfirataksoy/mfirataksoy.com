@@ -1,5 +1,7 @@
 // Every site the chat widget runs on. The API picks the site from the request's
-// Origin, so a page can't borrow another site's identity.
+// Origin, so a page can't borrow another site's identity. The next.* hosts are
+// staging names for checking a deploy before its domain moves; the *.netlify.app
+// origins can go once those sites only redirect.
 
 export type Site = {
   id: string
@@ -22,7 +24,7 @@ export const projectsOverview = `
 - AcneAway (2025, side project, retired and kept as a showcase): upload a selfie and get a clear-skin retouch from an AI image pipeline, with Stripe checkout for credits. Vue 3, Firebase, Stripe, Replicate. https://acneaway.mfirataksoy.com
 - StickerHub (2021, side project with Bedirhan Celayir, retired): WhatsApp and Telegram bots that sent people stickers on request, and a website built from stickers users sent back to the bot. Vue, Node.js, Firebase, Google Cloud. Farewell page: https://stickerhub.mfirataksoy.com
 - mfirataksoy.com (2026, open source): a Three.js globe that follows his career route as you scroll, a desk you can click around, and pages for customer success, full-stack, backend and frontend readers. Vue 3, Three.js, GSAP, Vite. Code: https://github.com/mfirataksoy/mfirataksoy.com
-- This chat assistant itself: one Netlify Function backend shared by all of his sites, Claude Haiku answering only from a knowledge file, a contact handoff that delivers messages to Fırat's inbox, and a small script tag on each site.
+- This chat assistant itself: one Cloudflare Pages Functions backend shared by all of his sites, Claude Haiku answering only from a knowledge file, a contact handoff that delivers messages to Fırat's inbox, and a small script tag on each site.
 `
 
 const netlifySite = (name: string) => [`https://${name}.netlify.app`, new RegExp(`^https://[a-z0-9-]+--${name}\\.netlify\\.app$`)]
@@ -33,7 +35,7 @@ export const sites: Site[] = [
   {
     id: 'mfirataksoy',
     name: 'mfirataksoy.com, Fırat’s portfolio site',
-    origins: ['https://mfirataksoy.com', 'https://www.mfirataksoy.com', ...netlifySite('mfirataksoy')],
+    origins: ['https://mfirataksoy.com', 'https://www.mfirataksoy.com', 'https://next.mfirataksoy.com', ...netlifySite('mfirataksoy')],
     project: 'The visitor is on Fırat’s own portfolio site, so questions are mostly about him: experience, skills, projects, availability and how to reach him.',
   },
   {
@@ -180,7 +182,7 @@ Don't identify the person in the before/after images, and don't invent user numb
       role: 'Help people use Noteful: the editor\'s formatting and shortcuts, sharing a note and writing together, the password lock, and how it was built. Give concrete steps.',
     },
     name: 'Noteful (noteful.me)',
-    origins: ['https://noteful.me', 'https://www.noteful.me', ...netlifySite('notewith-me')],
+    origins: ['https://noteful.me', 'https://www.noteful.me', 'https://next.noteful.me', ...netlifySite('notewith-me')],
     project: `Noteful (https://noteful.me) is a shared notepad with no accounts, made by Fırat. It started in 2021 as NoteWith.Me (professors used it for online classes during the pandemic) and was rebuilt in 2026 as a realtime editor.
 
 Getting started
@@ -227,7 +229,7 @@ How it's built: Vue 3, Vite and Tiptap (ProseMirror). Realtime sync uses Yjs CRD
       role: 'Explain this retired project: what StickerHub did, how its chatbots worked, what is left on the archive site and how it was built.',
     },
     name: 'StickerHub farewell page',
-    origins: ['https://stickerhub.mfirataksoy.com', ...netlifySite('stickerhubio')],
+    origins: ['https://stickerhub.mfirataksoy.com', 'https://next-stickerhub.mfirataksoy.com', ...netlifySite('stickerhubio')],
     project: `StickerHub (https://stickerhub.mfirataksoy.com) was a 2021 side project Fırat built with Bedirhan Celayir. It shared WhatsApp and Telegram stickers through chatbots: you picked a sticker on the website, WhatsApp or Telegram opened with the request already written, and the bot sent the sticker back. Stickers people sent to the bot were uploaded to the site for everyone. No app to install. It is retired now.
 
 The site today

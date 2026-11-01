@@ -6,3 +6,5 @@ dist
 .env
 .netlify
 deno.lock
+.dev.vars
+.wrangler

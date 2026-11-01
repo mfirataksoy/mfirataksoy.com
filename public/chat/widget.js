@@ -3,7 +3,7 @@
  *
  *   <script src="https://mfirataksoy.com/chat/widget.js" data-site="filmfirtinasi" defer></script>
  *
- * Options (data- attributes): site (id from netlify/chat/knowledge/sites.ts),
+ * Options (data- attributes): site (id from server/chat/knowledge/sites.ts),
  * lang ("tr" | "en", default: page or browser language), accent (CSS color),
  * bottom (px to lift the button, e.g. above a bottom tab bar), sound ("off" to start muted),
  * api (default: where this script is served from).
