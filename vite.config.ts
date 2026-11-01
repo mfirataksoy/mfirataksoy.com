@@ -4,7 +4,7 @@ import { defineConfig, type Connect, type Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { trackOrder, tracks } from './src/tracks'
 
-// The 2020 site is a plain static page in public/classic. Netlify serves its
+// The 2020 site is a plain static page in public/classic. Cloudflare Pages serves its
 // index.html for /classic/ on its own; this does the same for `vite` and `vite preview`.
 function classicSite(): Plugin {
   const rewrite: Connect.NextHandleFunction = (req, res, next) => {

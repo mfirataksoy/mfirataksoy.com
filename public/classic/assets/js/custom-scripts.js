@@ -342,13 +342,20 @@
           }
        });
     
-        // Netlify Forms: post the form urlencoded to "/" (form-name is a hidden field).
+        // Same inbox as the chat widget: /api/contact saves the message for Fırat.
         function submitForm(){
+          var field = function (name) { return $.trim($("#contactForm [name=" + name + "]").val() || ""); };
           $.ajax({
               type: "POST",
-              url: "/",
-              contentType: "application/x-www-form-urlencoded",
-              data: $("#contactForm").serialize(),
+              url: "/api/contact",
+              contentType: "application/json",
+              data: JSON.stringify({
+                name: $.trim(field("first_name") + " " + field("last_name")),
+                email: field("email"),
+                message: field("message"),
+                website: field("company"),
+                page: "/classic/"
+              }),
               success : function(){
                   formSuccess();
               },

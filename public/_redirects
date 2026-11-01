@@ -1,0 +1,5 @@
+# The 2020 site lives under /classic; keep a short alias too.
+/2020 /classic/ 301
+/resume.pdf /Mehmet_Firat_Aksoy_Resume.pdf 301
+# Browsers still ask for /favicon.ico by default.
+/favicon.ico /favicon-32.png 200

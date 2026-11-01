@@ -2,10 +2,10 @@
 // The conversation lives on the server, so visitors can't rewrite history.
 
 import Anthropic from '@anthropic-ai/sdk'
-import type { Config, Context } from '@netlify/functions'
-import { clean, json, readWidgetRequest, EMAIL } from '../chat/http'
-import { MODEL, draftTool, systemPrompt, takeSticker } from '../chat/prompt'
-import { hashIp, isId, loadConversation, newId, overLimit, saveConversation, type ContactDraft, type Conversation } from '../chat/store'
+import { clientIp, type Env } from '../../server/chat/env'
+import { clean, json, readWidgetRequest, EMAIL } from '../../server/chat/http'
+import { MODEL, draftTool, systemPrompt, takeSticker } from '../../server/chat/prompt'
+import { createStore, hashIp, isId, newId, type ContactDraft, type Conversation } from '../../server/chat/store'
 
 const MAX_MESSAGE = 1000
 const MAX_TURNS = 30
@@ -15,7 +15,7 @@ const fallback = {
   en: 'I can’t answer that one. If you’d like to ask Fırat directly, I can pass your message on to him.',
 }
 
-export default async (req: Request, context: Context) => {
+export const onRequest: PagesFunction<Env> = async ({ request: req, env }) => {
   const parsed = await readWidgetRequest(req, 4000)
   if (parsed instanceof Response) return parsed
   const { site, body, origin } = parsed
@@ -24,16 +24,17 @@ export default async (req: Request, context: Context) => {
   if (!message) return json({ error: 'empty' }, 400, origin)
   const lang = body.lang === 'tr' ? 'tr' : 'en'
 
-  const ipHash = await hashIp(context.ip)
-  const limited = await overLimit([
+  const store = createStore(env.DB)
+  const ipHash = await hashIp(clientIp(req), env.IP_HASH_SALT)
+  const limited = await store.overLimit([
     { key: `chat/ip/${ipHash}/10m`, max: 20, windowSeconds: 600 },
     { key: `chat/ip/${ipHash}/day`, max: 80, windowSeconds: 86400 },
-    { key: 'chat/all/day', max: Number(process.env.CHAT_DAILY_LIMIT ?? 500), windowSeconds: 86400 },
+    { key: 'chat/all/day', max: Number(env.CHAT_DAILY_LIMIT ?? 500), windowSeconds: 86400 },
   ])
   if (limited) return json({ error: 'rate_limited' }, 429, origin)
 
   const now = new Date().toISOString()
-  let conversation = isId(body.conversationId) ? await loadConversation(body.conversationId) : null
+  let conversation = isId(body.conversationId) ? await store.loadConversation(body.conversationId) : null
   if (conversation && conversation.site !== site.id) conversation = null
   conversation ??= { id: newId(), site: site.id, page: clean(body.page, 300), ipHash, startedAt: now, updatedAt: now, messages: [] }
 
@@ -50,7 +51,7 @@ export default async (req: Request, context: Context) => {
   let reply: string
   let draft: ContactDraft | undefined
   try {
-    ;({ reply, draft } = process.env.CHAT_MOCK === '1' ? mockTurn(conversation, message) : await runTurn(conversation, site))
+    ;({ reply, draft } = env.CHAT_MOCK === '1' ? mockTurn(conversation, message) : await runTurn(new Anthropic({ apiKey: env.ANTHROPIC_API_KEY }), conversation, site))
   } catch (error) {
     console.error('chat failed', error instanceof Anthropic.APIError ? `${error.status} ${error.message}` : error)
     return json({ error: 'unavailable' }, 503, origin)
@@ -60,16 +61,14 @@ export default async (req: Request, context: Context) => {
   reply = text || fallback[lang]
   if (draft) conversation.draft = draft
   conversation.updatedAt = new Date().toISOString()
-  await saveConversation(conversation)
+  await store.saveConversation(conversation)
 
   return json({ conversationId: conversation.id, reply, draft, sticker }, 200, origin)
 }
 
-const client = new Anthropic()
-
 // One model call, plus a second one if the model drafted a contact message,
 // so it can tell the visitor to check the card.
-async function runTurn(conversation: Conversation, site: Parameters<typeof systemPrompt>[0]) {
+async function runTurn(client: Anthropic, conversation: Conversation, site: Parameters<typeof systemPrompt>[0]) {
   const system = systemPrompt(site)
   let reply = ''
   let draft: ContactDraft | undefined
@@ -133,5 +132,3 @@ function mockTurn(conversation: Conversation, message: string) {
   conversation.messages.push({ role: 'assistant', content: reply })
   return { reply, draft }
 }
-
-export const config: Config = { path: '/api/chat' }

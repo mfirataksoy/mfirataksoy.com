@@ -1,0 +1,9 @@
+# The chat widget's inbox is for Fırat only.
+/inbox/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+# Other sites load the widget from here; keep updates quick to reach them.
+/chat/widget.js
+  Cache-Control: public, max-age=300
+  Access-Control-Allow-Origin: *

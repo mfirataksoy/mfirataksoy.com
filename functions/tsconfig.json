@@ -6,8 +6,8 @@
     "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "lib": ["ES2023", "DOM"],
-    "types": ["node"]
+    "lib": ["ES2023"],
+    "types": ["@cloudflare/workers-types"]
   },
-  "include": ["functions/**/*.mts", "chat/**/*.ts"]
+  "include": ["**/*.ts", "../server/**/*.ts"]
 }

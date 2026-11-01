@@ -1,0 +1,16 @@
+# Cloudflare Pages project "mfirataksoy": static site from dist/ plus the chat API in functions/.
+# Secrets (ANTHROPIC_API_KEY, INBOX_PASSWORD, optional RESEND_API_KEY, NOTIFY_EMAIL) are set with
+# `wrangler pages secret put <NAME> --project-name mfirataksoy`, never here.
+name = "mfirataksoy"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+CHAT_DAILY_LIMIT = "500"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mfirataksoy-chat"
+database_id = "3cc7ecaa-2175-4606-8ecc-db10d5ce4201"
+migrations_dir = "migrations"

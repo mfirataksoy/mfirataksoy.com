@@ -85,7 +85,7 @@
           $('.login').hidden = false
           $('.content').hidden = true
           $('.error').hidden = false
-          $('.error').textContent = { 401: 'Şifre yanlış.', 429: 'Çok fazla yanlış deneme. 15 dakika sonra tekrar dene.', 503: 'INBOX_PASSWORD ayarlı değil (Netlify ortam değişkeni, en az 12 karakter).' }[res.status]
+          $('.error').textContent = { 401: 'Şifre yanlış.', 429: 'Çok fazla yanlış deneme. 15 dakika sonra tekrar dene.', 503: 'INBOX_PASSWORD ayarlı değil (Cloudflare Pages gizli değeri, en az 12 karakter).' }[res.status]
           return
         }
         data = await res.json()
