@@ -2,6 +2,7 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { Globe } from '../globe/Globe'
 import { globe } from '../globe/store'
+import { logInteractiveFallback } from '../posthog-logs'
 
 const canvas = ref<HTMLCanvasElement>()
 const labels = ref<HTMLDivElement>()
@@ -15,6 +16,7 @@ onMounted(() => {
     if (import.meta.env.DEV) Object.assign(window, { __globe: globe.value })
   } catch (err) {
     console.warn('Globe disabled:', err)
+    logInteractiveFallback('globe')
     failed.value = true
   }
 })
