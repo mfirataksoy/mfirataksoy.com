@@ -36,7 +36,7 @@ export const sites: Site[] = [
   {
     id: 'filmfirtinasi',
     name: 'Film Fırtınası',
-    origins: [...vercelSite('filmfirtinasi')],
+    origins: ['https://filmfirtinasi.com', 'https://www.filmfirtinasi.com', ...vercelSite('filmfirtinasi')],
     project: `The visitor is on Film Fırtınası (https://filmfirtinasi.vercel.app), a movie discovery site Fırat built solo in 2026 for Turkish and English speakers. Answer questions about the site first, then about Fırat.
 What it does: home page rows for featured, popular, recently added and top-rated films; genre filter and search; movie pages with the TMDB poster, runtime, and IMDb, TMDB and community ratings side by side; the official YouTube trailer loads only when clicked (privacy-friendly youtube-nocookie); Google or email sign-in with usernames, preset avatars and profiles; comments with replies, likes, spoiler tags, reporting and pinning; movie requests that users vote on; an admin panel that adds a movie by searching TMDB (details fill in automatically), edits films and moderates reports.
 How it is built: Vue 3 and TypeScript with Vite, Tailwind, Pinia and vue-i18n; Firebase Authentication and Firestore (security rules and indexes kept in the repo); TMDB and OMDb APIs; hosted on Vercel. A mock mode runs the whole app on a localStorage backend behind the same service interface, demo admin login included, so it works without any Firebase setup.`,
@@ -62,7 +62,7 @@ Don't share: his personal interest list, how the private version is accessed, or
   {
     id: 'acneaway',
     name: 'AcneAway showcase',
-    origins: [...vercelSite('acneaway')],
+    origins: ['https://acneaway.mfirataksoy.com', ...vercelSite('acneaway')],
     project: `The visitor is on the AcneAway showcase (https://acneaway.vercel.app). AcneAway was a side project Fırat built solo and ran in 2025; it is now retired and kept as a showcase page. Answer questions about it first, then about Fırat.
 What it did: users uploaded a selfie and got the same face back without acne, and bought credits through Stripe Checkout.
 How it was built: Vue 3, Vite, Tailwind, Pinia and Firebase Authentication on the front end; an Express backend on Vercel for uploads to Firebase Storage, Stripe checkout, the customer portal and webhooks (credits granted by a Stripe webhook); a Firebase Cloud Function sent each photo through an image pipeline on Replicate (SDXL with InstantID, IP-Adapter and ControlNet), which keeps the person's identity while retouching the skin, then saved the result and updated Firestore. There was also an Expo companion app.`,
@@ -70,7 +70,7 @@ How it was built: Vue 3, Vite, Tailwind, Pinia and Firebase Authentication on th
   {
     id: 'notewithme',
     name: 'NoteWith.Me',
-    origins: [...netlifySite('notewith-me')],
+    origins: ['https://noteful.me', 'https://www.noteful.me', ...netlifySite('notewith-me')],
     project: `The visitor is on NoteWith.Me (https://notewith-me.netlify.app), Fırat's collaborative notes app, built in 2021 and brought back online in October 2026. Answer questions about it first, then about Fırat.
 What it does: shared notes with no account. Opening the site creates a page with a random short ID; share the URL and write together in a rich-text editor. Notes save automatically a couple of seconds after typing stops, and there is a copy-link button. Professors used it for online classes during the pandemic.
 How it is built: Vue 2 with Vuetify; an Express and Mongoose API on MongoDB Atlas, running as a Netlify Function; the database connection is reused across warm serverless calls, and the API fails fast with a clear error when the database is unreachable. Code: https://github.com/mfirataksoy/notewith.me`,
@@ -78,7 +78,7 @@ How it is built: Vue 2 with Vuetify; an Express and Mongoose API on MongoDB Atla
   {
     id: 'stickerhub',
     name: 'StickerHub farewell page',
-    origins: [...netlifySite('stickerhubio')],
+    origins: ['https://stickerhub.mfirataksoy.com', ...netlifySite('stickerhubio')],
     project: `The visitor is on the StickerHub farewell page (https://stickerhubio.netlify.app). StickerHub was a 2021 side project Fırat built with Bedirhan Celayir; it is retired. The stickerhub.io domain now belongs to someone else and has nothing to do with Fırat. Answer questions about StickerHub first, then about Fırat.
 What it did: people browsed stickers by category or tag on the website and tapped one; WhatsApp or Telegram opened with the request already written, and a bot replied with the sticker. Stickers people sent to the bot were added to the site, and the bot replied with a link for tagging them. No app to install. The farewell page counts 305 user stickers, 13 categories and 2 chatbots.
 How it was built: a Vue 2, Vuetify and Firebase (Firestore and Storage) website on Netlify, and chatbots built with WhatsApp Web automation, Firebase and Google Cloud Storage. The site visitors see now is the original 2021 app with a farewell added to its home page: its database is replaced by an in-memory stand-in, and the stickers are redrawn from their names because the original images were lost along with the old Firebase project. The chatbots no longer run.`,
