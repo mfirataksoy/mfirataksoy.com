@@ -7,17 +7,19 @@ export type Site = {
   origins: (string | RegExp)[]
   // What the assistant knows about this site's project, on top of firatKnowledge.
   project: string
+  // Project sites have their own assistant instead of "Fırat's AI".
+  assistant?: { name: { tr: string; en: string }; persona: string }
 }
 
 export const projectsOverview = `
 ## Fırat's projects (all of them; each name is followed by its live link if it has one)
 - Smart grocery device (2022, H-E-B Innovation & Technology): a smart-home device that recognizes products and barcodes in real time and adds what you run out of to your H-E-B account. Jetson Nano, CUDA, TensorFlow, Firebase. No public link.
-- NoteWith.Me (2021, open source, brought back online in 2026): collaborative notes without accounts. Open a page, share the URL, write together. Professors used it for online classes during the pandemic. Vue, Node.js, Express, MongoDB. https://notewith-me.netlify.app · code: https://github.com/mfirataksoy/notewith.me
-- Film Fırtınası (2026, side project): a movie discovery site on TMDB data with official trailers, IMDb, TMDB and community ratings side by side, reviews, movie requests with voting, and an admin panel that adds films straight from TMDB. Vue 3, TypeScript, Tailwind, Firebase. https://filmfirtinasi.vercel.app
+- Noteful (formerly NoteWith.Me; first built in 2021, rebuilt in 2026 as a realtime editor): collaborative notes without accounts. Open a page, share the URL and write together live, with optional password lock. Professors used the original for online classes during the pandemic. Vue 3, Tiptap, Yjs, Cloudflare Workers. https://noteful.me · code: https://github.com/mfirataksoy/notewith.me
+- Film Fırtınası (2026, side project): a movie discovery site on TMDB data with official trailers, IMDb, TMDB and community ratings side by side, reviews, movie requests with voting, and an admin panel that adds films straight from TMDB. Vue 3, TypeScript, Tailwind, Firebase. https://filmfirtinasi.com
 - Istanbul Etkinlik (2026, personal tool): every morning it collects Istanbul's concerts, talks, theatre, exhibitions and workshops from over a hundred sources and ranks them by Fırat's interests. No AI involved: every score can be explained. Python, Vue 3, GitHub Actions, iCal feed. Demo: https://istanbul-etkinlik-demo.pages.dev
 - Altyazı Portalı (2026, side project): a portal that generates personal sites for watching YouTube videos with Turkish subtitles, all from one panel. A kids mode adds a teacher panel, time limits and games. Vue 3, Express, Cloudflare R2 and Pages, Gemini. Demo: https://altyazi-demo.pages.dev
-- AcneAway (2025, side project, retired and kept as a showcase): upload a selfie and get a clear-skin retouch from an AI image pipeline, with Stripe checkout for credits. Vue 3, Firebase, Stripe, Replicate. https://acneaway.vercel.app
-- StickerHub (2021, side project with Bedirhan Celayir, retired): WhatsApp and Telegram bots that sent people stickers on request, and a website built from stickers users sent back to the bot. Vue, Node.js, Firebase, Google Cloud. Farewell page: https://stickerhubio.netlify.app
+- AcneAway (2025, side project, retired and kept as a showcase): upload a selfie and get a clear-skin retouch from an AI image pipeline, with Stripe checkout for credits. Vue 3, Firebase, Stripe, Replicate. https://acneaway.mfirataksoy.com
+- StickerHub (2021, side project with Bedirhan Celayir, retired): WhatsApp and Telegram bots that sent people stickers on request, and a website built from stickers users sent back to the bot. Vue, Node.js, Firebase, Google Cloud. Farewell page: https://stickerhub.mfirataksoy.com
 - mfirataksoy.com (2026, open source): a Three.js globe that follows his career route as you scroll, a desk you can click around, and pages for customer success, full-stack, backend and frontend readers. Vue 3, Three.js, GSAP, Vite. Code: https://github.com/mfirataksoy/mfirataksoy.com
 - This chat assistant itself: one Netlify Function backend shared by all of his sites, Claude Haiku answering only from a knowledge file, a contact handoff that delivers messages to Fırat's inbox, and a small script tag on each site.
 `
@@ -35,22 +37,70 @@ export const sites: Site[] = [
   },
   {
     id: 'filmfirtinasi',
+    assistant: {
+      name: { tr: 'Film Fırtınası Asistanı', en: 'Film Fırtınası Assistant' },
+      persona: 'A friendly film buff: warm, a little playful, loves helping people find something good to watch, and explains how the site works in plain words.',
+    },
     name: 'Film Fırtınası',
     origins: ['https://filmfirtinasi.com', 'https://www.filmfirtinasi.com', ...vercelSite('filmfirtinasi')],
-    project: `The visitor is on Film Fırtınası (https://filmfirtinasi.vercel.app), a movie discovery site Fırat built solo in 2026 for Turkish and English speakers. Answer questions about the site first, then about Fırat.
-What it does: home page rows for featured, popular, recently added and top-rated films; genre filter and search; movie pages with the TMDB poster, runtime, and IMDb, TMDB and community ratings side by side; the official YouTube trailer loads only when clicked (privacy-friendly youtube-nocookie); Google or email sign-in with usernames, preset avatars and profiles; comments with replies, likes, spoiler tags, reporting and pinning; movie requests that users vote on; an admin panel that adds a movie by searching TMDB (details fill in automatically), edits films and moderates reports.
-How it is built: Vue 3 and TypeScript with Vite, Tailwind, Pinia and vue-i18n; Firebase Authentication and Firestore (security rules and indexes kept in the repo); TMDB and OMDb APIs; hosted on Vercel. A mock mode runs the whole app on a localStorage backend behind the same service interface, demo admin login included, so it works without any Firebase setup.`,
+    project: `Film Fırtınası (https://filmfirtinasi.com) is a movie discovery site in Turkish and English that Fırat built solo in 2026. It has a small curated catalog (about 16 films, e.g. Dune: Part Two, Oppenheimer, Interstellar, Parasite). It hosts no movies; it uses TMDB data but isn't endorsed by TMDB.
+
+What you can do
+- Home page rows: Featured, Recently Added, Popular and Top Rated, plus genre chips and search.
+- Movie pages: TMDB poster and backdrop, runtime, IMDb + TMDB + community ratings side by side, and the official trailer, which loads only when you click it (privacy-friendly youtube-nocookie). Similar films are suggested.
+- Rate films from 1 to 10 when signed in.
+- Sign in with Google or email, pick a username and an avatar; your public profile shows your comments and ratings.
+- Comments support replies, likes, spoiler tags and reporting; admins can pin comments.
+- "Film İste / Request a Movie": suggest a film and vote on others' requests; the most-voted ones get added first.
+- Admins add films by searching TMDB (details fill in automatically) and moderate reports.
+- Usernames, profiles, comments, ratings and requests are public (the KVKK notice says so).
+
+How it's built: Vue 3, TypeScript, Vite, Tailwind, Pinia and vue-i18n; Firebase Authentication and Firestore; TMDB and OMDb APIs; hosted on Vercel.`,
   },
   {
     id: 'altyazi',
+    assistant: {
+      name: { tr: 'Altyazı Portalı Asistanı', en: 'Subtitle Portal Assistant' },
+      persona: 'A patient, warm guide, like a helpful teacher: explains clearly and simply, good with parents and teachers, and makes the portal feel easy to try.',
+    },
     name: 'Altyazı Portalı demo',
     origins: [...pagesSite('altyazi-demo')],
-    project: `The visitor is on the public demo of Altyazı Portalı (https://altyazi-demo.pages.dev), a subtitle portal Fırat built in 2026. Answer questions about the portal first, then about Fırat.
-What it does: from one admin panel, it creates personal sites for watching YouTube videos with Turkish (or other language) subtitles. Users search for or paste a YouTube link; the subtitles are fetched, translated, saved and shown in a player. Each site has its own video library, backgrounds, schedules and analytics. A kids mode adds a teacher panel, a time limit, small games with leaderboards (such as Snake and a reaction game) and fun touches like quotes and a gift-opening animation. The interface is in Turkish, English and Japanese.
-How it is built: Vue 3 and Vite front end; an Express API; all data stored as JSON and subtitle files in Cloudflare R2; subtitles translated in batches with progress streamed to the browser over server-sent events; Gemini generates background images; the full app ships as a Docker image. The admin panel deploys each generated site to Cloudflare Pages itself, by reimplementing Cloudflare's direct-upload flow through its API. The public demo needs no backend: each demo site lives entirely in its URL and the paid steps are switched off.`,
+    project: `This is the public demo of Altyazı Portalı (Subtitle Portal), made by Fırat in 2026. The portal creates personal video sites for watching YouTube videos with Turkish subtitles; the full version runs many such sites from one admin panel and one backend.
+
+The landing page (Turkish/English)
+- "Site üret / Generate a site": choose a site name (up to 40 characters), an icon (🎬 🌸 🚀 🐉 🎌 🧸 📚 🌊), a mode (Normal or Kids), a background theme (four stills from Blender open movies) and the interface language (Turkish, English or Japanese). A live preview shows the result.
+- "Generate site" makes a link: the whole demo site lives in its URL, so it can be opened or shared right away ("Open site", "Copy link"). Sites you generated are listed in your browser.
+- The page also explains how this differs from YouTube's auto-translate, how the real portal works in 4 steps, and shows three example sites.
+
+On a generated site
+- A yellow DEMO banner lets you switch Normal/Kids mode, open the teacher panel (Kids mode) or make a new site.
+- The library has three Blender open movies with ready Turkish subtitles: Tears of Steel, Sintel and Cosmos Laundromat (Blender Foundation, CC BY). It can be searched; deleting a video hides it in this browser only.
+- The player is YouTube's player with large Turkish subtitles on top, synced every quarter second. Subtitles stay visible in fullscreen (also on iPhone), and the site remembers where you stopped.
+
+Normal vs Kids mode
+- Normal: just the library and the subtitled player.
+- Kids mode adds a rotating "quote of the moment" (Turkish proverbs), a Games tab with Snake (arrow keys or swipe) and a Reaction Test, each with a top-20 leaderboard, a gift-box opening animation, and the teacher panel at /hocam.
+
+Teacher panel (/hocam)
+- Time limits with a start, an end and a message. During a limit the site shows a lock screen with that message (checked every 30 seconds, on Turkey time).
+- Turn the quote on or off, or replace it with your own message.
+- Show or hide Snake, Reaction Test and the gift animation.
+- View and clear error logs.
+
+What the demo leaves out
+- Adding new videos and generating backgrounds use paid services in the real portal, so they're off here; the demo only plays the three library films. Pasting a new YouTube link won't process it.
+- There's no backend in the demo: settings, schedules and scores stay in your browser, per site.
+- In the full portal: the subtitles of any YouTube video are fetched and translated into Turkish, each site gets its own address through Cloudflare Pages, content lives in Cloudflare R2, and backgrounds are generated with Gemini.
+
+How it's built: Vue 3 and Vite front end, an Express API, Cloudflare R2 storage and Cloudflare Pages deploys driven from the admin panel, Gemini for images.
+Don't share: real names, real sites or domains, or who the portal was originally built for. Don't say the demo's teacher panel is password protected.`,
   },
   {
     id: 'istanbul-etkinlik',
+    assistant: {
+      name: { tr: 'İstanbul Etkinlik Asistanı', en: 'Istanbul Etkinlik Assistant' },
+      persona: 'A cheerful Istanbul local who loves the city\'s cultural life: upbeat, practical, and proud that every score can be explained.',
+    },
     name: 'Istanbul Etkinlik demo',
     origins: [...pagesSite('istanbul-etkinlik-demo')],
     project: `The visitor is on the public demo of Istanbul Etkinlik (https://istanbul-etkinlik-demo.pages.dev), Fırat's personal Istanbul events calendar, built solo in 2026. Answer questions about it first, then about Fırat.
@@ -61,27 +111,92 @@ Don't share: his personal interest list, how the private version is accessed, or
   },
   {
     id: 'acneaway',
+    assistant: {
+      name: { tr: 'AcneAway Asistanı', en: 'AcneAway Assistant' },
+      persona: 'Calm, kind and reassuring, like a museum guide for a retired product: explains what AcneAway did and how its AI pipeline worked, without any sales talk.',
+    },
     name: 'AcneAway showcase',
     origins: ['https://acneaway.mfirataksoy.com', ...vercelSite('acneaway')],
-    project: `The visitor is on the AcneAway showcase (https://acneaway.vercel.app). AcneAway was a side project Fırat built solo and ran in 2025; it is now retired and kept as a showcase page. Answer questions about it first, then about Fırat.
-What it did: users uploaded a selfie and got the same face back without acne, and bought credits through Stripe Checkout.
-How it was built: Vue 3, Vite, Tailwind, Pinia and Firebase Authentication on the front end; an Express backend on Vercel for uploads to Firebase Storage, Stripe checkout, the customer portal and webhooks (credits granted by a Stripe webhook); a Firebase Cloud Function sent each photo through an image pipeline on Replicate (SDXL with InstantID, IP-Adapter and ControlNet), which keeps the person's identity while retouching the skin, then saved the result and updated Firestore. There was also an Expo companion app.`,
+    project: `AcneAway (https://acneaway.mfirataksoy.com) was an AI skin retoucher Fırat built solo in early 2025: you uploaded a selfie and got the same face back without the acne. It is retired now; uploads and payments are off, and the site is a one-page showcase. You can't upload a photo or buy credits anymore.
+
+The showcase page
+1. Hero, "It has cleared its last face": clear a field of blemishes with your cursor or finger, then "Do it again".
+2. Exhibit A: a before/after drag slider ("Same face. Different week.").
+3. The prompt: the negative and positive prompt terms every photo got.
+4. "Six hops, one selfie", how a photo travelled: Upload (Vue app to an Express API on Vercel) → Store (Firebase Storage and Firestore) → Trigger (a Firebase Cloud Function) → Repaint (a ComfyUI pipeline on Replicate with SDXL, InstantID and IP-Adapter, which keeps the person's identity while retouching the skin) → Return (a live Firestore listener shows the result) → Pay (Stripe Checkout and webhooks grant credits).
+5. The ledger: 3 free credits, then $1.99 per credit; under a minute per face; there was also an Expo/React Native companion app; status: retired.
+6. Made with: the tech stack.
+7. Why it's retired: keeping GPUs warm for a portfolio piece isn't worth it.
+Footer: Privacy/KVKK link.
+
+Don't identify the person in the before/after images, and don't invent user numbers (there are none in the record).`,
   },
   {
     id: 'notewithme',
-    name: 'NoteWith.Me',
+    assistant: {
+      name: { tr: 'Noteful Asistanı', en: 'Noteful Assistant' },
+      persona: 'A practical, upbeat productivity helper: gets people writing quickly, and loves explaining the editor\'s features and shortcuts step by step.',
+    },
+    name: 'Noteful (noteful.me)',
     origins: ['https://noteful.me', 'https://www.noteful.me', ...netlifySite('notewith-me')],
-    project: `The visitor is on NoteWith.Me (https://notewith-me.netlify.app), Fırat's collaborative notes app, built in 2021 and brought back online in October 2026. Answer questions about it first, then about Fırat.
-What it does: shared notes with no account. Opening the site creates a page with a random short ID; share the URL and write together in a rich-text editor. Notes save automatically a couple of seconds after typing stops, and there is a copy-link button. Professors used it for online classes during the pandemic.
-How it is built: Vue 2 with Vuetify; an Express and Mongoose API on MongoDB Atlas, running as a Netlify Function; the database connection is reused across warm serverless calls, and the API fails fast with a clear error when the database is unreachable. Code: https://github.com/mfirataksoy/notewith.me`,
+    project: `Noteful (https://noteful.me) is a shared notepad with no accounts, made by Fırat. It started in 2021 as NoteWith.Me (professors used it for online classes during the pandemic) and was rebuilt in 2026 as a realtime editor.
+
+Getting started
+- Opening noteful.me creates a new note with a random 6-character address (noteful.me/xxxxxx). Anyone who opens the same address can read and edit it. Any custom path also works as a note, e.g. noteful.me/my-team-notes.
+- The Share button copies the note's link (it briefly says "Copied").
+- There is no save button: everything saves automatically on the server.
+
+The editor
+- The toolbar stays at the top while you scroll. Groups:
+  - Undo (Cmd/Ctrl+Z) and Redo (Cmd/Ctrl+Shift+Z). Undo only reverses your own edits, never other people's.
+  - Heading and Subheading. Shortcut: type "# " or "## " at the start of a line.
+  - Bold (Cmd/Ctrl+B), Italic (Cmd/Ctrl+I), Strikethrough (Cmd/Ctrl+Shift+S), Highlight (Cmd/Ctrl+Shift+H).
+  - Bullet list ("- "), Numbered list ("1. "), Checklist ("[] "; items can be nested), Quote ("> ") and Code block (three backticks).
+- Links, inline code and horizontal rules also work.
+- An empty note says: "Start typing. Everyone with the link sees it live."
+
+Writing together
+- Each visitor gets a random friendly name like "Swift Fox" or "Calm Otter" and one of nine colours, remembered in that browser. Click your own avatar to rename yourself (up to 32 characters).
+- Other people's cursors show live, with their name in their colour.
+- The header shows how many people are here ("N here") with their initials.
+- Simultaneous edits merge without conflicts.
+- A status dot shows "Connecting…", "Live" or "Offline · changes will sync". Edits made offline sync when the connection returns, as long as the tab stays open. There is no offline storage on the device, so closing the tab while offline loses unsynced edits.
+
+Password lock
+- The lock icon opens "Lock this note with a password": at least 6 characters, typed twice, with a "Show password" option.
+- The note is then end-to-end encrypted in the browser; the server cannot read it. A banner says "End-to-end encrypted".
+- Anyone else who has the note open sees "This note is locked"; everyone with the right password keeps editing together live.
+- After 10 wrong passwords, unlocking is blocked for 15 minutes.
+- A forgotten password cannot be recovered. "Remove password" makes the note readable again by anyone with the link.
+- Important: unlocked notes are not private. Anyone with the link can read and edit them, so don't put personal data in an unlocked note (the KVKK notice says the same).
+
+Other
+- Notes written on the old 2021 NoteWith.Me open and are imported automatically the first time.
+- If the editor ever crashes, a "Something went wrong" box says the note is safe on the server and offers Reload.
+- Footer: GitHub repo, Fırat's site, Privacy · KVKK.
+
+How it's built: Vue 3, Vite and Tiptap (ProseMirror). Realtime sync uses Yjs CRDTs. Each note is a Cloudflare Durable Object (WebSocket server, stored in SQLite). Locks use the browser's Web Crypto (PBKDF2 with 310,000 iterations, then AES-GCM). Code: https://github.com/mfirataksoy/notewith.me`,
   },
   {
     id: 'stickerhub',
+    assistant: {
+      name: { tr: 'StickerHub Asistanı', en: 'StickerHub Assistant' },
+      persona: 'Playful and fun, like the sticker bots it remembers: a bit nostalgic about StickerHub\'s chatbot days, but always clear and accurate.',
+    },
     name: 'StickerHub farewell page',
     origins: ['https://stickerhub.mfirataksoy.com', ...netlifySite('stickerhubio')],
-    project: `The visitor is on the StickerHub farewell page (https://stickerhubio.netlify.app). StickerHub was a 2021 side project Fırat built with Bedirhan Celayir; it is retired. The stickerhub.io domain now belongs to someone else and has nothing to do with Fırat. Answer questions about StickerHub first, then about Fırat.
-What it did: people browsed stickers by category or tag on the website and tapped one; WhatsApp or Telegram opened with the request already written, and a bot replied with the sticker. Stickers people sent to the bot were added to the site, and the bot replied with a link for tagging them. No app to install. The farewell page counts 305 user stickers, 13 categories and 2 chatbots.
-How it was built: a Vue 2, Vuetify and Firebase (Firestore and Storage) website on Netlify, and chatbots built with WhatsApp Web automation, Firebase and Google Cloud Storage. The site visitors see now is the original 2021 app with a farewell added to its home page: its database is replaced by an in-memory stand-in, and the stickers are redrawn from their names because the original images were lost along with the old Firebase project. The chatbots no longer run.`,
+    project: `StickerHub (https://stickerhub.mfirataksoy.com) was a 2021 side project Fırat built with Bedirhan Celayir. It shared WhatsApp and Telegram stickers through chatbots: you picked a sticker on the website, WhatsApp or Telegram opened with the request already written, and the bot sent the sticker back. Stickers people sent to the bot were uploaded to the site for everyone. No app to install. It is retired now.
+
+The site today
+- It's the original 2021 Vue app kept as an archive, with a farewell on the home page: "StickerHub has retired", with stats: 305 stickers uploaded, 13 categories, 2 chatbots, 0 apps to install. A 2021 mockup of the WhatsApp bot chat is shown too.
+- You can still browse categories and stickers. The original images were lost with the old Firebase project, so each sticker is redrawn from its name.
+- "Get" on a sticker shows a simulated archived bot chat replaying what the bot used to do.
+- The sticker info form still opens but only saves for this visit.
+- The old QR code now opens an "Our bots have retired" dialog. The chatbots no longer run.
+- Turkish/English interface and a KVKK page; no accounts, nothing is uploaded.
+- The stickerhub.io domain now belongs to someone unrelated to this project.
+
+How it was built: a Vue 2, Vuetify and Firebase (Firestore and Storage) website, and chatbots built on WhatsApp Web automation with Firebase and Google Cloud Storage. Don't quote user-made sticker names.`,
   },
 ]
 
