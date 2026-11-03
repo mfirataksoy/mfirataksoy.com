@@ -131,15 +131,15 @@ import { track, pick } from '../useLens'
   flex-wrap: wrap;
   gap: 8px;
   margin: 0;
-  font: 500 12px/1.4 var(--mono);
+  font: 600 12px/1.4 var(--sans);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--gold);
 }
 .chapter__title {
   margin: 14px 0 0;
-  font: 400 clamp(30px, 3.4vw, 40px) / 1.05 var(--serif);
-  letter-spacing: -0.005em;
+  font: 600 clamp(24px, 2.6vw, 30px) / 1.12 var(--sans);
+  letter-spacing: -0.025em;
 }
 .chapter__org {
   margin: 10px 0 0;
@@ -190,7 +190,7 @@ import { track, pick } from '../useLens'
     background: rgba(12, 23, 45, 0.9);
   }
   .chapter__title {
-    font-size: 28px;
+    font-size: 23px;
   }
   .chapter__body {
     font-size: 15.5px;

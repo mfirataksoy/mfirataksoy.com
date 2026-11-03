@@ -66,8 +66,8 @@ async function copyEmail() {
 }
 .contact__title {
   margin: 18px 0 0;
-  font: 400 clamp(56px, 10vw, 140px) / 0.95 var(--serif);
-  letter-spacing: -0.02em;
+  font: 600 clamp(44px, 7.6vw, 108px) / 1 var(--sans);
+  letter-spacing: -0.045em;
   text-shadow: 0 2px 40px rgba(8, 17, 34, 0.9);
 }
 .contact__body {
@@ -96,7 +96,7 @@ async function copyEmail() {
   flex-wrap: wrap;
   justify-content: center;
   gap: 24px;
-  font: 500 13px/1 var(--mono);
+  font: 600 13px/1 var(--sans);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
@@ -133,6 +133,6 @@ async function copyEmail() {
 .footer__classic {
   color: var(--gold);
   text-decoration: none;
-  font-family: var(--mono);
+  font-family: var(--sans);
 }
 </style>

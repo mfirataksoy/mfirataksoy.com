@@ -196,7 +196,7 @@ onBeforeUnmount(() => scene?.dispose())
 }
 .play__hint {
   margin: 14px 0 0;
-  font: 500 12px/1 var(--mono);
+  font: 600 12px/1 var(--sans);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -238,7 +238,7 @@ onBeforeUnmount(() => scene?.dispose())
   margin: -42px 0 0 14px;
   padding: 7px 11px;
   border-radius: 999px;
-  font: 500 12px/1 var(--mono);
+  font: 600 12px/1 var(--sans);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--bg);
@@ -289,14 +289,15 @@ onBeforeUnmount(() => scene?.dispose())
   align-items: center;
   gap: 8px;
   margin: 0;
-  font: 500 12px/1 var(--mono);
+  font: 600 12px/1 var(--sans);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gold);
 }
 .play__title {
   margin: 10px 0 0;
-  font: 400 clamp(26px, 2.6vw, 32px) / 1.08 var(--serif);
+  font: 600 clamp(22px, 2.1vw, 26px) / 1.15 var(--sans);
+  letter-spacing: -0.025em;
 }
 .play__body {
   margin: 10px 0 0;
@@ -335,7 +336,7 @@ onBeforeUnmount(() => scene?.dispose())
   padding: 7px 10px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  font: 500 12px/1 var(--mono);
+  font: 600 12px/1 var(--sans);
   color: var(--ink-soft);
 }
 .play__points--tags li::before {
@@ -343,7 +344,7 @@ onBeforeUnmount(() => scene?.dispose())
 }
 .play__count {
   margin: 26px 0 10px;
-  font: 500 11px/1 var(--mono);
+  font: 600 11px/1 var(--sans);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
@@ -412,7 +413,7 @@ onBeforeUnmount(() => scene?.dispose())
   min-width: 0;
 }
 .work__meta {
-  font: 500 10.5px/1.4 var(--mono);
+  font: 600 10.5px/1.4 var(--sans);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
@@ -421,7 +422,8 @@ onBeforeUnmount(() => scene?.dispose())
   color: var(--gold);
 }
 .work__name {
-  font: 400 22px/1.1 var(--serif);
+  font: 600 18px/1.2 var(--sans);
+  letter-spacing: -0.015em;
   color: var(--ink);
 }
 .work__row.is-on .work__name {
@@ -511,7 +513,7 @@ onBeforeUnmount(() => scene?.dispose())
     height: 40px;
   }
   .work__name {
-    font-size: 20px;
+    font-size: 17px;
   }
 }
 </style>

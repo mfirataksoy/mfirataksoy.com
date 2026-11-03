@@ -84,7 +84,8 @@ import { track, pick, pickList } from '../useLens'
   border-top: 1px solid var(--line);
 }
 .about__facts dt {
-  font: 400 30px/1 var(--serif);
+  font: 600 26px/1.05 var(--sans);
+  letter-spacing: -0.03em;
   color: var(--ink);
 }
 .about__facts dd {
