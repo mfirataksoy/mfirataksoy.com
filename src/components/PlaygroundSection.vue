@@ -22,11 +22,9 @@ const ordered = computed(() => {
   const lead = leadObject[track.value]
   return [...desk].sort((a, b) => Number(b.id === lead) - Number(a.id === lead))
 })
-// Every project once, in one list, grouped by the object it sits on.
+// Every project on the desk, once, in one list in the order content.ts gives them.
 const objectOf = new Map(desk.flatMap((d) => (d.projects ?? []).map((n) => [n, d.id] as const)))
-const list = computed(() =>
-  ordered.value.flatMap((d) => (d.projects ?? []).map((n) => projects.find((p) => p.name === n)!).filter(Boolean)),
-)
+const list = projects.filter((p) => objectOf.has(p.name))
 const active = ref<Project | null>(null)
 const rows = new Map<string, HTMLElement>()
 const tools = ref<HTMLElement>()
@@ -41,7 +39,7 @@ function show(p: Project | null) {
 }
 
 function firstOn(id: DeskKey) {
-  const mine = list.value.filter((p) => objectOf.get(p.name) === id)
+  const mine = list.filter((p) => objectOf.get(p.name) === id)
   return mine.find((p) => p.preview) ?? mine[0] ?? null
 }
 
