@@ -36,8 +36,8 @@ import { track, pick } from '../useLens'
         <a class="btn" href="#contact" data-event="contact_jump" data-where="hero">Get in touch</a>
       </div>
     </div>
-    <a href="#journey" class="hero__scroll" aria-label="Scroll to journey">
-      <span>Follow the route</span>
+    <a href="#journey" class="hero__scroll" aria-label="Scroll to experience">
+      <span>See my experience</span>
       <i aria-hidden="true" />
     </a>
   </section>

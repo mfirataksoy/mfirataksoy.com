@@ -7,8 +7,8 @@ import { track, pickList } from '../useLens'
   <section id="toolkit" class="toolkit" data-globe="dim">
     <div class="wrap">
       <header data-reveal>
-        <p class="kicker">04 · Toolkit</p>
-        <h2 class="section-title">What I bring <em>across</em>.</h2>
+        <p class="kicker">04 · Skills</p>
+        <h2 class="section-title">Skills and <em>tools</em>.</h2>
       </header>
       <div data-reveal>
       <Transition name="swap" mode="out-in">

@@ -107,8 +107,8 @@ export const chapters: Chapter[] = [
     org: 'Texas Christian University',
     role: 'B.S. Computer Science, minor in Mathematics',
     title: {
-      eng: 'Where the code started',
-      cs: 'A technical foundation, and a network',
+      eng: 'Computer science degree at TCU',
+      cs: 'Computer science degree and an alumni center job',
     },
     body: {
       eng: 'Computer science with a math minor at TCU as a Chancellor’s Scholar, on the Dean’s List, and the first lines of code that ended up in production.',
@@ -127,7 +127,7 @@ export const chapters: Chapter[] = [
     role: 'Software engineer intern',
     title: {
       eng: 'Rebuilt the licensing server',
-      cs: 'Turned cryptic errors into answers',
+      cs: 'Rebuilt the licensing server and its error messages',
     },
     body: {
       eng: 'Rebuilt the licensing server that authenticated every purchase, from Fortune 1000 firms to small businesses, in React, Node, Express and TypeScript.',
@@ -145,8 +145,8 @@ export const chapters: Chapter[] = [
     org: 'H-E-B Innovation & Technology',
     role: 'Software engineer intern · technical lead',
     title: {
-      eng: 'A grocery device that sees what you run out of',
-      cs: 'From pitch to a prototype tested in homes',
+      eng: 'Led a smart grocery device project',
+      cs: 'Took a smart grocery device from idea to prototype',
     },
     body: {
       eng: 'Technical lead for a smart-home grocery device: CNN product and barcode recognition with TensorFlow on an NVIDIA Jetson Nano, plus Wi-Fi setup, Firebase Auth and H-E-B account linking in the companion app.',
@@ -164,8 +164,8 @@ export const chapters: Chapter[] = [
     org: 'Local-delivery platform',
     role: 'Customer success manager (contract)',
     title: {
-      eng: 'Between the client and the code',
-      cs: 'The client’s voice in the build',
+      eng: 'Customer success manager for a delivery app',
+      cs: 'Customer success manager for a delivery app',
     },
     body: {
       eng: 'Managed a New York client’s delivery app for local shops through development, turning what the client needed into requirements the dev team could build.',
@@ -183,9 +183,9 @@ export const chapters: Chapter[] = [
     org: 'Credit One Bank',
     role: 'IT leadership associate · IMLP',
     title: {
-      eng: 'Banking workloads on Kubernetes',
-      cs: 'Built the tool support used every day',
-      frontend: 'An app the support team used every day',
+      eng: 'Moved bank applications to AWS',
+      cs: 'IT leadership program and an app for the support team',
+      frontend: 'Built an internal app for the support team',
     },
     body: {
       eng: 'In the Information Management Leadership Program: onboarded applications onto the bank’s hybrid cloud with Terraform, deployed to AWS EKS, and watched cluster health for production banking services.',
@@ -204,10 +204,10 @@ export const chapters: Chapter[] = [
     org: 'İzibiz',
     role: 'Software engineer',
     title: {
-      eng: 'Regulated products, end to end',
-      cs: 'From regulation to a product people use',
-      backend: 'A tax engine and the services around it',
-      frontend: 'Regulated products on web and mobile',
+      eng: 'Led e-document products from start to release',
+      cs: 'Owned e-document products from requirements to release',
+      backend: 'Built a tax engine and backend services',
+      frontend: 'Built e-document apps for web and mobile',
     },
     body: {
       eng: 'Led delivery of e-Ledger, e-SMM, e-Creditnote and expense vouchers, a tax calculation engine and an SMS microservice across Flutter, Vue, JSP, Java Spring and PostgreSQL, running on Docker and Nginx with Graylog and Zabbix. Claude Code at every stage.',
@@ -230,10 +230,10 @@ export const heartLabel: ByTrack = {
 export const nowChapter = {
   years: 'Now',
   title: {
-    eng: 'Next stop: your engineering team',
-    backend: 'Next stop: your backend team',
-    frontend: 'Next stop: your product team',
-    cs: 'Next stop: your customers',
+    eng: 'Looking for a full-stack role',
+    backend: 'Looking for a backend role',
+    frontend: 'Looking for a frontend role',
+    cs: 'Looking for a customer success role',
   } satisfies ByTrack,
   body: {
     cs: 'Based in Istanbul and looking for a customer success role where technical depth helps customers get more out of the product. Fluent in English and Turkish.',
@@ -390,7 +390,7 @@ export const desk: DeskItem[] = [
   {
     id: 'laptop',
     object: 'Laptop',
-    title: { eng: 'Things I built on the side', cs: 'Things I built on the side' },
+    title: { eng: 'Side projects', cs: 'Side projects' },
     body: {
       eng: 'Side projects are where I try new stacks before I need them at work.',
       cs: 'Side projects keep my hands on the code, so I know what I’m promising customers.',
@@ -400,7 +400,7 @@ export const desk: DeskItem[] = [
   {
     id: 'monitor',
     object: 'Monitor',
-    title: { eng: 'One backend, unlimited sites', cs: 'From one person’s app to a platform' },
+    title: { eng: 'Case study: one app, many sites', cs: 'Case study: one app, many sites' },
     body: {
       eng: 'A case study in turning a single-user app into a platform: the backend resolves each site from its hostname, keeps per-site data in Cloudflare R2, and deploys a new site in one click through the Cloudflare Pages API.',
       cs: 'A case study: a subtitled video app I built for one person became a platform where one backend serves any number of sites, each set up and deployed in one click.',
@@ -410,7 +410,7 @@ export const desk: DeskItem[] = [
   {
     id: 'calendar',
     object: 'Calendar',
-    title: { eng: 'A scraper that plans the week', cs: 'Built for my week, now open to anyone' },
+    title: { eng: 'Seçki İstanbul, an events site', cs: 'Seçki İstanbul, an events site' },
     body: {
       eng: 'Collectors pull events from over a hundred Istanbul sources every morning, respecting robots.txt, then dedupe them and score them with rules anyone can read. Signed-in visitors set their own interests and every event is re-scored for them.',
       cs: 'I wanted to stop missing good events, so I built a tool that reads Istanbul’s event pages every morning and explains what’s worth the time. Now it’s a public site, Seçki İstanbul, that anyone can tune to their own taste.',
@@ -420,7 +420,7 @@ export const desk: DeskItem[] = [
   {
     id: 'fridge',
     object: 'Fridge',
-    title: { eng: 'Computer vision in the kitchen', cs: 'A device built for real homes' },
+    title: { eng: 'Smart grocery device at H-E-B', cs: 'Smart grocery device at H-E-B' },
     body: {
       eng: 'At H-E-B I led a smart-home grocery device: CNN models trained in TensorFlow and Keras, running in real time on an NVIDIA Jetson Nano with CUDA and OpenCV.',
       cs: 'At H-E-B I took a smart-home grocery device from pitch to a prototype people could test at home, with an app flow that linked it to their H-E-B account.',
@@ -430,7 +430,7 @@ export const desk: DeskItem[] = [
   {
     id: 'phone',
     object: 'Phone',
-    title: { eng: 'Mobile and chat', cs: 'Meeting people where they already are' },
+    title: { eng: 'Mobile apps and chatbots', cs: 'Mobile apps and chatbots' },
     body: {
       eng: 'Flutter is my go-to for mobile and what I shipped with at İzibiz. On the side, AcneAway turned a selfie into a retouched photo, and StickerHub lived inside WhatsApp and Telegram.',
       cs: 'Products people reach from their phones: AcneAway turned a selfie into a retouched photo, and StickerHub didn’t ask anyone to install an app, it lived in the chats people already used.',
@@ -440,7 +440,7 @@ export const desk: DeskItem[] = [
   {
     id: 'headset',
     object: 'Headset',
-    title: { eng: 'Listening to customers', cs: 'Customer success' },
+    title: { eng: 'Working with customers', cs: 'Customer success' },
     body: {
       eng: 'My best engineering started with a conversation: what the client actually needs, what the support team fights with every day, which error message makes a user give up.',
       cs: 'I’ve owned the client side of a product and built for the people who support customers. I translate between what customers need and what engineers can ship.',
@@ -454,7 +454,7 @@ export const desk: DeskItem[] = [
   {
     id: 'server',
     object: 'Server',
-    title: { eng: 'Cloud and DevOps', cs: 'Technical depth with customers’ engineers' },
+    title: { eng: 'Cloud and DevOps', cs: 'Cloud and DevOps' },
     body: {
       eng: 'At Credit One I onboarded applications onto AWS EKS with Terraform and watched cluster health for production banking services. At İzibiz I containerized the stack with Docker and Nginx and used Graylog and Zabbix to monitor logs and infrastructure.',
       cs: 'Enough cloud experience to talk infrastructure with a customer’s engineers: AWS EKS and Terraform at Credit One, Docker, Nginx and monitoring at İzibiz. AWS Certified Cloud Practitioner.',
@@ -464,7 +464,7 @@ export const desk: DeskItem[] = [
 ]
 
 export const contact = {
-  headline: 'Let’s build a bridge.',
+  headline: 'Let’s talk.',
   body: {
     cs: 'Hiring for customer success? I’d like to hear about your customers and what success means for them.',
     eng: 'Hiring for a full-stack or cloud role? I’d like to hear about the product and the team.',
