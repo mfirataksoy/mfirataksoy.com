@@ -129,23 +129,6 @@
       tr: { name: 'StickerHub Asistanı', what: 'StickerHub’ın', chips: ['Botlar nasıl çalışıyordu?', 'Stickerlar neden çizim gibi?'] },
       en: { name: 'StickerHub Assistant', what: 'StickerHub’s', chips: ['How did the bots work?', 'Why do the stickers look drawn?'] },
     },
-    altyazi: {
-      accent: '#e2b84f',
-      tr: {
-        name: 'Altyazı Portalı Asistanı',
-        greeting: 'Merhaba 👋 Kendi altyazılı video sitenizi bir dakikada üretmek ister misiniz? Adım adım göstereyim.',
-        yes: 'Evet, göster',
-        yesMessage: 'Kendi sitemi üretmek istiyorum, adım adım gösterir misiniz?',
-        chips: ['Çocuk modu nedir?', 'Öğretmen paneli ne yapar?'],
-      },
-      en: {
-        name: 'Subtitle Portal Assistant',
-        greeting: 'Hi 👋 Want to make your own subtitled video site in a minute? I’ll walk you through it.',
-        yes: 'Yes, show me',
-        yesMessage: 'I’d like to make my own site. Could you walk me through it?',
-        chips: ['What is kids mode?', 'What does the teacher panel do?'],
-      },
-    },
     'istanbul-etkinlik': {
       accent: '#2b8ad8',
       teaser: false, // the site has its own events assistant; don't pop up next to it
