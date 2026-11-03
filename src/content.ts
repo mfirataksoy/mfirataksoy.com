@@ -293,13 +293,13 @@ export type Project = {
 // The projects list shows them in this order on every role page.
 export const projects: Project[] = [
   {
-    name: 'Istanbul Etkinlik',
+    name: 'Seçki İstanbul',
     year: '2026',
-    kind: 'Personal tool',
-    body: 'Every morning it collects Istanbul’s concerts, talks, theatre, exhibitions and workshops from over a hundred sources and ranks them by my interests. No AI involved: every score can be explained.',
-    stack: ['Python', 'Vue 3', 'GitHub Actions', 'iCal feed'],
-    link: { label: 'Open the demo', href: 'https://istanbul-etkinlik-demo.pages.dev' },
-    preview: '/previews/istanbul.jpg',
+    kind: 'Side project',
+    body: 'Every morning it gathers Istanbul’s concerts, talks, theatre, exhibitions and workshops from over a hundred sources and ranks them. The ranking uses no AI, so every score can be explained. Visitors get a map, an events assistant and an account that re-scores events for their own taste.',
+    stack: ['Python', 'Vue 3', 'Cloudflare Pages and D1', 'GitHub Actions'],
+    link: { label: 'Open the site', href: 'https://secki.istanbul' },
+    preview: '/previews/secki.jpg',
   },
   {
     name: 'Film Fırtınası',
@@ -312,13 +312,13 @@ export const projects: Project[] = [
     screen: 'laptop',
   },
   {
-    name: 'NoteWith.Me',
-    year: '2021',
+    name: 'Noteful',
+    year: '2021–2026',
     kind: 'Open source',
-    body: 'Collaborative notes without accounts: open a page, share the URL, write together. Professors used it for online classes during the pandemic. Brought back online in 2026.',
-    stack: ['Vue', 'Node.js', 'Express', 'MongoDB'],
+    body: 'Shared notes without accounts: open a page, share the link and write together live. It began in 2021 as NoteWith.Me, when professors used it for online classes. In 2026 I rebuilt it as a realtime editor with password locks encrypted in the browser, read-only links, QR codes and Markdown export.',
+    stack: ['Vue 3', 'Tiptap', 'Yjs', 'Cloudflare Workers'],
     link: { label: 'Open the app', href: 'https://noteful.me' },
-    preview: '/previews/notewithme.jpg',
+    preview: '/previews/noteful.jpg',
     screen: 'laptop',
     code: 'https://github.com/mfirataksoy/notewith.me',
   },
@@ -395,7 +395,7 @@ export const desk: DeskItem[] = [
       eng: 'Side projects are where I try new stacks before I need them at work.',
       cs: 'Side projects keep my hands on the code, so I know what I’m promising customers.',
     },
-    projects: ['NoteWith.Me', 'Film Fırtınası', 'This website'],
+    projects: ['Noteful', 'Film Fırtınası', 'This website'],
   },
   {
     id: 'monitor',
@@ -410,12 +410,12 @@ export const desk: DeskItem[] = [
   {
     id: 'calendar',
     object: 'Calendar',
-    title: { eng: 'A scraper that plans my week', cs: 'A tool built for my own week' },
+    title: { eng: 'A scraper that plans the week', cs: 'Built for my week, now open to anyone' },
     body: {
-      eng: 'Collectors pull events from over a hundred Istanbul sources every morning, respecting robots.txt, then dedupe them and score them against my interests with rules I can explain.',
-      cs: 'I wanted to stop missing good events, so I built a tool that reads Istanbul’s event pages every morning and tells me what’s worth my time, and why.',
+      eng: 'Collectors pull events from over a hundred Istanbul sources every morning, respecting robots.txt, then dedupe them and score them with rules anyone can read. Signed-in visitors set their own interests and every event is re-scored for them.',
+      cs: 'I wanted to stop missing good events, so I built a tool that reads Istanbul’s event pages every morning and explains what’s worth the time. Now it’s a public site, Seçki İstanbul, that anyone can tune to their own taste.',
     },
-    projects: ['Istanbul Etkinlik'],
+    projects: ['Seçki İstanbul'],
   },
   {
     id: 'fridge',

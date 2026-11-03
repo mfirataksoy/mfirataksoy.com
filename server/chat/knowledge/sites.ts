@@ -17,9 +17,9 @@ export type Site = {
 export const projectsOverview = `
 ## Fırat's projects (all of them; each name is followed by its live link if it has one)
 - Smart grocery device (2022, H-E-B Innovation & Technology): a smart-home device that recognizes products and barcodes in real time and adds what you run out of to your H-E-B account. Jetson Nano, CUDA, TensorFlow, Firebase. No public link.
-- Noteful (formerly NoteWith.Me; first built in 2021, rebuilt in 2026 as a realtime editor): collaborative notes without accounts. Open a page, share the URL and write together live, with optional password lock. Professors used the original for online classes during the pandemic. Vue 3, Tiptap, Yjs, Cloudflare Workers. https://noteful.me · code: https://github.com/mfirataksoy/notewith.me
+- Noteful (formerly NoteWith.Me; first built in 2021, rebuilt in 2026 as a realtime editor): collaborative notes without accounts. Open a page, share the URL and write together live, with optional password lock (end-to-end encrypted in the browser), read-only links, QR codes, a list of your notes, and Markdown/HTML/PDF export and Markdown import. Professors used the original for online classes during the pandemic. Vue 3, Tiptap, Yjs, Cloudflare Workers. https://noteful.me · code: https://github.com/mfirataksoy/notewith.me
 - Film Fırtınası (2026, side project): a movie discovery site on TMDB data with official trailers, IMDb, TMDB and community ratings side by side, reviews, movie requests with voting, and an admin panel that adds films straight from TMDB. Vue 3, TypeScript, Tailwind, Firebase. https://filmfirtinasi.com
-- Istanbul Etkinlik (2026, personal tool): every morning it collects Istanbul's concerts, talks, theatre, exhibitions and workshops from over a hundred sources and ranks them by Fırat's interests. No AI involved: every score can be explained. Python, Vue 3, GitHub Actions, iCal feed. Demo: https://istanbul-etkinlik-demo.pages.dev
+- Seçki İstanbul (2026, side project; started as Istanbul Etkinlik, a personal tool): every morning it collects Istanbul's concerts, talks, theatre, exhibitions and workshops from over a hundred sources and ranks them. The ranking uses no AI, so every score can be explained. Visitors get a map, an events assistant, and accounts that re-score events for their own interests, save events and subscribe to a calendar. Python, Vue 3, Cloudflare Pages Functions and D1, GitHub Actions. https://secki.istanbul
 - Altyazı Portalı (2026, case study): Fırat turned a subtitled video app he built for one person into a platform that generates unlimited sites from one backend: hostname-based site resolution, one-click deploys via the Cloudflare Pages API, per-site data in R2. Vue 3, Express, Cloudflare R2 and Pages, Gemini. Demo: https://altyazi-demo.pages.dev
 - AcneAway (2025, side project, retired and kept as a showcase): upload a selfie and get a clear-skin retouch from an AI image pipeline, with Stripe checkout for credits. Vue 3, Firebase, Stripe, Replicate. https://acneaway.mfirataksoy.com
 - StickerHub (2021, side project with Bedirhan Celayir, retired): WhatsApp and Telegram bots that sent people stickers on request, and a website built from stickers users sent back to the bot. Vue, Node.js, Firebase, Google Cloud. Farewell page: https://stickerhub.mfirataksoy.com
@@ -213,6 +213,11 @@ Password lock
 - After 10 wrong passwords, unlocking is blocked for 15 minutes.
 - A forgotten password cannot be recovered. "Remove password" makes the note readable again by anyone with the link.
 - Important: unlocked notes are not private. Anyone with the link can read and edit them, so don't put personal data in an unlocked note (the KVKK notice says the same).
+
+Your notes, sharing and files
+- The "Your notes" button in the header lists the notes opened in this browser (kept on this device only; locked notes show no title), with "New note" and "remove from list".
+- The Share panel has the edit link and a read-only link, each with a QR code. People with the read-only link see edits live but can't change anything and never learn the edit link. Replacing the read-only link or locking the note ends the old one. Locked notes don't offer a read-only link.
+- The "More" (…) menu downloads the note as Markdown, HTML or text, prints it or saves it as PDF, and imports a Markdown or text file at the end of the note.
 
 Other
 - Notes written on the old 2021 NoteWith.Me open and are imported automatically the first time.
