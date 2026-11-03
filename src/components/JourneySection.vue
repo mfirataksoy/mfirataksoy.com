@@ -7,8 +7,8 @@ import { track, pick } from '../useLens'
   <section id="journey" class="journey">
     <div class="wrap">
       <header class="journey__head" data-reveal>
-        <p class="kicker">01 · The route</p>
-        <h2 class="section-title">The route <em>so far</em>.</h2>
+        <p class="kicker">01 · Experience</p>
+        <h2 class="section-title">Work and <em>education</em>.</h2>
       </header>
 
       <ol class="journey__list">

@@ -103,7 +103,7 @@ onBeforeUnmount(() => scene?.dispose())
     <div class="wrap">
       <header data-reveal>
         <p class="kicker">02 · Projects</p>
-        <h2 class="section-title">The work, <em>up close</em>.</h2>
+        <h2 class="section-title">Things I’ve <em>built</em>.</h2>
         <p class="play__hint">{{ has3d ? (touch ? 'Tap an object on the desk' : 'Select an object on the desk') : 'Select an object to read its story' }}</p>
       </header>
 

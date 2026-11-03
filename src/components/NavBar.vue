@@ -8,10 +8,10 @@ onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }))
 onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 
 const links = [
-  { href: '#journey', label: 'Journey' },
+  { href: '#journey', label: 'Experience' },
   { href: '#projects', label: 'Projects' },
   { href: '#about', label: 'About' },
-  { href: '#toolkit', label: 'Toolkit' },
+  { href: '#toolkit', label: 'Skills' },
   { href: '#contact', label: 'Contact' },
 ]
 </script>
