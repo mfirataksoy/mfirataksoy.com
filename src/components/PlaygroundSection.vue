@@ -34,7 +34,7 @@ const firstSentence = (text: string) => text.split(/(?<=\.)\s/)[0]
 // The open project also lights up its device on the desk when it has a screenshot.
 function show(p: Project | null) {
   active.value = p
-  for (const key of ['laptop', 'monitor', 'phone'] as ScreenKey[]) scene?.showScreen(key, null)
+  for (const key of ['laptop', 'tv', 'phone'] as ScreenKey[]) scene?.showScreen(key, null)
   if (p?.screen && p.preview) scene?.showScreen(p.screen, p.preview)
 }
 
