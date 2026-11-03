@@ -411,7 +411,7 @@ export class Desk {
       ctx.fillStyle = '#16223f'
       ctx.fillRect(0, 0, w, 34)
       ctx.fillStyle = C.ivory
-      ctx.font = '600 18px Georgia, serif'
+      ctx.font = '600 18px "Inter Variable", system-ui, sans-serif'
       ctx.fillText('İstanbul', 12, 23)
       // A month grid with a few marked evenings.
       for (let row = 0; row < 5; row++) {

@@ -64,7 +64,7 @@ const links = [
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  font: 500 14px/1 var(--mono);
+  font: 600 14px/1 var(--sans);
   letter-spacing: 0.04em;
   color: var(--ink);
 }
@@ -87,7 +87,7 @@ const links = [
   align-items: center;
   gap: 6px;
   text-decoration: none;
-  font: 500 13px/1 var(--mono);
+  font: 600 13px/1 var(--sans);
   color: var(--ink-soft);
   padding: 9px 13px;
   border: 1px solid var(--line-strong);

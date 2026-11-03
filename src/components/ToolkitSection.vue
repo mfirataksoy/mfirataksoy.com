@@ -52,7 +52,7 @@ import { track, pickList } from '../useLens'
 }
 .toolkit__group h3 {
   margin: 0 0 16px;
-  font: 500 12px/1 var(--mono);
+  font: 600 12px/1 var(--sans);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--gold);

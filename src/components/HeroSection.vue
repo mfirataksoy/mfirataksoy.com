@@ -89,10 +89,10 @@ import { track, pick } from '../useLens'
 .hero__headline {
   display: block;
   margin-top: 10px;
-  font-family: var(--serif);
-  font-size: clamp(64px, 11vw, 168px);
-  line-height: 0.92;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  font-size: clamp(50px, 8.4vw, 124px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
 }
 .hero__bridges {
   position: relative;
@@ -103,9 +103,9 @@ import { track, pick } from '../useLens'
 .hero__arc {
   position: absolute;
   left: -2%;
-  bottom: -0.12em;
+  bottom: -0.25em;
   width: 104%;
-  height: 0.32em;
+  height: 0.3em;
   overflow: visible;
 }
 .hero__arc path {
@@ -114,8 +114,9 @@ import { track, pick } from '../useLens'
   stroke-width: 2;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+  /* With a non-scaling stroke Chrome measures the path longer than pathLength=1, so the dash has room to spare. */
+  stroke-dasharray: 3;
+  stroke-dashoffset: 3;
   animation: draw 1.6s 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
 @keyframes draw {
@@ -145,7 +146,7 @@ import { track, pick } from '../useLens'
   align-items: center;
   gap: 10px;
   text-decoration: none;
-  font: 500 11px/1 var(--mono);
+  font: 600 11px/1 var(--sans);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);

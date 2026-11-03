@@ -81,7 +81,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 }
 .picker__title {
   margin: 0;
-  font: 400 clamp(40px, 6vw, 64px) / 1 var(--serif);
+  font: 600 clamp(34px, 4.8vw, 52px) / 1.05 var(--sans);
+  letter-spacing: -0.035em;
 }
 .picker__title em {
   color: var(--gold);
@@ -117,7 +118,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   background: rgba(200, 164, 93, 0.08);
 }
 .picker__label {
-  font: 400 clamp(26px, 3.4vw, 32px) / 1.1 var(--serif);
+  font: 600 clamp(21px, 2.6vw, 25px) / 1.15 var(--sans);
+  letter-spacing: -0.025em;
 }
 .picker__arrow {
   position: absolute;
@@ -136,7 +138,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   border: 0;
   background: none;
   padding: 6px 0;
-  font: 500 13px/1 var(--mono);
+  font: 600 13px/1 var(--sans);
   letter-spacing: 0.06em;
   color: var(--muted);
   cursor: pointer;
