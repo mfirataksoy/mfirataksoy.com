@@ -287,7 +287,7 @@ export type Project = {
   status?: string
   // A screenshot shown in the playground, and the desk screen it appears on.
   preview?: string
-  screen?: 'laptop' | 'monitor' | 'phone'
+  screen?: 'laptop' | 'tv' | 'phone'
 }
 
 // The projects list shows them in this order on every role page.
@@ -309,7 +309,7 @@ export const projects: Project[] = [
     stack: ['Vue 3', 'TypeScript', 'Tailwind', 'Firebase'],
     link: { label: 'Open the site', href: 'https://filmfirtinasi.vercel.app' },
     preview: '/previews/filmfirtinasi.jpg',
-    screen: 'monitor',
+    screen: 'tv',
   },
   {
     name: 'Noteful',
@@ -363,7 +363,7 @@ export const projects: Project[] = [
   },
 ]
 
-export type DeskKey = 'laptop' | 'monitor' | 'calendar' | 'fridge' | 'phone' | 'headset' | 'server'
+export type DeskKey = 'laptop' | 'tv' | 'calendar' | 'fridge' | 'phone' | 'headset' | 'server'
 
 export type DeskItem = {
   id: DeskKey
@@ -387,8 +387,8 @@ export const desk: DeskItem[] = [
     projects: ['Noteful', 'This website'],
   },
   {
-    id: 'monitor',
-    object: 'Monitor',
+    id: 'tv',
+    object: 'TV',
     title: { eng: 'Film Fırtınası, a movie site', cs: 'Film Fırtınası, a movie site' },
     body: {
       eng: 'A movie discovery site on TMDB data: trailers and IMDb, TMDB and community ratings side by side, reviews, and movie requests people vote on. An admin panel adds films straight from TMDB.',

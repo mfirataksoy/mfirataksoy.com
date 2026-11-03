@@ -96,7 +96,7 @@ function chatScreen() {
   }, 160, 300)
 }
 
-export type ScreenKey = 'laptop' | 'monitor' | 'phone'
+export type ScreenKey = 'laptop' | 'tv' | 'phone'
 
 type Screen = {
   mesh: THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial>
@@ -155,7 +155,7 @@ export class Desk {
     this.buildFridge()
     this.buildPhone()
     this.buildCalendar()
-    this.buildMonitor()
+    this.buildTv()
     this.buildHeadset()
     this.buildServer()
     this.buildDecor()
@@ -356,51 +356,78 @@ export class Desk {
     this.register('phone', g)
   }
 
-  private buildMonitor() {
+  // Film Fırtınası is a movie site, so it plays on a widescreen TV with a soundbar.
+  private buildTv() {
     const g = new THREE.Group()
-    const foot = box(0.5, 0.03, 0.32, mat(C.dark))
-    foot.position.y = 0.015
-    g.add(foot)
-    const neck = box(0.07, 0.42, 0.05, mat(C.dark))
-    neck.position.set(0, 0.24, -0.06)
-    g.add(neck)
-    const frame = box(1.3, 0.78, 0.05, mat('#121a2c', { metalness: 0.3, roughness: 0.4 }))
-    frame.position.set(0, 0.78, 0)
+    const dark = mat(C.dark, { metalness: 0.4, roughness: 0.35 })
+    for (const x of [-0.62, 0.62]) {
+      const foot = box(0.06, 0.03, 0.34, dark)
+      foot.position.set(x, 0.015, 0)
+      g.add(foot)
+      const post = box(0.05, 0.12, 0.04, dark)
+      post.position.set(x, 0.07, -0.02)
+      g.add(post)
+    }
+    const W = 1.7, H = 0.96
+    const frame = box(W + 0.06, H + 0.06, 0.05, mat('#0b1120', { metalness: 0.5, roughness: 0.3 }))
+    frame.position.set(0, 0.16 + (H + 0.06) / 2, -0.02)
     g.add(frame)
-    // A video with a subtitle line under it.
-    const video = screenTexture((ctx, w, h) => {
-      ctx.fillStyle = '#1b2a4a'
+    // A thin gold line along the bottom bezel, and a standby LED.
+    const trim = box(W + 0.06, 0.012, 0.052, mat(C.gold, { emissive: C.gold, emissiveIntensity: 0.35, metalness: 0.6 }))
+    trim.position.set(0, 0.16, -0.02)
+    g.add(trim)
+    const led = mat('#ff5a4f', { emissive: '#ff5a4f', emissiveIntensity: 1.2 })
+    const ledDot = box(0.025, 0.012, 0.01, led)
+    ledDot.position.set(W / 2 - 0.08, 0.175, 0.008)
+    g.add(ledDot)
+    const soundbar = box(1.05, 0.07, 0.12, mat(C.graphite, { roughness: 0.8 }))
+    soundbar.position.set(0, 0.035, 0.3)
+    g.add(soundbar)
+    const grille = box(0.95, 0.04, 0.005, mat('#1a2236', { roughness: 1 }))
+    grille.position.set(0, 0.035, 0.363)
+    g.add(grille)
+    // Idle picture: a letterboxed film frame with a play button.
+    const film = screenTexture((ctx, w, h) => {
+      const sky = ctx.createLinearGradient(0, 0, 0, h)
+      sky.addColorStop(0, '#2b1d3f')
+      sky.addColorStop(0.6, '#8a4b4a')
+      sky.addColorStop(1, '#e0a25b')
+      ctx.fillStyle = sky
       ctx.fillRect(0, 0, w, h)
-      ctx.fillStyle = '#2c4270'
+      ctx.fillStyle = '#f4d08a'
       ctx.beginPath()
-      ctx.moveTo(0, h * 0.75)
-      ctx.lineTo(w * 0.35, h * 0.45)
-      ctx.lineTo(w * 0.6, h * 0.62)
-      ctx.lineTo(w, h * 0.35)
+      ctx.arc(w * 0.68, h * 0.6, h * 0.12, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#1c1830'
+      ctx.beginPath()
+      ctx.moveTo(0, h * 0.78)
+      ctx.lineTo(w * 0.22, h * 0.56)
+      ctx.lineTo(w * 0.4, h * 0.7)
+      ctx.lineTo(w * 0.62, h * 0.5)
+      ctx.lineTo(w, h * 0.74)
       ctx.lineTo(w, h)
       ctx.lineTo(0, h)
       ctx.fill()
-      ctx.fillStyle = 'rgba(236, 231, 220, 0.9)'
+      ctx.fillStyle = 'rgba(236, 231, 220, 0.92)'
       ctx.beginPath()
       ctx.moveTo(w / 2 - 14, h / 2 - 20)
       ctx.lineTo(w / 2 + 20, h / 2)
       ctx.lineTo(w / 2 - 14, h / 2 + 20)
       ctx.fill()
-      ctx.fillStyle = 'rgba(8, 17, 34, 0.75)'
-      ctx.fillRect(w * 0.2, h - 34, w * 0.6, 20)
-      ctx.fillStyle = C.gold
-      ctx.fillRect(w * 0.24, h - 28, w * 0.52, 8)
-    }, 256, 154)
+      ctx.fillStyle = '#05070d'
+      ctx.fillRect(0, 0, w, h * 0.1)
+      ctx.fillRect(0, h * 0.9, w, h * 0.1)
+    }, 288, 162)
     const screen = new THREE.Mesh(
-      new THREE.PlaneGeometry(1.22, 0.7),
-      new THREE.MeshBasicMaterial({ map: video, toneMapped: false }),
+      new THREE.PlaneGeometry(W, H),
+      new THREE.MeshBasicMaterial({ map: film, toneMapped: false }),
     )
-    screen.position.set(0, 0.78, 0.026)
+    screen.position.set(0, 0.16 + (H + 0.06) / 2, 0.007)
     g.add(screen)
-    this.screens.monitor = { mesh: screen, idle: video, aspect: 1.22 / 0.7 }
-    g.position.set(0.75, 2.01, -1.15)
+    this.screens.tv = { mesh: screen, idle: film, aspect: W / H }
+    g.position.set(0.85, 2.01, -1.15)
     g.rotation.y = 0.1
-    this.register('monitor', g)
+    this.register('tv', g)
   }
 
   private buildCalendar() {
