@@ -132,7 +132,6 @@ export class Desk {
   private fridgeLight!: THREE.PointLight
   private fridgeInner!: THREE.MeshStandardMaterial
   private leds: THREE.MeshStandardMaterial[] = []
-  private lampLight!: THREE.PointLight
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -156,7 +155,6 @@ export class Desk {
     this.buildPhone()
     this.buildCalendar()
     this.buildTv()
-    this.buildHeadset()
     this.buildServer()
     this.buildDecor()
 
@@ -196,9 +194,10 @@ export class Desk {
     key.shadow.camera.bottom = -6
     key.shadow.radius = 4
     this.scene.add(key)
-    this.lampLight = new THREE.PointLight('#ffdcaa', 5, 6, 1.6)
-    this.lampLight.position.set(-2.1, 3.3, -0.6)
-    this.world.add(this.lampLight)
+    // A soft warm fill from above the room, so the desk, fridge and wall read at night.
+    const fill = new THREE.PointLight('#ffe2bc', 7, 11, 1.4)
+    fill.position.set(-1.2, 5.6, 0.2)
+    this.world.add(fill)
   }
 
   private buildDesk() {
@@ -256,7 +255,7 @@ export class Desk {
   }
 
   // H-E-B's smart grocery device lived with people's groceries, so it gets a
-  // fridge: the door opens on click and a little camera scans the shelves.
+  // fridge with the device mounted on its door; the door opens on click.
   private buildFridge() {
     const g = new THREE.Group()
     const W = 1.5
@@ -296,13 +295,6 @@ export class Desk {
         g.add(item)
       }
     }
-    // The scanner: a small camera at the top, looking down at the shelves.
-    const scanner = box(0.32, 0.12, 0.2, mat(C.dark))
-    scanner.position.set(0, H - 0.16, 0.2)
-    g.add(scanner)
-    const lens = cyl(0.045, 0.045, 0.05, mat('#0b1020', { emissive: C.sky, emissiveIntensity: 1 }))
-    lens.position.set(0, H - 0.24, 0.24)
-    g.add(lens)
     this.fridgeLight = new THREE.PointLight('#fff1d6', 0, 3, 1.5)
     this.fridgeLight.position.set(0, H - 0.5, 0.3)
     g.add(this.fridgeLight)
@@ -318,6 +310,34 @@ export class Desk {
     const handle = box(0.05, 0.8, 0.06, mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
     handle.position.set(W - 0.14, H * 0.5, 0.13)
     hinge.add(handle)
+    // The H-E-B device itself, stuck to the door: a red cube with a white top and
+    // a camera sitting in a cutout on its front.
+    const device = new THREE.Group()
+    const S = 0.36
+    const red = mat('#e01e2b', { roughness: 0.45 })
+    const body = box(S, S * 0.86, S, red)
+    body.position.y = (S * 0.86) / 2
+    device.add(body)
+    const cap = box(S + 0.012, S * 0.14, S + 0.012, mat('#f4f2ee', { roughness: 0.4 }))
+    cap.position.y = S * 0.86 + (S * 0.14) / 2
+    device.add(cap)
+    const cutout = box(S * 0.46, S * 0.46, 0.02, mat('#0b0f1a', { roughness: 0.9 }))
+    cutout.position.set(0, S * 0.45, S / 2 - 0.006)
+    device.add(cutout)
+    const camBody = cyl(S * 0.13, S * 0.13, 0.03, mat('#1b2133', { metalness: 0.5, roughness: 0.3 }))
+    camBody.rotation.x = Math.PI / 2
+    camBody.position.set(0, S * 0.45, S / 2 + 0.008)
+    device.add(camBody)
+    const glass = cyl(S * 0.075, S * 0.075, 0.012, mat('#0b1020', { emissive: C.sky, emissiveIntensity: 1.1, metalness: 0.6, roughness: 0.15 }))
+    glass.rotation.x = Math.PI / 2
+    glass.position.set(0, S * 0.45, S / 2 + 0.026)
+    device.add(glass)
+    const status = box(0.03, 0.03, 0.01, mat('#7dff9a', { emissive: '#7dff9a', emissiveIntensity: 1.4 }))
+    status.position.set(S * 0.32, S * 0.74, S / 2 + 0.003)
+    device.add(status)
+    device.position.set(W * 0.74, H * 0.8, 0.09 + S / 2)
+    hinge.add(device)
+
     g.add(hinge)
     this.fridgeDoor = hinge
     g.position.set(-3.15, 0, -2.45)
@@ -457,81 +477,141 @@ export class Desk {
     this.register('tv', g)
   }
 
+  // Seçki İstanbul is an events site, so it gets a big wall calendar on its own
+  // wall: an Istanbul skyline on top and this month's grid, event nights in gold.
   private buildCalendar() {
-    const g = new THREE.Group()
+    // The wall stands along the left side of the room, behind the fridge.
+    const wall = box(0.12, 4.3, 5.2, mat('#111a31', { roughness: 0.95 }))
+    wall.position.set(-4.42, 2.15, -0.9)
+    this.world.add(wall)
+    const skirting = box(0.04, 0.16, 5.2, mat(C.edge, { emissive: C.edge, emissiveIntensity: 0.2, metalness: 0.5 }))
+    skirting.position.set(-4.34, 0.08, -0.9)
+    this.world.add(skirting)
+
+    const W = 1.36, H = 1.26
+    const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
+    const now = new Date()
     const page = screenTexture((ctx, w, h) => {
       ctx.fillStyle = C.ivory
       ctx.fillRect(0, 0, w, h)
-      ctx.fillStyle = '#16223f'
-      ctx.fillRect(0, 0, w, 34)
-      ctx.fillStyle = C.ivory
-      ctx.font = '600 18px "Inter Variable", system-ui, sans-serif'
-      ctx.fillText('İstanbul', 12, 23)
-      // A month grid with a few marked evenings.
-      for (let row = 0; row < 5; row++) {
-        for (let col = 0; col < 7; col++) {
-          const x = 12 + col * 33
-          const y = 46 + row * 22
-          const marked = [9, 12, 17, 23, 26].includes(row * 7 + col)
-          ctx.fillStyle = marked ? C.gold : '#c9c3b5'
-          ctx.fillRect(x, y, 22, 14)
-        }
+      // Skyline at dusk: domes, minarets and the Galata Tower over the water.
+      const top = h * 0.36
+      const sky = ctx.createLinearGradient(0, 0, 0, top)
+      sky.addColorStop(0, '#22284a')
+      sky.addColorStop(0.55, '#8a4b4a')
+      sky.addColorStop(1, '#e8a95e')
+      ctx.fillStyle = sky
+      ctx.fillRect(0, 0, w, top)
+      ctx.fillStyle = '#f4d08a'
+      ctx.beginPath()
+      ctx.arc(w * 0.78, top * 0.62, top * 0.13, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#1a1830'
+      const ground = top * 0.86
+      ctx.fillRect(0, ground, w, top - ground)
+      const dome = (x: number, r: number) => {
+        ctx.beginPath()
+        ctx.arc(x, ground, r, Math.PI, 0)
+        ctx.fill()
       }
-    }, 256, 160)
-    const paper = new THREE.MeshStandardMaterial({ map: page, roughness: 0.8 })
-    const back = mat('#d9d3c6', { roughness: 0.9 })
-    for (const side of [1, -1]) {
-      const leaf = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.52), side === 1 ? paper : back)
-      leaf.castShadow = true
-      leaf.position.set(0, 0.25, side * 0.12)
-      leaf.rotation.x = -side * 0.45
-      if (side === -1) leaf.rotation.y = Math.PI
-      g.add(leaf)
-    }
-    for (const x of [-0.25, 0, 0.25]) {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.008, 8, 16), mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
-      ring.position.set(x, 0.5, 0)
-      ring.rotation.y = Math.PI / 2
+      const minaret = (x: number, hgt: number) => {
+        ctx.fillRect(x - 3, ground - hgt, 6, hgt)
+        ctx.beginPath()
+        ctx.moveTo(x - 4, ground - hgt)
+        ctx.lineTo(x, ground - hgt - 16)
+        ctx.lineTo(x + 4, ground - hgt)
+        ctx.fill()
+      }
+      dome(w * 0.2, 46)
+      dome(w * 0.11, 24)
+      dome(w * 0.29, 24)
+      ctx.fillRect(w * 0.2 - 50, ground - 18, 100, 18)
+      minaret(w * 0.05, 92)
+      minaret(w * 0.35, 92)
+      dome(w * 0.5, 30)
+      minaret(w * 0.42, 70)
+      minaret(w * 0.58, 70)
+      // Galata Tower.
+      const gx = w * 0.72
+      ctx.fillRect(gx - 14, ground - 96, 28, 96)
+      ctx.beginPath()
+      ctx.moveTo(gx - 17, ground - 96)
+      ctx.lineTo(gx, ground - 134)
+      ctx.lineTo(gx + 17, ground - 96)
+      ctx.fill()
+      ctx.fillRect(w * 0.82, ground - 30, w * 0.18, 30)
+      // Binding strip.
+      ctx.fillStyle = '#16223f'
+      ctx.fillRect(0, 0, w, 14)
+
+      // Month header.
+      ctx.fillStyle = '#16223f'
+      ctx.font = '700 40px "Inter Variable", system-ui, sans-serif'
+      ctx.fillText(months[now.getMonth()], 26, top + 46)
+      ctx.fillStyle = '#9a7b3c'
+      ctx.font = '600 22px "Inter Variable", system-ui, sans-serif'
+      const tag = 'SEÇKİ İSTANBUL'
+      ctx.fillText(tag, w - 26 - ctx.measureText(tag).width, top + 42)
+
+      // Weekdays and the month grid, Monday first.
+      const days = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz']
+      const gx0 = 26, cw = (w - 52) / 7, gy0 = top + 80, ch = (h - top - 80 - 10) / 6
+      ctx.font = '600 18px "Inter Variable", system-ui, sans-serif'
+      ctx.fillStyle = '#7d7768'
+      days.forEach((d, i) => ctx.fillText(d, gx0 + i * cw + 12, gy0 - 10))
+      const first = (new Date(now.getFullYear(), now.getMonth(), 1).getDay() + 6) % 7
+      const count = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+      const events = new Set([3, 7, 9, 12, 14, 18, 21, 24, 27])
+      ctx.font = '600 22px "Inter Variable", system-ui, sans-serif'
+      for (let d = 1; d <= count; d++) {
+        const i = first + d - 1
+        const x = gx0 + (i % 7) * cw
+        const y = gy0 + Math.floor(i / 7) * ch
+        if (events.has(d)) {
+          ctx.fillStyle = C.gold
+          ctx.beginPath()
+          ctx.roundRect(x + 4, y + 2, cw - 8, ch - 6, 8)
+          ctx.fill()
+        }
+        if (d === now.getDate()) {
+          ctx.strokeStyle = '#16223f'
+          ctx.lineWidth = 3
+          ctx.beginPath()
+          ctx.roundRect(x + 4, y + 2, cw - 8, ch - 6, 8)
+          ctx.stroke()
+        }
+        ctx.fillStyle = events.has(d) ? '#16223f' : '#4a4a55'
+        ctx.fillText(String(d), x + 12, y + ch * 0.62)
+      }
+    }, 560, 544)
+    page.anisotropy = 8
+
+    // The calendar hangs from a nail, facing into the room.
+    const g = new THREE.Group()
+    const board = box(0.04, H + 0.06, W + 0.06, mat('#d9d3c6', { roughness: 0.9 }))
+    board.position.set(0.02, 0, 0)
+    g.add(board)
+    const sheet = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshStandardMaterial({ map: page, roughness: 0.8 }))
+    sheet.rotation.y = Math.PI / 2
+    sheet.position.set(0.045, 0, 0)
+    g.add(sheet)
+    for (let i = 0; i < 9; i++) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.007, 8, 16), mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
+      ring.position.set(0.05, H / 2 - 0.01, -W / 2 + 0.1 + i * ((W - 0.2) / 8))
       g.add(ring)
     }
-    g.position.set(-1.05, 2.01, 1.2)
-    g.rotation.y = 0.55
+    const nail = cyl(0.015, 0.015, 0.08, mat(C.metal, { metalness: 0.8 }), 8)
+    nail.rotation.z = Math.PI / 2
+    nail.position.set(0.02, H / 2 + 0.12, 0)
+    g.add(nail)
+    const string = box(0.005, 0.12, 0.4, mat('#9a8f7a'))
+    string.position.set(0.04, H / 2 + 0.07, 0)
+    g.add(string)
+    g.position.set(-4.33, 2.92, -0.85)
     this.register('calendar', g)
   }
 
-  private buildHeadset() {
-    const g = new THREE.Group()
-    const stand = cyl(0.05, 0.05, 0.9, mat(C.dark))
-    stand.position.y = 0.45
-    g.add(stand)
-    const foot = cyl(0.26, 0.28, 0.05, mat(C.dark))
-    foot.position.y = 0.025
-    g.add(foot)
-    const band = new THREE.Mesh(
-      new THREE.TorusGeometry(0.36, 0.045, 12, 40, Math.PI),
-      mat(C.gold, { roughness: 0.35, metalness: 0.6 }),
-    )
-    band.castShadow = true
-    band.position.y = 0.92
-    g.add(band)
-    for (const side of [-1, 1]) {
-      const cup = cyl(0.17, 0.17, 0.12, mat('#262c3f'))
-      cup.rotation.z = Math.PI / 2
-      cup.position.set(side * 0.38, 0.86, 0)
-      g.add(cup)
-      const pad = cyl(0.13, 0.13, 0.03, mat('#11151f'))
-      pad.rotation.z = Math.PI / 2
-      pad.position.set(side * 0.31, 0.86, 0)
-      g.add(pad)
-    }
-    const mic = cyl(0.015, 0.015, 0.4, mat(C.dark))
-    mic.rotation.z = 1.1
-    mic.position.set(-0.28, 0.7, 0.14)
-    g.add(mic)
-    g.position.set(-2.35, 2.01, 1.0)
-    g.rotation.y = 0.5
-    this.register('headset', g)
-  }
+
 
   private buildServer() {
     const g = new THREE.Group()
@@ -556,29 +636,6 @@ export class Desk {
   }
 
   private buildDecor() {
-    // Lamp
-    const lamp = new THREE.Group()
-    const base = cyl(0.24, 0.28, 0.06, mat(C.dark))
-    base.position.y = 0.03
-    lamp.add(base)
-    const arm1 = cyl(0.025, 0.025, 1.0, mat(C.dark))
-    arm1.position.set(0.12, 0.5, 0)
-    arm1.rotation.z = -0.25
-    lamp.add(arm1)
-    const arm2 = cyl(0.025, 0.025, 0.8, mat(C.dark))
-    arm2.position.set(0.05, 1.12, 0.2)
-    arm2.rotation.x = 0.9
-    lamp.add(arm2)
-    const shade = new THREE.Mesh(
-      new THREE.ConeGeometry(0.22, 0.3, 24, 1, true),
-      mat(C.gold, { side: THREE.DoubleSide, metalness: 0.5, roughness: 0.35, emissive: '#e2cc93', emissiveIntensity: 0.25 }),
-    )
-    shade.position.set(0.0, 1.35, 0.55)
-    shade.rotation.x = 0.6
-    lamp.add(shade)
-    lamp.position.set(-2.3, 2.01, -1.05)
-    this.world.add(lamp)
-
     // Mug
     const mug = cyl(0.13, 0.12, 0.26, mat(C.ivory))
     mug.position.set(0.85, 2.14, 1.05)
@@ -657,7 +714,8 @@ export class Desk {
     const ring = this.selectedRing
     const onFloor = p.y < 1
     gsap.to(ring.position, { x: p.x, z: p.z, y: onFloor ? 0.01 : 2.021, duration: this.reducedMotion ? 0 : 0.5, ease: 'power3.out' })
-    gsap.to(ring.material, { opacity: 0.9, duration: 0.3 })
+    // The wall calendar hangs on a wall, so it has no ring under it.
+    gsap.to(ring.material, { opacity: id === 'calendar' ? 0 : 0.9, duration: 0.3 })
     if (!this.visible) this.renderOnce()
   }
 
@@ -749,7 +807,6 @@ export class Desk {
       this.world.rotation.x += (-this.sway.y * 0.04 - this.world.rotation.x) * 0.05
       this.code.offset.y = (t * 0.04) % 1
       this.leds.forEach((m, i) => (m.emissiveIntensity = 0.4 + 0.6 * (Math.sin(t * (2 + (i % 5)) + i) > 0.2 ? 1 : 0)))
-      this.lampLight.intensity = 5 + Math.sin(t * 1.3) * 0.2
       if (this.selected) this.selectedRing.scale.setScalar(1 + Math.sin(t * 3) * 0.04)
     }
     this.renderer.render(this.scene, this.camera)

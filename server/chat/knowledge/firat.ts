@@ -43,8 +43,7 @@ export const firatKnowledge = `
 - Designed 3D-printed enclosures for in-home testing and pitched integration into H-E-B's iOS and Android apps.
 
 ### Software Engineer Intern · Anlaş Otomasyon · Istanbul · Sep 2019 – Jan 2020
-- Rebuilt the licensing server (React, Node, Express, TypeScript) that authenticated purchases for all customers, from Fortune 1000 firms to small businesses.
-- Replaced cryptic UI errors with actionable handling and reporting, reducing total errors by 15%.
+- Rebuilt the licensing server (ASP.NET, C#) that authenticated purchases for all customers, from Fortune 1000 firms to small businesses.
 
 ### Alumni Relations & Front Desk Specialist · D.J. Kelly Alumni Center, TCU · Fort Worth, TX · 2019 – 2023
 - Staffed the front desk for four years while studying full time, welcoming guests and setting up 300+ attendee events; recognized by management in 2023 for handling an emergency.
