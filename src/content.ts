@@ -110,8 +110,8 @@ export const chapters: Chapter[] = [
       cs: 'Computer science degree at TCU',
     },
     body: {
-      eng: 'Computer science with a math minor at TCU as a Chancellor’s Scholar, on the Dean’s List, and the first lines of code that ended up in production.',
-      cs: 'Computer science with a math minor as a Chancellor’s Scholar. Alongside the degree, four years as an alumni relations and front desk specialist at TCU’s D.J. Kelly Alumni Center, welcoming guests and setting up events for 300+ attendees.',
+      eng: 'Computer science with a math minor at TCU as a Chancellor’s Scholar, a merit-based full-ride scholarship. I made the Dean’s List and wrote my first code that ended up in production.',
+      cs: 'Computer science with a math minor as a Chancellor’s Scholar, a merit-based full-ride scholarship. Alongside the degree, I worked for four years as an alumni relations and front desk specialist at TCU’s D.J. Kelly Alumni Center, where I set up hundreds of events with 300+ attendees each and managed alumni relations.',
     },
     logo: { src: '/logos/tcu.svg', alt: 'TCU, Texas Christian University' },
   },
