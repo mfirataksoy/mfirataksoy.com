@@ -356,36 +356,63 @@ export class Desk {
     this.register('phone', g)
   }
 
-  // Film Fırtınası is a movie site, so it plays on a widescreen TV with a soundbar.
+  // Film Fırtınası is a movie site, so it plays on a real TV: a big thin panel
+  // on a pedestal, standing on a media console behind the desk.
   private buildTv() {
     const g = new THREE.Group()
     const dark = mat(C.dark, { metalness: 0.4, roughness: 0.35 })
-    for (const x of [-0.62, 0.62]) {
-      const foot = box(0.06, 0.03, 0.34, dark)
-      foot.position.set(x, 0.015, 0)
-      g.add(foot)
-      const post = box(0.05, 0.12, 0.04, dark)
-      post.position.set(x, 0.07, -0.02)
-      g.add(post)
+    const gold = mat(C.gold, { metalness: 0.7, roughness: 0.3 })
+
+    // Media console: a low walnut cabinet with two doors on short legs.
+    const CW = 2.7, CH = 1.45, CD = 0.62, legH = 0.18
+    const wood = mat('#4a3a30', { roughness: 0.75 })
+    const cabinet = box(CW, CH - legH, CD, wood)
+    cabinet.position.y = legH + (CH - legH) / 2
+    g.add(cabinet)
+    for (const [x, z] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+      const leg = cyl(0.035, 0.022, legH, dark, 12)
+      leg.position.set(x * (CW / 2 - 0.12), legH / 2, z * (CD / 2 - 0.08))
+      g.add(leg)
     }
-    const W = 1.7, H = 0.96
-    const frame = box(W + 0.06, H + 0.06, 0.05, mat('#0b1120', { metalness: 0.5, roughness: 0.3 }))
-    frame.position.set(0, 0.16 + (H + 0.06) / 2, -0.02)
-    g.add(frame)
-    // A thin gold line along the bottom bezel, and a standby LED.
-    const trim = box(W + 0.06, 0.012, 0.052, mat(C.gold, { emissive: C.gold, emissiveIntensity: 0.35, metalness: 0.6 }))
-    trim.position.set(0, 0.16, -0.02)
-    g.add(trim)
-    const led = mat('#ff5a4f', { emissive: '#ff5a4f', emissiveIntensity: 1.2 })
-    const ledDot = box(0.025, 0.012, 0.01, led)
-    ledDot.position.set(W / 2 - 0.08, 0.175, 0.008)
-    g.add(ledDot)
-    const soundbar = box(1.05, 0.07, 0.12, mat(C.graphite, { roughness: 0.8 }))
-    soundbar.position.set(0, 0.035, 0.3)
+    for (const side of [-1, 1]) {
+      const door = box(CW / 2 - 0.08, CH - legH - 0.12, 0.012, mat('#55443a', { roughness: 0.7 }))
+      door.position.set(side * (CW / 4), legH + (CH - legH) / 2, CD / 2 + 0.006)
+      g.add(door)
+      const pull = box(0.18, 0.025, 0.03, gold)
+      pull.position.set(side * 0.16, legH + (CH - legH) / 2, CD / 2 + 0.025)
+      g.add(pull)
+    }
+
+    // Soundbar and remote on top of the console.
+    const soundbar = box(1.5, 0.1, 0.16, mat(C.graphite, { roughness: 0.8 }))
+    soundbar.position.set(0, CH + 0.05, 0.17)
     g.add(soundbar)
-    const grille = box(0.95, 0.04, 0.005, mat('#1a2236', { roughness: 1 }))
-    grille.position.set(0, 0.035, 0.363)
+    const grille = box(1.4, 0.06, 0.005, mat('#1a2236', { roughness: 1 }))
+    grille.position.set(0, CH + 0.05, 0.253)
     g.add(grille)
+    const remote = box(0.09, 0.03, 0.34, mat('#0e1220', { roughness: 0.5 }))
+    remote.position.set(1.0, CH + 0.015, 0.12)
+    remote.rotation.y = -0.35
+    g.add(remote)
+
+    // The TV: a 16:9 panel with thin bezels on a centre pedestal.
+    const W = 2.5, H = (W * 9) / 16
+    const plate = box(0.7, 0.03, 0.34, dark)
+    plate.position.set(0, CH + 0.015, -0.12)
+    g.add(plate)
+    const neck = box(0.14, 0.26, 0.06, dark)
+    neck.position.set(0, CH + 0.14, -0.14)
+    g.add(neck)
+    const y0 = CH + 0.24
+    const panel = box(W + 0.04, H + 0.04, 0.04, mat('#0b1120', { metalness: 0.5, roughness: 0.3 }))
+    panel.position.set(0, y0 + (H + 0.04) / 2, -0.12)
+    g.add(panel)
+    const back = box(W * 0.55, H * 0.55, 0.07, mat('#0b1120', { metalness: 0.4, roughness: 0.4 }))
+    back.position.set(0, y0 + H * 0.45, -0.175)
+    g.add(back)
+    const ledDot = box(0.03, 0.012, 0.01, mat('#ff5a4f', { emissive: '#ff5a4f', emissiveIntensity: 1.2 }))
+    ledDot.position.set(0, y0 + 0.006, -0.095)
+    g.add(ledDot)
     // Idle picture: a letterboxed film frame with a play button.
     const film = screenTexture((ctx, w, h) => {
       const sky = ctx.createLinearGradient(0, 0, 0, h)
@@ -417,16 +444,16 @@ export class Desk {
       ctx.fillStyle = '#05070d'
       ctx.fillRect(0, 0, w, h * 0.1)
       ctx.fillRect(0, h * 0.9, w, h * 0.1)
-    }, 288, 162)
+    }, 384, 216)
     const screen = new THREE.Mesh(
       new THREE.PlaneGeometry(W, H),
       new THREE.MeshBasicMaterial({ map: film, toneMapped: false }),
     )
-    screen.position.set(0, 0.16 + (H + 0.06) / 2, 0.007)
+    screen.position.set(0, y0 + (H + 0.04) / 2, -0.098)
     g.add(screen)
     this.screens.tv = { mesh: screen, idle: film, aspect: W / H }
-    g.position.set(0.85, 2.01, -1.15)
-    g.rotation.y = 0.1
+    g.position.set(-0.8, 0, -3.3)
+    g.rotation.y = 0.12
     this.register('tv', g)
   }
 

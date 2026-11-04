@@ -108,7 +108,7 @@ export const chapters: Chapter[] = [
     role: 'B.S. Computer Science, minor in Mathematics',
     title: {
       eng: 'Computer science degree at TCU',
-      cs: 'Computer science degree and an alumni center job',
+      cs: 'Computer science degree at TCU',
     },
     body: {
       eng: 'Computer science with a math minor at TCU as a Chancellor’s Scholar, on the Dean’s List, and the first lines of code that ended up in production.',
@@ -126,8 +126,8 @@ export const chapters: Chapter[] = [
     org: 'Anlaş Otomasyon',
     role: 'Software engineer intern',
     title: {
-      eng: 'Rebuilt the licensing server',
-      cs: 'Rebuilt the licensing server and its error messages',
+      eng: 'My first internship: rebuilding the licensing server',
+      cs: 'My first internship: rebuilding the licensing server',
     },
     body: {
       eng: 'Rebuilt the licensing server that authenticated every purchase, from Fortune 1000 firms to small businesses, in React, Node, Express and TypeScript.',
@@ -145,8 +145,8 @@ export const chapters: Chapter[] = [
     org: 'H-E-B Innovation & Technology',
     role: 'Software engineer intern · technical lead',
     title: {
-      eng: 'Led a smart grocery device project',
-      cs: 'Took a smart grocery device from idea to prototype',
+      eng: 'An internship at the heart of retail innovation, at H-E-B',
+      cs: 'An internship at the heart of retail innovation, at H-E-B',
     },
     body: {
       eng: 'Technical lead for a smart-home grocery device: CNN product and barcode recognition with TensorFlow on an NVIDIA Jetson Nano, plus Wi-Fi setup, Firebase Auth and H-E-B account linking in the companion app.',
@@ -183,9 +183,8 @@ export const chapters: Chapter[] = [
     org: 'Credit One Bank',
     role: 'IT leadership associate · IMLP',
     title: {
-      eng: 'Moved bank applications to AWS',
-      cs: 'IT leadership program and an app for the support team',
-      frontend: 'Built an internal app for the support team',
+      eng: 'IT leadership associate at Credit One Bank',
+      cs: 'IT leadership associate at Credit One Bank',
     },
     body: {
       eng: 'In the Information Management Leadership Program: onboarded applications onto the bank’s hybrid cloud with Terraform, deployed to AWS EKS, and watched cluster health for production banking services.',
