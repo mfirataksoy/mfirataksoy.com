@@ -96,6 +96,8 @@ export type Chapter = {
   tags: string[]
   // Customer-facing tags for the customer success lens; falls back to `tags`.
   csTags?: string[]
+  // A logo shown large at the top of the card.
+  logo?: { src: string; alt: string }
 }
 
 export const chapters: Chapter[] = [
@@ -116,6 +118,7 @@ export const chapters: Chapter[] = [
     },
     tags: ['Chancellor’s Scholar', 'Dean’s List'],
     csTags: ['Chancellor’s Scholar', 'Alumni relations'],
+    logo: { src: '/logos/tcu.svg', alt: 'TCU, Texas Christian University' },
   },
   {
     id: 'anlas',

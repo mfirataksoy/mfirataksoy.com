@@ -22,6 +22,9 @@ import { track, pick } from '../useLens'
         >
           <span class="chapter__node" aria-hidden="true" />
           <article class="chapter__card" data-reveal>
+            <div v-if="c.logo" class="chapter__logo">
+              <img :src="c.logo.src" :alt="c.logo.alt" width="238" height="116" />
+            </div>
             <p class="chapter__meta">
               <span>{{ c.years }}</span><span aria-hidden="true">·</span><span>{{ c.place }}</span>
             </p>
@@ -126,6 +129,22 @@ import { track, pick } from '../useLens'
   font-style: italic;
   color: var(--gold);
 }
+/* A school or company logo on a light tile, so its own colours read on the dark card. */
+.chapter__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  padding: 18px 24px;
+  border-radius: 12px;
+  background: #f7f4ee;
+}
+.chapter__logo img {
+  display: block;
+  width: auto;
+  height: 88px;
+}
+
 .chapter__meta {
   display: flex;
   flex-wrap: wrap;
@@ -162,6 +181,13 @@ import { track, pick } from '../useLens'
   min-height: 70vh;
 }
 @media (max-width: 760px) {
+  .chapter__logo {
+    margin-bottom: 14px;
+    padding: 12px 18px;
+  }
+  .chapter__logo img {
+    height: 60px;
+  }
   .journey__list {
     padding-left: 32px;
   }
