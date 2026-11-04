@@ -12,7 +12,7 @@ defineProps<{ id: DeskKey; size?: number }>()
       <template v-else-if="id === 'calendar'"><rect x="4" y="5" width="16" height="15" rx="1.5" /><path d="M4 10h16M8 3v4M16 3v4" /></template>
       <template v-else-if="id === 'fridge'"><rect x="6" y="2.5" width="12" height="19" rx="1.5" /><path d="M6 9h12M9 5v2M9 12v4" /></template>
       <template v-else-if="id === 'phone'"><rect x="7" y="3" width="10" height="18" rx="2" /><path d="M11 18h2" /></template>
-      <template v-else><rect x="5" y="3" width="14" height="18" rx="1.5" /><path d="M8 8h3M8 12h3M8 16h3" /><circle cx="15.5" cy="8" r=".6" /></template>
+      <template v-else><rect x="3" y="4" width="18" height="5" rx="1" /><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4" /></template>
     </g>
   </svg>
 </template>

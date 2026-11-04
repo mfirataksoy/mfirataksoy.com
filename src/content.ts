@@ -410,23 +410,24 @@ export const desk: DeskItem[] = [
   {
     id: 'phone',
     object: 'Phone',
-    title: { eng: 'Mobile apps and chatbots', cs: 'Mobile apps and chatbots' },
+    title: { eng: 'Mobile apps', cs: 'Mobile apps' },
     body: {
-      eng: 'Flutter is my go-to for mobile and what I shipped with at İzibiz. On the side, AcneAway turned a selfie into a retouched photo, and StickerHub lived inside WhatsApp and Telegram.',
-      cs: 'Products people reach from their phones: AcneAway turned a selfie into a retouched photo, and StickerHub didn’t ask anyone to install an app, it lived in the chats people already used.',
+      eng: 'Flutter is my go-to for mobile, and what I shipped the e-document apps with at İzibiz.',
+      cs: 'Flutter is my go-to for mobile, and what I shipped the e-document apps with at İzibiz.',
+    },
+  },
+
+  {
+    id: 'server',
+    object: 'Archive',
+    title: { eng: 'Archive', cs: 'Archive' },
+    body: {
+      eng: 'Products I built that are retired now. Their sites stay up as showcases.',
+      cs: 'Products I built that are retired now. Their sites stay up as showcases.',
     },
     projects: ['AcneAway', 'StickerHub'],
   },
-  {
-    id: 'server',
-    object: 'Server',
-    title: { eng: 'Cloud and DevOps', cs: 'Cloud and DevOps' },
-    body: {
-      eng: 'At Credit One I onboarded applications onto AWS EKS with Terraform and watched cluster health for production banking services. At İzibiz I containerized the stack with Docker and Nginx and used Graylog and Zabbix to monitor logs and infrastructure.',
-      cs: 'Enough cloud experience to talk infrastructure with a customer’s engineers: AWS EKS and Terraform at Credit One, Docker, Nginx and monitoring at İzibiz. AWS Certified Cloud Practitioner.',
-    },
-    points: ['AWS EKS', 'Kubernetes', 'Terraform', 'Docker', 'Nginx', 'Graylog', 'Zabbix'],
-  },
+
 ]
 
 export const contact = {
