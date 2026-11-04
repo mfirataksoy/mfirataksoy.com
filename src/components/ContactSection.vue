@@ -38,7 +38,7 @@ async function copyEmail() {
       </ul>
     </div>
     <footer class="footer wrap">
-      <span>© 2026 {{ profile.name }} · Built with Vue, Three.js and Claude Code</span>
+      <span>© 2026 {{ profile.name }}</span>
       <span class="footer__links">
         <a href="/kvkk/" class="footer__privacy" data-event="privacy_open" data-where="footer">Privacy · KVKK</a>
         <a :href="profile.classic" class="footer__classic" data-event="classic_site_open" data-where="footer">

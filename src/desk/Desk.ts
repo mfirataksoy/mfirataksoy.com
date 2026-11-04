@@ -200,22 +200,53 @@ export class Desk {
     this.world.add(fill)
   }
 
+  // A small room, laid out like a diorama: floor, two walls, a rug, and a
+  // compact desk in the middle with the TV, fridge and wall calendar around it.
   private buildDesk() {
-    const top = box(6.4, 0.18, 3.4, mat(C.top, { roughness: 0.45 }))
-    top.position.y = 1.92
+    const R = { x0: -4.42, x1: 2.5, z0: -3.8, z1: 1.75, wallH: 3.9 }
+    const floor = box(R.x1 - R.x0, 0.16, R.z1 - R.z0, mat('#141d36', { roughness: 0.85 }))
+    floor.position.set((R.x0 + R.x1) / 2, -0.08, (R.z0 + R.z1) / 2)
+    floor.castShadow = false
+    this.world.add(floor)
+    const wallMat = mat('#111a31', { roughness: 0.95 })
+    const trim = mat(C.edge, { emissive: C.edge, emissiveIntensity: 0.2, metalness: 0.5 })
+    // Left wall, which also holds the calendar.
+    const left = box(0.12, R.wallH, R.z1 - R.z0, wallMat)
+    left.position.set(R.x0 + 0.06, R.wallH / 2, (R.z0 + R.z1) / 2)
+    this.world.add(left)
+    const leftSkirt = box(0.04, 0.14, R.z1 - R.z0, trim)
+    leftSkirt.position.set(R.x0 + 0.14, 0.07, (R.z0 + R.z1) / 2)
+    this.world.add(leftSkirt)
+    // Back wall behind the TV.
+    const back = box(R.x1 - R.x0, R.wallH, 0.12, mat('#0f172d', { roughness: 0.95 }))
+    back.position.set((R.x0 + R.x1) / 2, R.wallH / 2, R.z0 + 0.06)
+    this.world.add(back)
+    const backSkirt = box(R.x1 - R.x0 - 0.12, 0.14, 0.04, trim)
+    backSkirt.position.set((R.x0 + R.x1) / 2 + 0.06, 0.07, R.z0 + 0.14)
+    this.world.add(backSkirt)
+    // A rug under the desk, with a thin gold border.
+    const rugBorder = box(4.6, 0.02, 3.1, mat(C.edge, { roughness: 0.9 }))
+    rugBorder.position.set(0.1, 0.01, 0.25)
+    rugBorder.castShadow = false
+    this.world.add(rugBorder)
+    const rug = box(4.48, 0.024, 2.98, mat('#1d2b4d', { roughness: 1 }))
+    rug.position.set(0.1, 0.012, 0.25)
+    rug.castShadow = false
+    this.world.add(rug)
+
+    // The desk: smaller, with room for a laptop and a phone.
+    const DW = 4.0, DD = 2.0, DX = 0.15, DZ = 0.25
+    const top = box(DW, 0.14, DD, mat(C.top, { roughness: 0.45 }))
+    top.position.set(DX, 1.94, DZ)
     this.world.add(top)
-    const edge = box(6.42, 0.03, 3.42, mat(C.edge, { emissive: C.edge, emissiveIntensity: 0.25 }))
-    edge.position.y = 1.83
+    const edge = box(DW + 0.02, 0.03, DD + 0.02, mat(C.edge, { emissive: C.edge, emissiveIntensity: 0.25 }))
+    edge.position.set(DX, 1.86, DZ)
     this.world.add(edge)
-    for (const [x, z] of [[-3, -1.5], [3, -1.5], [-3, 1.5], [3, 1.5]]) {
-      const leg = box(0.14, 1.84, 0.14, mat(C.leg))
-      leg.position.set(x, 0.92, z)
+    for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+      const leg = box(0.1, 1.86, 0.1, mat(C.leg))
+      leg.position.set(DX + sx * (DW / 2 - 0.16), 0.93, DZ + sz * (DD / 2 - 0.14))
       this.world.add(leg)
     }
-    const shadow = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0.35 }))
-    shadow.rotation.x = -Math.PI / 2
-    shadow.receiveShadow = true
-    this.world.add(shadow)
   }
 
   private register(id: DeskKey, group: THREE.Group) {
@@ -249,8 +280,8 @@ export class Desk {
     lid.add(screen)
     this.screens.laptop = { mesh: screen, idle: this.code, aspect: 1.56 / 0.96 }
     g.add(lid)
-    g.position.set(-0.4, 2.01, 0.2)
-    g.rotation.y = 0.35
+    g.position.set(-0.15, 2.01, 0.2)
+    g.rotation.y = 0.3
     this.register('laptop', g)
   }
 
@@ -353,28 +384,24 @@ export class Desk {
   }
 
   private buildPhone() {
+    // The phone lies flat on the desk, screen up.
     const g = new THREE.Group()
-    const dock = box(0.42, 0.08, 0.32, mat(C.graphite))
-    dock.position.y = 0.04
-    g.add(dock)
-    const phone = new THREE.Group()
-    phone.position.set(0, 0.06, -0.04)
-    phone.rotation.x = -0.25
-    const body = box(0.42, 0.82, 0.05, mat('#0e1220', { metalness: 0.4, roughness: 0.3 }))
-    body.position.y = 0.41
-    phone.add(body)
+    const body = box(0.42, 0.05, 0.82, mat('#0e1220', { metalness: 0.4, roughness: 0.3 }))
+    body.position.y = 0.025
+    g.add(body)
     const screen = new THREE.Mesh(
       new THREE.PlaneGeometry(0.37, 0.74),
       new THREE.MeshBasicMaterial({ map: chatScreen(), toneMapped: false }),
     )
-    screen.position.set(0, 0.42, 0.026)
-    phone.add(screen)
+    screen.rotation.x = -Math.PI / 2
+    screen.position.set(0, 0.052, 0)
+    g.add(screen)
     this.screens.phone = { mesh: screen, idle: screen.material.map!, aspect: 0.37 / 0.74 }
-    g.add(phone)
-    g.position.set(1.35, 2.01, 0.95)
-    g.rotation.y = -0.5
+    g.position.set(1.35, 2.01, 0.55)
+    g.rotation.y = -0.35
     this.register('phone', g)
   }
+
 
   // Film Fırtınası is a movie site, so it plays on a real TV: a big thin panel
   // on a pedestal, standing on a media console behind the desk.
@@ -480,14 +507,6 @@ export class Desk {
   // Seçki İstanbul is an events site, so it gets a big wall calendar on its own
   // wall: an Istanbul skyline on top and this month's grid, event nights in gold.
   private buildCalendar() {
-    // The wall stands along the left side of the room, behind the fridge.
-    const wall = box(0.12, 4.3, 5.2, mat('#111a31', { roughness: 0.95 }))
-    wall.position.set(-4.42, 2.15, -0.9)
-    this.world.add(wall)
-    const skirting = box(0.04, 0.16, 5.2, mat(C.edge, { emissive: C.edge, emissiveIntensity: 0.2, metalness: 0.5 }))
-    skirting.position.set(-4.34, 0.08, -0.9)
-    this.world.add(skirting)
-
     const W = 1.36, H = 1.26
     const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
     const now = new Date()
@@ -630,43 +649,33 @@ export class Desk {
         g.add(led)
       }
     }
-    g.position.set(3.75, 0, 0.4)
-    g.rotation.y = -0.15
+    g.position.set(1.45, 0.024, 0.35)
+    g.rotation.y = -0.1
     this.register('server', g)
   }
 
   private buildDecor() {
-    // Mug
-    const mug = cyl(0.13, 0.12, 0.26, mat(C.ivory))
-    mug.position.set(0.85, 2.14, 1.05)
-    this.world.add(mug)
-    const handle = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.02, 8, 16), mat(C.ivory))
-    handle.position.set(0.99, 2.14, 1.05)
-    this.world.add(handle)
-
-    // Plant
-    const pot = cyl(0.2, 0.15, 0.3, mat(C.ivory, { roughness: 0.9 }))
-    pot.position.set(-3.6, 0.15, -1.2)
+    // A floor plant in the front corner, by the calendar wall.
+    const px = -3.55, pz = 1.05
+    const pot = cyl(0.3, 0.22, 0.5, mat(C.ivory, { roughness: 0.9 }))
+    pot.position.set(px, 0.25, pz)
     this.world.add(pot)
-    for (let i = 0; i < 6; i++) {
-      const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.7 + (i % 3) * 0.15, 6), mat('#4d7562'))
+    const soil = cyl(0.27, 0.27, 0.02, mat('#2a211c'))
+    soil.position.set(px, 0.49, pz)
+    this.world.add(soil)
+    const leafMat = mat('#4d7562', { roughness: 0.7 })
+    for (let i = 0; i < 9; i++) {
+      const len = 0.9 + (i % 3) * 0.3
+      const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.1, len, 6), leafMat)
       leaf.castShadow = true
-      const a = (i / 6) * Math.PI * 2
-      leaf.position.set(-3.6 + Math.cos(a) * 0.08, 0.6, -1.2 + Math.sin(a) * 0.08)
-      leaf.rotation.set(Math.sin(a) * 0.35, 0, -Math.cos(a) * 0.35)
+      const a = (i / 9) * Math.PI * 2
+      const tilt = 0.25 + (i % 2) * 0.2
+      leaf.position.set(px + Math.cos(a) * 0.12, 0.5 + len / 2, pz + Math.sin(a) * 0.12)
+      leaf.rotation.set(Math.sin(a) * tilt, 0, -Math.cos(a) * tilt)
       this.world.add(leaf)
     }
-
-    // Notebook and pen
-    const book = box(0.7, 0.05, 0.95, mat('#3a2f2a', { roughness: 0.8 }))
-    book.position.set(-1.45, 2.04, -0.35)
-    book.rotation.y = -0.2
-    this.world.add(book)
-    const pen = cyl(0.018, 0.018, 0.6, mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
-    pen.rotation.set(Math.PI / 2, 0, 0.6)
-    pen.position.set(-1.35, 2.09, -0.3)
-    this.world.add(pen)
   }
+
 
   /** Put a site screenshot on a device's screen, or its idle animation back with null. */
   showScreen(key: ScreenKey, url: string | null) {
@@ -713,7 +722,7 @@ export class Desk {
     const p = item.group.position
     const ring = this.selectedRing
     const onFloor = p.y < 1
-    gsap.to(ring.position, { x: p.x, z: p.z, y: onFloor ? 0.01 : 2.021, duration: this.reducedMotion ? 0 : 0.5, ease: 'power3.out' })
+    gsap.to(ring.position, { x: p.x, z: p.z, y: onFloor ? 0.04 : 2.021, duration: this.reducedMotion ? 0 : 0.5, ease: 'power3.out' })
     // The wall calendar hangs on a wall, so it has no ring under it.
     gsap.to(ring.material, { opacity: id === 'calendar' ? 0 : 0.9, duration: 0.3 })
     if (!this.visible) this.renderOnce()
@@ -783,7 +792,7 @@ export class Desk {
     if (!w || !h) return
     this.renderer.setSize(w, h, false)
     // Fit the desk: keep a fixed world height, widen for wide canvases.
-    const view = 5.9
+    const view = 7.2
     const aspect = w / h
     const half = aspect >= 1.25 ? view / 2 : (view * 1.25) / aspect / 2
     this.camera.left = -half * aspect
