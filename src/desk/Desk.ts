@@ -132,7 +132,6 @@ export class Desk {
   private fridgeLight!: THREE.PointLight
   private fridgeInner!: THREE.MeshStandardMaterial
   private leds: THREE.MeshStandardMaterial[] = []
-  private lampLight!: THREE.PointLight
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -195,9 +194,10 @@ export class Desk {
     key.shadow.camera.bottom = -6
     key.shadow.radius = 4
     this.scene.add(key)
-    this.lampLight = new THREE.PointLight('#ffdcaa', 5, 6, 1.6)
-    this.lampLight.position.set(-2.1, 3.3, -0.6)
-    this.world.add(this.lampLight)
+    // A soft warm fill from above the room, so the desk, fridge and wall read at night.
+    const fill = new THREE.PointLight('#ffe2bc', 7, 11, 1.4)
+    fill.position.set(-1.2, 5.6, 0.2)
+    this.world.add(fill)
   }
 
   private buildDesk() {
@@ -636,29 +636,6 @@ export class Desk {
   }
 
   private buildDecor() {
-    // Lamp
-    const lamp = new THREE.Group()
-    const base = cyl(0.24, 0.28, 0.06, mat(C.dark))
-    base.position.y = 0.03
-    lamp.add(base)
-    const arm1 = cyl(0.025, 0.025, 1.0, mat(C.dark))
-    arm1.position.set(0.12, 0.5, 0)
-    arm1.rotation.z = -0.25
-    lamp.add(arm1)
-    const arm2 = cyl(0.025, 0.025, 0.8, mat(C.dark))
-    arm2.position.set(0.05, 1.12, 0.2)
-    arm2.rotation.x = 0.9
-    lamp.add(arm2)
-    const shade = new THREE.Mesh(
-      new THREE.ConeGeometry(0.22, 0.3, 24, 1, true),
-      mat(C.gold, { side: THREE.DoubleSide, metalness: 0.5, roughness: 0.35, emissive: '#e2cc93', emissiveIntensity: 0.25 }),
-    )
-    shade.position.set(0.0, 1.35, 0.55)
-    shade.rotation.x = 0.6
-    lamp.add(shade)
-    lamp.position.set(-2.3, 2.01, -1.05)
-    this.world.add(lamp)
-
     // Mug
     const mug = cyl(0.13, 0.12, 0.26, mat(C.ivory))
     mug.position.set(0.85, 2.14, 1.05)
@@ -830,7 +807,6 @@ export class Desk {
       this.world.rotation.x += (-this.sway.y * 0.04 - this.world.rotation.x) * 0.05
       this.code.offset.y = (t * 0.04) % 1
       this.leds.forEach((m, i) => (m.emissiveIntensity = 0.4 + 0.6 * (Math.sin(t * (2 + (i % 5)) + i) > 0.2 ? 1 : 0)))
-      this.lampLight.intensity = 5 + Math.sin(t * 1.3) * 0.2
       if (this.selected) this.selectedRing.scale.setScalar(1 + Math.sin(t * 3) * 0.04)
     }
     this.renderer.render(this.scene, this.camera)
