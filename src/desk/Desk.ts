@@ -457,45 +457,137 @@ export class Desk {
     this.register('tv', g)
   }
 
+  // Seçki İstanbul is an events site, so it gets a big wall calendar on its own
+  // wall: an Istanbul skyline on top and this month's grid, event nights in gold.
   private buildCalendar() {
-    const g = new THREE.Group()
+    // The wall stands along the left side of the room, behind the fridge.
+    const wall = box(0.12, 4.3, 5.2, mat('#111a31', { roughness: 0.95 }))
+    wall.position.set(-4.42, 2.15, -0.9)
+    this.world.add(wall)
+    const skirting = box(0.04, 0.16, 5.2, mat(C.edge, { emissive: C.edge, emissiveIntensity: 0.2, metalness: 0.5 }))
+    skirting.position.set(-4.34, 0.08, -0.9)
+    this.world.add(skirting)
+
+    const W = 1.36, H = 1.26
+    const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
+    const now = new Date()
     const page = screenTexture((ctx, w, h) => {
       ctx.fillStyle = C.ivory
       ctx.fillRect(0, 0, w, h)
-      ctx.fillStyle = '#16223f'
-      ctx.fillRect(0, 0, w, 34)
-      ctx.fillStyle = C.ivory
-      ctx.font = '600 18px "Inter Variable", system-ui, sans-serif'
-      ctx.fillText('İstanbul', 12, 23)
-      // A month grid with a few marked evenings.
-      for (let row = 0; row < 5; row++) {
-        for (let col = 0; col < 7; col++) {
-          const x = 12 + col * 33
-          const y = 46 + row * 22
-          const marked = [9, 12, 17, 23, 26].includes(row * 7 + col)
-          ctx.fillStyle = marked ? C.gold : '#c9c3b5'
-          ctx.fillRect(x, y, 22, 14)
-        }
+      // Skyline at dusk: domes, minarets and the Galata Tower over the water.
+      const top = h * 0.36
+      const sky = ctx.createLinearGradient(0, 0, 0, top)
+      sky.addColorStop(0, '#22284a')
+      sky.addColorStop(0.55, '#8a4b4a')
+      sky.addColorStop(1, '#e8a95e')
+      ctx.fillStyle = sky
+      ctx.fillRect(0, 0, w, top)
+      ctx.fillStyle = '#f4d08a'
+      ctx.beginPath()
+      ctx.arc(w * 0.78, top * 0.62, top * 0.13, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#1a1830'
+      const ground = top * 0.86
+      ctx.fillRect(0, ground, w, top - ground)
+      const dome = (x: number, r: number) => {
+        ctx.beginPath()
+        ctx.arc(x, ground, r, Math.PI, 0)
+        ctx.fill()
       }
-    }, 256, 160)
-    const paper = new THREE.MeshStandardMaterial({ map: page, roughness: 0.8 })
-    const back = mat('#d9d3c6', { roughness: 0.9 })
-    for (const side of [1, -1]) {
-      const leaf = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.52), side === 1 ? paper : back)
-      leaf.castShadow = true
-      leaf.position.set(0, 0.25, side * 0.12)
-      leaf.rotation.x = -side * 0.45
-      if (side === -1) leaf.rotation.y = Math.PI
-      g.add(leaf)
-    }
-    for (const x of [-0.25, 0, 0.25]) {
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.035, 0.008, 8, 16), mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
-      ring.position.set(x, 0.5, 0)
-      ring.rotation.y = Math.PI / 2
+      const minaret = (x: number, hgt: number) => {
+        ctx.fillRect(x - 3, ground - hgt, 6, hgt)
+        ctx.beginPath()
+        ctx.moveTo(x - 4, ground - hgt)
+        ctx.lineTo(x, ground - hgt - 16)
+        ctx.lineTo(x + 4, ground - hgt)
+        ctx.fill()
+      }
+      dome(w * 0.2, 46)
+      dome(w * 0.11, 24)
+      dome(w * 0.29, 24)
+      ctx.fillRect(w * 0.2 - 50, ground - 18, 100, 18)
+      minaret(w * 0.05, 92)
+      minaret(w * 0.35, 92)
+      dome(w * 0.5, 30)
+      minaret(w * 0.42, 70)
+      minaret(w * 0.58, 70)
+      // Galata Tower.
+      const gx = w * 0.72
+      ctx.fillRect(gx - 14, ground - 96, 28, 96)
+      ctx.beginPath()
+      ctx.moveTo(gx - 17, ground - 96)
+      ctx.lineTo(gx, ground - 134)
+      ctx.lineTo(gx + 17, ground - 96)
+      ctx.fill()
+      ctx.fillRect(w * 0.82, ground - 30, w * 0.18, 30)
+      // Binding strip.
+      ctx.fillStyle = '#16223f'
+      ctx.fillRect(0, 0, w, 14)
+
+      // Month header.
+      ctx.fillStyle = '#16223f'
+      ctx.font = '700 40px "Inter Variable", system-ui, sans-serif'
+      ctx.fillText(months[now.getMonth()], 26, top + 46)
+      ctx.fillStyle = '#9a7b3c'
+      ctx.font = '600 22px "Inter Variable", system-ui, sans-serif'
+      const tag = 'SEÇKİ İSTANBUL'
+      ctx.fillText(tag, w - 26 - ctx.measureText(tag).width, top + 42)
+
+      // Weekdays and the month grid, Monday first.
+      const days = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz']
+      const gx0 = 26, cw = (w - 52) / 7, gy0 = top + 80, ch = (h - top - 80 - 10) / 6
+      ctx.font = '600 18px "Inter Variable", system-ui, sans-serif'
+      ctx.fillStyle = '#7d7768'
+      days.forEach((d, i) => ctx.fillText(d, gx0 + i * cw + 12, gy0 - 10))
+      const first = (new Date(now.getFullYear(), now.getMonth(), 1).getDay() + 6) % 7
+      const count = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+      const events = new Set([3, 7, 9, 12, 14, 18, 21, 24, 27])
+      ctx.font = '600 22px "Inter Variable", system-ui, sans-serif'
+      for (let d = 1; d <= count; d++) {
+        const i = first + d - 1
+        const x = gx0 + (i % 7) * cw
+        const y = gy0 + Math.floor(i / 7) * ch
+        if (events.has(d)) {
+          ctx.fillStyle = C.gold
+          ctx.beginPath()
+          ctx.roundRect(x + 4, y + 2, cw - 8, ch - 6, 8)
+          ctx.fill()
+        }
+        if (d === now.getDate()) {
+          ctx.strokeStyle = '#16223f'
+          ctx.lineWidth = 3
+          ctx.beginPath()
+          ctx.roundRect(x + 4, y + 2, cw - 8, ch - 6, 8)
+          ctx.stroke()
+        }
+        ctx.fillStyle = events.has(d) ? '#16223f' : '#4a4a55'
+        ctx.fillText(String(d), x + 12, y + ch * 0.62)
+      }
+    }, 560, 544)
+    page.anisotropy = 8
+
+    // The calendar hangs from a nail, facing into the room.
+    const g = new THREE.Group()
+    const board = box(0.04, H + 0.06, W + 0.06, mat('#d9d3c6', { roughness: 0.9 }))
+    board.position.set(0.02, 0, 0)
+    g.add(board)
+    const sheet = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshStandardMaterial({ map: page, roughness: 0.8 }))
+    sheet.rotation.y = Math.PI / 2
+    sheet.position.set(0.045, 0, 0)
+    g.add(sheet)
+    for (let i = 0; i < 9; i++) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.007, 8, 16), mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
+      ring.position.set(0.05, H / 2 - 0.01, -W / 2 + 0.1 + i * ((W - 0.2) / 8))
       g.add(ring)
     }
-    g.position.set(-1.05, 2.01, 1.2)
-    g.rotation.y = 0.55
+    const nail = cyl(0.015, 0.015, 0.08, mat(C.metal, { metalness: 0.8 }), 8)
+    nail.rotation.z = Math.PI / 2
+    nail.position.set(0.02, H / 2 + 0.12, 0)
+    g.add(nail)
+    const string = box(0.005, 0.12, 0.4, mat('#9a8f7a'))
+    string.position.set(0.04, H / 2 + 0.07, 0)
+    g.add(string)
+    g.position.set(-4.33, 2.92, -0.85)
     this.register('calendar', g)
   }
 
@@ -657,7 +749,8 @@ export class Desk {
     const ring = this.selectedRing
     const onFloor = p.y < 1
     gsap.to(ring.position, { x: p.x, z: p.z, y: onFloor ? 0.01 : 2.021, duration: this.reducedMotion ? 0 : 0.5, ease: 'power3.out' })
-    gsap.to(ring.material, { opacity: 0.9, duration: 0.3 })
+    // The wall calendar hangs on a wall, so it has no ring under it.
+    gsap.to(ring.material, { opacity: id === 'calendar' ? 0 : 0.9, duration: 0.3 })
     if (!this.visible) this.renderOnce()
   }
 

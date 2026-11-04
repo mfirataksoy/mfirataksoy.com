@@ -133,11 +133,11 @@ export const chapters: Chapter[] = [
       cs: 'My first internship: rebuilding the licensing server',
     },
     body: {
-      eng: 'Rebuilt the licensing server that authenticated every purchase, from Fortune 1000 firms to small businesses, in React, Node, Express and TypeScript.',
-      cs: 'Rebuilt the licensing server every customer purchase went through, from Fortune 1000 firms to small businesses, and replaced cryptic errors with clear, actionable messages. Total errors dropped 15%.',
+      eng: 'Rebuilt the licensing server that authenticated every purchase, from Fortune 1000 firms to small businesses, in ASP.NET and C#.',
+      cs: 'Rebuilt the licensing server every customer purchase went through, from Fortune 1000 firms to small businesses, in ASP.NET and C#.',
     },
-    tags: ['React', 'Node', 'TypeScript', '−15% errors'],
-    csTags: ['Customer-facing errors', '−15% errors', 'Fortune 1000 to SMB'],
+    tags: ['ASP.NET', 'C#', 'Licensing'],
+    csTags: ['ASP.NET', 'C#', 'Fortune 1000 to SMB'],
     logo: { src: '/logos/anlas.png', alt: 'Anlaş Otomasyon' },
   },
   {
@@ -443,7 +443,6 @@ export const desk: DeskItem[] = [
     points: [
       'Owned the client relationship for a New York delivery app and turned needs into requirements',
       'Built the internal React app Credit One’s customer support staff used daily',
-      'Replaced cryptic errors with actionable messages at Anlaş, cutting errors by 15%',
     ],
   },
   {
