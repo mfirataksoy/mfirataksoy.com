@@ -29,9 +29,14 @@ import { track, pick } from '../useLens'
               <h3 :key="track" class="chapter__title">{{ pick(c.title) }}</h3>
             </Transition>
             <p class="chapter__org">{{ c.org }} — {{ c.role }}</p>
-            <Transition name="swap" mode="out-in">
-              <p :key="track" class="chapter__body">{{ pick(c.body) }}</p>
-            </Transition>
+            <div class="chapter__text">
+              <div v-if="c.logo" class="chapter__logo">
+                <img :src="c.logo.src" :alt="c.logo.alt" loading="lazy" />
+              </div>
+              <Transition name="swap" mode="out-in">
+                <p :key="track" class="chapter__body">{{ pick(c.body) }}</p>
+              </Transition>
+            </div>
             <ul class="chapter__tags">
               <li v-for="t in (track === 'cs' && c.csTags) || c.tags" :key="t" class="tag">{{ t }}</li>
             </ul>
@@ -126,6 +131,31 @@ import { track, pick } from '../useLens'
   font-style: italic;
   color: var(--gold);
 }
+/* The school or employer logo sits in the description, on a light tile so its own
+   colours read on the dark card, and the text wraps around it. */
+.chapter__text {
+  display: flow-root;
+}
+.chapter__logo {
+  float: right;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 168px;
+  height: 92px;
+  margin: 4px 0 10px 20px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #f7f4ee;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+.chapter__logo img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 .chapter__meta {
   display: flex;
   flex-wrap: wrap;
@@ -162,6 +192,12 @@ import { track, pick } from '../useLens'
   min-height: 70vh;
 }
 @media (max-width: 760px) {
+  .chapter__logo {
+    width: 104px;
+    height: 60px;
+    margin: 4px 0 8px 14px;
+    padding: 9px 11px;
+  }
   .journey__list {
     padding-left: 32px;
   }

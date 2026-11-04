@@ -96,6 +96,8 @@ export type Chapter = {
   tags: string[]
   // Customer-facing tags for the customer success lens; falls back to `tags`.
   csTags?: string[]
+  // The school or employer logo, set into the card's description.
+  logo?: { src: string; alt: string }
 }
 
 export const chapters: Chapter[] = [
@@ -116,6 +118,7 @@ export const chapters: Chapter[] = [
     },
     tags: ['Chancellor’s Scholar', 'Dean’s List'],
     csTags: ['Chancellor’s Scholar', 'Alumni relations'],
+    logo: { src: '/logos/tcu.svg', alt: 'TCU, Texas Christian University' },
   },
   {
     id: 'anlas',
@@ -135,6 +138,7 @@ export const chapters: Chapter[] = [
     },
     tags: ['React', 'Node', 'TypeScript', '−15% errors'],
     csTags: ['Customer-facing errors', '−15% errors', 'Fortune 1000 to SMB'],
+    logo: { src: '/logos/anlas.png', alt: 'Anlaş Otomasyon' },
   },
   {
     id: 'heb',
@@ -145,8 +149,8 @@ export const chapters: Chapter[] = [
     org: 'H-E-B Innovation & Technology',
     role: 'Software engineer intern · technical lead',
     title: {
-      eng: 'An internship at the heart of retail innovation, at H-E-B',
-      cs: 'An internship at the heart of retail innovation, at H-E-B',
+      eng: 'An internship at the heart of retail innovation, at H‑E‑B',
+      cs: 'An internship at the heart of retail innovation, at H‑E‑B',
     },
     body: {
       eng: 'Technical lead for a smart-home grocery device: CNN product and barcode recognition with TensorFlow on an NVIDIA Jetson Nano, plus Wi-Fi setup, Firebase Auth and H-E-B account linking in the companion app.',
@@ -154,6 +158,7 @@ export const chapters: Chapter[] = [
     },
     tags: ['Jetson Nano', 'TensorFlow', 'Firebase', '3D printing'],
     csTags: ['Pitch → prototype', 'In-home testing', 'Setup and onboarding'],
+    logo: { src: '/logos/heb.svg', alt: 'H-E-B' },
   },
   {
     id: 'csm',
@@ -193,6 +198,7 @@ export const chapters: Chapter[] = [
     },
     tags: ['AWS EKS', 'Terraform', 'Kubernetes', 'React'],
     csTags: ['Support tooling', 'Senior stakeholders', 'Banking'],
+    logo: { src: '/logos/creditone.svg', alt: 'Credit One Bank' },
   },
   {
     id: 'izibiz',
@@ -216,6 +222,7 @@ export const chapters: Chapter[] = [
     },
     tags: ['Flutter', 'Vue', 'Java Spring', 'PostgreSQL', 'Claude Code'],
     csTags: ['Regulated products', 'Partner integrations', 'Requirements → release'],
+    logo: { src: '/logos/izibiz.webp', alt: 'İzibiz Business Solutions' },
   },
 ]
 
