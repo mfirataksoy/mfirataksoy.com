@@ -286,7 +286,7 @@ export class Desk {
   }
 
   // H-E-B's smart grocery device lived with people's groceries, so it gets a
-  // fridge with the device mounted on its door; the door opens on click.
+  // fridge with the device mounted inside its door; the door opens on click.
   private buildFridge() {
     const g = new THREE.Group()
     const W = 1.5
@@ -341,8 +341,8 @@ export class Desk {
     const handle = box(0.05, 0.8, 0.06, mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
     handle.position.set(W - 0.14, H * 0.5, 0.13)
     hinge.add(handle)
-    // The H-E-B device itself, stuck to the door: a red cube with a white top and
-    // a camera sitting in a cutout on its front.
+    // The H-E-B device itself, mounted inside the door: a red cube with a white top
+    // and a camera in a cutout, looking at the shelves. It shows when the door opens.
     const device = new THREE.Group()
     const S = 0.36
     const red = mat('#e01e2b', { roughness: 0.45 })
@@ -366,7 +366,8 @@ export class Desk {
     const status = box(0.03, 0.03, 0.01, mat('#7dff9a', { emissive: '#7dff9a', emissiveIntensity: 1.4 }))
     status.position.set(S * 0.32, S * 0.74, S / 2 + 0.003)
     device.add(status)
-    device.position.set(W * 0.74, H * 0.8, 0.09 + S / 2)
+    device.rotation.y = Math.PI
+    device.position.set(W * 0.5, H - 0.5, -S / 2)
     hinge.add(device)
 
     g.add(hinge)
@@ -504,105 +505,144 @@ export class Desk {
     this.register('tv', g)
   }
 
-  // Seçki İstanbul is an events site, so it gets a big wall calendar on its own
-  // wall: an Istanbul skyline on top and this month's grid, event nights in gold.
+  // Seçki İstanbul is an events site, so it gets a big wall calendar drawn like
+  // the site itself: its logo, a white month card with coloured event dots and
+  // today in blue, and the light Istanbul skyline along the bottom. It hangs on the
+  // back wall, out of the fridge door's way.
   private buildCalendar() {
-    const W = 1.36, H = 1.26
+    const W = 1.5, H = 1.72
     const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
     const now = new Date()
+    const blue = '#1d6fb8', ink = '#10273d'
     const page = screenTexture((ctx, w, h) => {
-      ctx.fillStyle = C.ivory
-      ctx.fillRect(0, 0, w, h)
-      // Skyline at dusk: domes, minarets and the Galata Tower over the water.
-      const top = h * 0.36
-      const sky = ctx.createLinearGradient(0, 0, 0, top)
-      sky.addColorStop(0, '#22284a')
-      sky.addColorStop(0.55, '#8a4b4a')
-      sky.addColorStop(1, '#e8a95e')
+      const font = (wt: number, px: number) => `${wt} ${px}px "Inter Variable", system-ui, sans-serif`
+      const sky = ctx.createLinearGradient(0, 0, 0, h)
+      sky.addColorStop(0, '#e2f0fb')
+      sky.addColorStop(1, '#fbf3e4')
       ctx.fillStyle = sky
-      ctx.fillRect(0, 0, w, top)
-      ctx.fillStyle = '#f4d08a'
-      ctx.beginPath()
-      ctx.arc(w * 0.78, top * 0.62, top * 0.13, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.fillStyle = '#1a1830'
-      const ground = top * 0.86
-      ctx.fillRect(0, ground, w, top - ground)
-      const dome = (x: number, r: number) => {
-        ctx.beginPath()
-        ctx.arc(x, ground, r, Math.PI, 0)
-        ctx.fill()
-      }
-      const minaret = (x: number, hgt: number) => {
-        ctx.fillRect(x - 3, ground - hgt, 6, hgt)
-        ctx.beginPath()
-        ctx.moveTo(x - 4, ground - hgt)
-        ctx.lineTo(x, ground - hgt - 16)
-        ctx.lineTo(x + 4, ground - hgt)
-        ctx.fill()
-      }
-      dome(w * 0.2, 46)
-      dome(w * 0.11, 24)
-      dome(w * 0.29, 24)
-      ctx.fillRect(w * 0.2 - 50, ground - 18, 100, 18)
-      minaret(w * 0.05, 92)
-      minaret(w * 0.35, 92)
-      dome(w * 0.5, 30)
-      minaret(w * 0.42, 70)
-      minaret(w * 0.58, 70)
-      // Galata Tower.
-      const gx = w * 0.72
-      ctx.fillRect(gx - 14, ground - 96, 28, 96)
-      ctx.beginPath()
-      ctx.moveTo(gx - 17, ground - 96)
-      ctx.lineTo(gx, ground - 134)
-      ctx.lineTo(gx + 17, ground - 96)
-      ctx.fill()
-      ctx.fillRect(w * 0.82, ground - 30, w * 0.18, 30)
-      // Binding strip.
-      ctx.fillStyle = '#16223f'
-      ctx.fillRect(0, 0, w, 14)
+      ctx.fillRect(0, 0, w, h)
 
-      // Month header.
-      ctx.fillStyle = '#16223f'
-      ctx.font = '700 40px "Inter Variable", system-ui, sans-serif'
-      ctx.fillText(months[now.getMonth()], 26, top + 46)
-      ctx.fillStyle = '#9a7b3c'
-      ctx.font = '600 22px "Inter Variable", system-ui, sans-serif'
-      const tag = 'SEÇKİ İSTANBUL'
-      ctx.fillText(tag, w - 26 - ctx.measureText(tag).width, top + 42)
+      // Logo: a sun over water in a rounded tile, then "Seçki İstanbul".
+      ctx.fillStyle = '#cfe7f7'
+      ctx.beginPath()
+      ctx.roundRect(24, 22, 46, 46, 12)
+      ctx.fill()
+      ctx.fillStyle = '#f6b73c'
+      ctx.beginPath()
+      ctx.arc(47, 40, 10, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = blue
+      ctx.lineWidth = 3
+      for (const y of [53, 60]) {
+        ctx.beginPath()
+        ctx.moveTo(31, y)
+        ctx.bezierCurveTo(39, y - 4, 47, y + 4, 55, y)
+        ctx.bezierCurveTo(59, y - 2, 61, y - 2, 63, y)
+        ctx.stroke()
+      }
+      ctx.font = font(700, 28)
+      ctx.fillStyle = ink
+      ctx.fillText('Seçki', 84, 55)
+      ctx.fillStyle = blue
+      ctx.fillText('İstanbul', 84 + ctx.measureText('Seçki ').width, 55)
 
-      // Weekdays and the month grid, Monday first.
+      // The month card.
+      const cx = 20, cy = 88, cw = w - 40, chh = h - 88 - 118
+      ctx.fillStyle = 'rgba(16, 39, 61, 0.08)'
+      ctx.beginPath()
+      ctx.roundRect(cx, cy + 4, cw, chh, 22)
+      ctx.fill()
+      ctx.fillStyle = '#ffffff'
+      ctx.beginPath()
+      ctx.roundRect(cx, cy, cw, chh, 22)
+      ctx.fill()
+      ctx.fillStyle = ink
+      ctx.font = font(700, 26)
+      ctx.fillText(`${months[now.getMonth()]} ${now.getFullYear()}`, cx + 22, cy + 44)
+
       const days = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pz']
-      const gx0 = 26, cw = (w - 52) / 7, gy0 = top + 80, ch = (h - top - 80 - 10) / 6
-      ctx.font = '600 18px "Inter Variable", system-ui, sans-serif'
-      ctx.fillStyle = '#7d7768'
-      days.forEach((d, i) => ctx.fillText(d, gx0 + i * cw + 12, gy0 - 10))
+      const gx = cx + 14, colW = (cw - 28) / 7
+      const gy = cy + 92, rowH = (cy + chh - 12 - gy) / 6
+      ctx.font = font(600, 16)
+      ctx.textAlign = 'center'
+      days.forEach((d, i) => {
+        ctx.fillStyle = i >= 5 ? blue : '#6b7a8c'
+        ctx.fillText(d, gx + colW * (i + 0.5), cy + 76)
+      })
       const first = (new Date(now.getFullYear(), now.getMonth(), 1).getDay() + 6) % 7
       const count = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
-      const events = new Set([3, 7, 9, 12, 14, 18, 21, 24, 27])
-      ctx.font = '600 22px "Inter Variable", system-ui, sans-serif'
-      for (let d = 1; d <= count; d++) {
-        const i = first + d - 1
-        const x = gx0 + (i % 7) * cw
-        const y = gy0 + Math.floor(i / 7) * ch
-        if (events.has(d)) {
-          ctx.fillStyle = C.gold
+      const prev = new Date(now.getFullYear(), now.getMonth(), 0).getDate()
+      const dots = ['#c2255c', '#e64980', '#1c4fb8', '#2f9e44', '#e8590c', '#7048e8']
+      for (let i = 0; i < 42; i++) {
+        const col = i % 7, row = Math.floor(i / 7)
+        const x = gx + col * colW, y = gy + row * rowH
+        const d = i - first + 1
+        const inMonth = d >= 1 && d <= count
+        const label = inMonth ? d : d < 1 ? prev + d : d - count
+        if (col >= 5) {
+          ctx.fillStyle = '#eef5fb'
           ctx.beginPath()
-          ctx.roundRect(x + 4, y + 2, cw - 8, ch - 6, 8)
+          ctx.roundRect(x + 3, y + 2, colW - 6, rowH - 4, 10)
           ctx.fill()
         }
-        if (d === now.getDate()) {
-          ctx.strokeStyle = '#16223f'
-          ctx.lineWidth = 3
+        const mx = x + colW / 2, my = y + rowH * 0.44
+        if (inMonth && d === now.getDate()) {
+          ctx.fillStyle = '#0b65a8'
           ctx.beginPath()
-          ctx.roundRect(x + 4, y + 2, cw - 8, ch - 6, 8)
-          ctx.stroke()
+          ctx.arc(mx, my - 6, 16, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.fillStyle = '#ffffff'
+        } else {
+          ctx.fillStyle = inMonth ? ink : '#a7b1bd'
         }
-        ctx.fillStyle = events.has(d) ? '#16223f' : '#4a4a55'
-        ctx.fillText(String(d), x + 12, y + ch * 0.62)
+        ctx.font = font(600, 19)
+        ctx.fillText(String(label), mx, my)
+        // A few event dots under every day, like the site's month view.
+        for (let k = 0; k < 3; k++) {
+          ctx.globalAlpha = inMonth ? 1 : 0.45
+          ctx.fillStyle = dots[(label * 5 + k * 7 + row) % dots.length]
+          ctx.beginPath()
+          ctx.arc(mx - 9 + k * 9, my + 14, 3.2, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.globalAlpha = 1
+        }
       }
-    }, 560, 544)
+      ctx.textAlign = 'left'
+
+      // The light skyline over the water: the bridge, a mosque and minarets.
+      const base = h - 30
+      ctx.fillStyle = '#bcd8ee'
+      ctx.fillRect(40, base - 52, 6, 52)
+      ctx.fillRect(150, base - 52, 6, 52)
+      ctx.strokeStyle = '#bcd8ee'
+      ctx.lineWidth = 2
+      ctx.beginPath()
+      ctx.moveTo(10, base - 20)
+      ctx.quadraticCurveTo(98, base - 10, 43, base - 50)
+      ctx.moveTo(43, base - 50)
+      ctx.quadraticCurveTo(98, base - 4, 153, base - 50)
+      ctx.moveTo(153, base - 50)
+      ctx.quadraticCurveTo(190, base - 16, 210, base - 18)
+      ctx.stroke()
+      ctx.fillRect(10, base - 18, 200, 5)
+      ctx.beginPath()
+      ctx.arc(w * 0.66, base, 40, Math.PI, 0)
+      ctx.fill()
+      ctx.fillRect(w * 0.66 - 60, base - 14, 120, 14)
+      for (const [x, ht] of [[w * 0.53, 66], [w * 0.79, 66], [w * 0.92, 44]] as const) {
+        ctx.fillRect(x - 3, base - ht, 6, ht)
+        ctx.beginPath()
+        ctx.moveTo(x - 4, base - ht)
+        ctx.lineTo(x, base - ht - 12)
+        ctx.lineTo(x + 4, base - ht)
+        ctx.fill()
+      }
+      const sea = ctx.createLinearGradient(0, base, 0, h)
+      sea.addColorStop(0, '#a9cfee')
+      sea.addColorStop(1, '#86bbe6')
+      ctx.fillStyle = sea
+      ctx.fillRect(0, base, w, h - base)
+    }, 520, 600)
     page.anisotropy = 8
 
     // The calendar hangs from a nail, facing into the room.
@@ -626,18 +666,18 @@ export class Desk {
     const string = box(0.005, 0.12, 0.4, mat('#9a8f7a'))
     string.position.set(0.04, H / 2 + 0.07, 0)
     g.add(string)
-    g.position.set(-4.33, 2.92, -0.85)
+    // On the back wall, to the right of the TV.
+    g.rotation.y = -Math.PI / 2
+    g.position.set(1.4, 2.9, -3.68)
     this.register('calendar', g)
   }
-
-
 
   private buildServer() {
     const g = new THREE.Group()
     const tower = box(0.8, 1.6, 0.9, mat('#171c2c', { metalness: 0.4, roughness: 0.4 }))
     tower.position.y = 0.8
     g.add(tower)
-    for (let row = 0; row < 4; row++) {
+    for (let row = 0; row < 3; row++) {
       const slot = box(0.66, 0.26, 0.02, mat('#222941'))
       slot.position.set(0, 0.32 + row * 0.34, 0.455)
       g.add(slot)
@@ -649,7 +689,20 @@ export class Desk {
         g.add(led)
       }
     }
-    g.position.set(1.45, 0.024, 0.35)
+    // The top bay is labelled, since this cabinet holds the retired products.
+    const label = screenTexture((ctx, w, h) => {
+      ctx.fillStyle = C.ivory
+      ctx.fillRect(0, 0, w, h)
+      ctx.fillStyle = '#16223f'
+      ctx.font = '700 46px "Inter Variable", system-ui, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText('ARCHIVE', w / 2, h / 2 + 2)
+    }, 256, 80)
+    const plate = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.2), new THREE.MeshStandardMaterial({ map: label, roughness: 0.7 }))
+    plate.position.set(0, 0.32 + 3 * 0.34, 0.452)
+    g.add(plate)
+    g.position.set(1.1, 0.024, 0.35)
     g.rotation.y = -0.1
     this.register('server', g)
   }
