@@ -132,6 +132,15 @@ export class Desk {
   private fridgeLight!: THREE.PointLight
   private fridgeInner!: THREE.MeshStandardMaterial
   private leds: THREE.MeshStandardMaterial[] = []
+  // The H-E-B camera's infrared glow, switched on while the fridge is selected.
+  private ir = { level: 0 } as {
+    level: number
+    beam: THREE.MeshBasicMaterial
+    light: THREE.SpotLight
+    leds: THREE.MeshStandardMaterial
+    body: THREE.MeshStandardMaterial
+    halo: THREE.MeshBasicMaterial
+  }
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -156,7 +165,8 @@ export class Desk {
     this.buildCalendar()
     this.buildTv()
     this.buildServer()
-    this.buildDecor()
+    // The phone on the desk rests on StickerHub.
+    this.idleOn('phone', '/previews/stickerhub.jpg')
 
     this.selectedRing = new THREE.Mesh(
       new THREE.RingGeometry(0.62, 0.7, 48),
@@ -345,7 +355,7 @@ export class Desk {
     // and a camera in a cutout, looking at the shelves. It shows when the door opens.
     const device = new THREE.Group()
     const S = 0.36
-    const red = mat('#e01e2b', { roughness: 0.45 })
+    const red = mat('#e01e2b', { roughness: 0.45, emissive: '#ff2a3c', emissiveIntensity: 0 })
     const body = box(S, S * 0.86, S, red)
     body.position.y = (S * 0.86) / 2
     device.add(body)
@@ -363,6 +373,41 @@ export class Desk {
     glass.rotation.x = Math.PI / 2
     glass.position.set(0, S * 0.45, S / 2 + 0.026)
     device.add(glass)
+    // A ring of infrared LEDs around the lens, dark until the camera is on.
+    const irLeds = mat('#3a0d14', { emissive: '#ff2a3c', emissiveIntensity: 0 })
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2
+      const led = cyl(0.012, 0.012, 0.01, irLeds, 8)
+      led.rotation.x = Math.PI / 2
+      led.position.set(Math.cos(a) * S * 0.19, S * 0.45 + Math.sin(a) * S * 0.19, S / 2 + 0.004)
+      device.add(led)
+    }
+    // The beam: a soft red cone from the lens toward the shelves, and the light it casts.
+    const beam = new THREE.MeshBasicMaterial({
+      color: '#ff3048',
+      transparent: true,
+      opacity: 0,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    })
+    const beamLen = 1.0
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.42, beamLen, 32, 1, true), beam)
+    cone.rotation.x = -Math.PI / 2
+    cone.position.set(0, S * 0.45, S / 2 + beamLen / 2 + 0.02)
+    cone.castShadow = false
+    device.add(cone)
+    const irLight = new THREE.SpotLight('#ff2a3c', 0, 3, 0.6, 0.6, 1.2)
+    irLight.position.set(0, S * 0.45, S / 2 + 0.03)
+    irLight.target.position.set(0, S * 0.2, S / 2 + 1.5)
+    device.add(irLight, irLight.target)
+    // A halo behind the device so it stands out when selected.
+    const halo = new THREE.MeshBasicMaterial({ color: C.gold, transparent: true, opacity: 0, depthWrite: false, side: THREE.BackSide })
+    const haloMesh = new THREE.Mesh(new THREE.BoxGeometry(S + 0.06, S + 0.06, S + 0.06), halo)
+    haloMesh.position.y = S / 2
+    device.add(haloMesh)
+    this.ir = { level: 0, beam, light: irLight, leds: irLeds, body: red, halo }
+
     const status = box(0.03, 0.03, 0.01, mat('#7dff9a', { emissive: '#7dff9a', emissiveIntensity: 1.4 }))
     status.position.set(S * 0.32, S * 0.74, S / 2 + 0.003)
     device.add(status)
@@ -382,6 +427,17 @@ export class Desk {
     gsap.to(this.fridgeDoor.rotation, { y: open ? -1.75 : 0, duration: d, ease: open ? 'power3.out' : 'power2.inOut' })
     gsap.to(this.fridgeLight, { intensity: open ? 2.4 : 0, duration: d * 0.6 })
     gsap.to(this.fridgeInner, { emissiveIntensity: open ? 0.35 : 0, duration: d * 0.6 })
+    gsap.to(this.ir, { level: open ? 1 : 0, duration: d * 0.8, delay: open ? d * 0.5 : 0, onUpdate: () => this.applyIr(0) })
+  }
+
+  /** Set the camera's infrared glow from its level (0 off, 1 on), with a slow pulse. */
+  private applyIr(t: number) {
+    const k = this.ir.level * (0.85 + 0.15 * Math.sin(t * 4))
+    this.ir.beam.opacity = 0.16 * k
+    this.ir.light.intensity = 6 * k
+    this.ir.leds.emissiveIntensity = 2.2 * k
+    this.ir.body.emissiveIntensity = 0.22 * k
+    this.ir.halo.opacity = 0.55 * this.ir.level
   }
 
   private buildPhone() {
@@ -707,45 +763,17 @@ export class Desk {
     this.register('server', g)
   }
 
-  private buildDecor() {
-    // A floor plant in the front corner, by the calendar wall.
-    const px = -3.55, pz = 1.05
-    const pot = cyl(0.3, 0.22, 0.5, mat(C.ivory, { roughness: 0.9 }))
-    pot.position.set(px, 0.25, pz)
-    this.world.add(pot)
-    const soil = cyl(0.27, 0.27, 0.02, mat('#2a211c'))
-    soil.position.set(px, 0.49, pz)
-    this.world.add(soil)
-    const leafMat = mat('#4d7562', { roughness: 0.7 })
-    for (let i = 0; i < 9; i++) {
-      const len = 0.9 + (i % 3) * 0.3
-      const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.1, len, 6), leafMat)
-      leaf.castShadow = true
-      const a = (i / 9) * Math.PI * 2
-      const tilt = 0.25 + (i % 2) * 0.2
-      leaf.position.set(px + Math.cos(a) * 0.12, 0.5 + len / 2, pz + Math.sin(a) * 0.12)
-      leaf.rotation.set(Math.sin(a) * tilt, 0, -Math.cos(a) * tilt)
-      this.world.add(leaf)
-    }
-  }
 
 
-  /** Put a site screenshot on a device's screen, or its idle animation back with null. */
-  showScreen(key: ScreenKey, url: string | null) {
-    const screen = this.screens[key]
-    if (!screen) return
-    if (!url) {
-      screen.mesh.material.map = screen.idle
-      screen.mesh.material.needsUpdate = true
-      if (!this.visible) this.renderOnce()
-      return
-    }
+
+  /** Load a screenshot once, cropped to cover a device's screen with the top of the page in view. */
+  private screenshot(key: ScreenKey, url: string) {
+    const screen = this.screens[key]!
     let tex = this.textures.get(url)
     if (!tex) {
       tex = this.loader.loadAsync(url).then((t) => {
         t.colorSpace = THREE.SRGBColorSpace
         t.anisotropy = 4
-        // Cover the screen, keeping the top of the page in view.
         const img = t.image as HTMLImageElement
         const imgAspect = img.width / img.height
         if (imgAspect > screen.aspect) {
@@ -759,12 +787,40 @@ export class Desk {
       })
       this.textures.set(url, tex)
     }
-    tex.then((t) => {
+    return tex
+  }
+
+  /** Let a device rest on a site screenshot instead of its idle animation. */
+  private idleOn(key: ScreenKey, url: string) {
+    const screen = this.screens[key]
+    if (!screen) return
+    this.screenshot(key, url).then((t) => {
+      if (screen.mesh.material.map === screen.idle) {
+        screen.mesh.material.map = t
+        screen.mesh.material.needsUpdate = true
+        if (!this.visible) this.renderOnce()
+      }
+      screen.idle = t
+    })
+  }
+
+  /** Put a site screenshot on a device's screen, or its resting picture back with null. */
+  showScreen(key: ScreenKey, url: string | null) {
+    const screen = this.screens[key]
+    if (!screen) return
+    if (!url) {
+      screen.mesh.material.map = screen.idle
+      screen.mesh.material.needsUpdate = true
+      if (!this.visible) this.renderOnce()
+      return
+    }
+    this.screenshot(key, url).then((t) => {
       screen.mesh.material.map = t
       screen.mesh.material.needsUpdate = true
       if (!this.visible) this.renderOnce()
     })
   }
+
 
   /** Highlight the object whose story is open in the panel. */
   select(id: DeskKey) {
@@ -870,6 +926,7 @@ export class Desk {
       this.code.offset.y = (t * 0.04) % 1
       this.leds.forEach((m, i) => (m.emissiveIntensity = 0.4 + 0.6 * (Math.sin(t * (2 + (i % 5)) + i) > 0.2 ? 1 : 0)))
       if (this.selected) this.selectedRing.scale.setScalar(1 + Math.sin(t * 3) * 0.04)
+      if (this.ir.level > 0) this.applyIr(t)
     }
     this.renderer.render(this.scene, this.camera)
   }
