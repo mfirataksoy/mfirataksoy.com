@@ -93,9 +93,6 @@ export type Chapter = {
   role: string
   title: ByTrack
   body: ByTrack
-  tags: string[]
-  // Customer-facing tags for the customer success lens; falls back to `tags`.
-  csTags?: string[]
   // The school or employer logo, set into the card's description.
   logo?: { src: string; alt: string }
 }
@@ -116,8 +113,6 @@ export const chapters: Chapter[] = [
       eng: 'Computer science with a math minor at TCU as a Chancellor’s Scholar, on the Dean’s List, and the first lines of code that ended up in production.',
       cs: 'Computer science with a math minor as a Chancellor’s Scholar. Alongside the degree, four years as an alumni relations and front desk specialist at TCU’s D.J. Kelly Alumni Center, welcoming guests and setting up events for 300+ attendees.',
     },
-    tags: ['Chancellor’s Scholar', 'Dean’s List'],
-    csTags: ['Chancellor’s Scholar', 'Alumni relations'],
     logo: { src: '/logos/tcu.svg', alt: 'TCU, Texas Christian University' },
   },
   {
@@ -136,8 +131,6 @@ export const chapters: Chapter[] = [
       eng: 'Rebuilt the licensing server that authenticated every purchase, from Fortune 1000 firms to small businesses, in ASP.NET and C#.',
       cs: 'Rebuilt the licensing server every customer purchase went through, from Fortune 1000 firms to small businesses, in ASP.NET and C#.',
     },
-    tags: ['ASP.NET', 'C#', 'Licensing'],
-    csTags: ['ASP.NET', 'C#', 'Fortune 1000 to SMB'],
     logo: { src: '/logos/anlas.png', alt: 'Anlaş Otomasyon' },
   },
   {
@@ -156,8 +149,6 @@ export const chapters: Chapter[] = [
       eng: 'Technical lead for a smart-home grocery device: CNN product and barcode recognition with TensorFlow on an NVIDIA Jetson Nano, plus Wi-Fi setup, Firebase Auth and H-E-B account linking in the companion app.',
       cs: 'Pitched a smart-home grocery device and led it to a working prototype built for real homes: Wi-Fi setup from the app, H-E-B account linking, and used-up items synced to the customer’s account automatically. Designed the enclosures for in-home testing.',
     },
-    tags: ['Jetson Nano', 'TensorFlow', 'Firebase', '3D printing'],
-    csTags: ['Pitch → prototype', 'In-home testing', 'Setup and onboarding'],
     logo: { src: '/logos/heb.svg', alt: 'H-E-B' },
   },
   {
@@ -176,8 +167,6 @@ export const chapters: Chapter[] = [
       eng: 'Managed a New York client’s delivery app for local shops through development, turning what the client needed into requirements the dev team could build.',
       cs: 'Owned the client relationship for a New York delivery app for local shops. Turned client needs into requirements and kept the client and the dev team aligned on scope and timelines across time zones.',
     },
-    tags: ['Client management', 'Requirements', 'Across time zones'],
-    csTags: ['Client relationship', 'Needs → requirements', 'Scope and timelines', 'Across time zones'],
   },
   {
     id: 'creditone',
@@ -196,8 +185,6 @@ export const chapters: Chapter[] = [
       frontend: 'Built an internal React application the bank’s customer support staff used every day, while rotating through cloud work: onboarding applications to AWS EKS with Terraform.',
       cs: 'Selected for the bank’s two-year IT leadership program and partnered with senior IT leaders on planning and delivery. Built the internal React app the bank’s customer support staff used every day.',
     },
-    tags: ['AWS EKS', 'Terraform', 'Kubernetes', 'React'],
-    csTags: ['Support tooling', 'Senior stakeholders', 'Banking'],
     logo: { src: '/logos/creditone.svg', alt: 'Credit One Bank' },
   },
   {
@@ -220,8 +207,6 @@ export const chapters: Chapter[] = [
       frontend: 'Shipped regulated e-document products across Flutter mobile and Vue and JSP web, from requirements to release, with Claude Code at every stage.',
       cs: 'Owned regulated e-document products end to end, from requirements to release, and partner integrations such as IdeaSoft. Built Claude Code into design, review, testing and documentation so a lean team could deliver more.',
     },
-    tags: ['Flutter', 'Vue', 'Java Spring', 'PostgreSQL', 'Claude Code'],
-    csTags: ['Regulated products', 'Partner integrations', 'Requirements → release'],
     logo: { src: '/logos/izibiz.webp', alt: 'İzibiz Business Solutions' },
   },
 ]
@@ -369,7 +354,7 @@ export const projects: Project[] = [
   },
 ]
 
-export type DeskKey = 'laptop' | 'tv' | 'calendar' | 'fridge' | 'phone' | 'headset' | 'server'
+export type DeskKey = 'laptop' | 'tv' | 'calendar' | 'fridge' | 'phone' | 'server'
 
 export type DeskItem = {
   id: DeskKey
@@ -431,19 +416,6 @@ export const desk: DeskItem[] = [
       cs: 'Products people reach from their phones: AcneAway turned a selfie into a retouched photo, and StickerHub didn’t ask anyone to install an app, it lived in the chats people already used.',
     },
     projects: ['AcneAway', 'StickerHub'],
-  },
-  {
-    id: 'headset',
-    object: 'Headset',
-    title: { eng: 'Working with customers', cs: 'Customer success' },
-    body: {
-      eng: 'My best engineering started with a conversation: what the client actually needs, what the support team fights with every day, which error message makes a user give up.',
-      cs: 'I’ve owned the client side of a product and built for the people who support customers. I translate between what customers need and what engineers can ship.',
-    },
-    points: [
-      'Owned the client relationship for a New York delivery app and turned needs into requirements',
-      'Built the internal React app Credit One’s customer support staff used daily',
-    ],
   },
   {
     id: 'server',

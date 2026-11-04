@@ -37,9 +37,6 @@ import { track, pick } from '../useLens'
                 <p :key="track" class="chapter__body">{{ pick(c.body) }}</p>
               </Transition>
             </div>
-            <ul class="chapter__tags">
-              <li v-for="t in (track === 'cs' && c.csTags) || c.tags" :key="t" class="tag">{{ t }}</li>
-            </ul>
           </article>
         </li>
         <li class="chapter chapter--now" data-chapter="now">
@@ -179,14 +176,6 @@ import { track, pick } from '../useLens'
 .chapter__body {
   margin: 14px 0 0;
   color: var(--ink-soft);
-}
-.chapter__tags {
-  list-style: none;
-  padding: 0;
-  margin: 18px 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 .chapter--now {
   min-height: 70vh;

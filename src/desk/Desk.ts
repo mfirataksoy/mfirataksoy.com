@@ -156,7 +156,6 @@ export class Desk {
     this.buildPhone()
     this.buildCalendar()
     this.buildTv()
-    this.buildHeadset()
     this.buildServer()
     this.buildDecor()
 
@@ -256,7 +255,7 @@ export class Desk {
   }
 
   // H-E-B's smart grocery device lived with people's groceries, so it gets a
-  // fridge: the door opens on click and a little camera scans the shelves.
+  // fridge with the device mounted on its door; the door opens on click.
   private buildFridge() {
     const g = new THREE.Group()
     const W = 1.5
@@ -296,13 +295,6 @@ export class Desk {
         g.add(item)
       }
     }
-    // The scanner: a small camera at the top, looking down at the shelves.
-    const scanner = box(0.32, 0.12, 0.2, mat(C.dark))
-    scanner.position.set(0, H - 0.16, 0.2)
-    g.add(scanner)
-    const lens = cyl(0.045, 0.045, 0.05, mat('#0b1020', { emissive: C.sky, emissiveIntensity: 1 }))
-    lens.position.set(0, H - 0.24, 0.24)
-    g.add(lens)
     this.fridgeLight = new THREE.PointLight('#fff1d6', 0, 3, 1.5)
     this.fridgeLight.position.set(0, H - 0.5, 0.3)
     g.add(this.fridgeLight)
@@ -318,6 +310,34 @@ export class Desk {
     const handle = box(0.05, 0.8, 0.06, mat(C.gold, { metalness: 0.7, roughness: 0.3 }))
     handle.position.set(W - 0.14, H * 0.5, 0.13)
     hinge.add(handle)
+    // The H-E-B device itself, stuck to the door: a red cube with a white top and
+    // a camera sitting in a cutout on its front.
+    const device = new THREE.Group()
+    const S = 0.36
+    const red = mat('#e01e2b', { roughness: 0.45 })
+    const body = box(S, S * 0.86, S, red)
+    body.position.y = (S * 0.86) / 2
+    device.add(body)
+    const cap = box(S + 0.012, S * 0.14, S + 0.012, mat('#f4f2ee', { roughness: 0.4 }))
+    cap.position.y = S * 0.86 + (S * 0.14) / 2
+    device.add(cap)
+    const cutout = box(S * 0.46, S * 0.46, 0.02, mat('#0b0f1a', { roughness: 0.9 }))
+    cutout.position.set(0, S * 0.45, S / 2 - 0.006)
+    device.add(cutout)
+    const camBody = cyl(S * 0.13, S * 0.13, 0.03, mat('#1b2133', { metalness: 0.5, roughness: 0.3 }))
+    camBody.rotation.x = Math.PI / 2
+    camBody.position.set(0, S * 0.45, S / 2 + 0.008)
+    device.add(camBody)
+    const glass = cyl(S * 0.075, S * 0.075, 0.012, mat('#0b1020', { emissive: C.sky, emissiveIntensity: 1.1, metalness: 0.6, roughness: 0.15 }))
+    glass.rotation.x = Math.PI / 2
+    glass.position.set(0, S * 0.45, S / 2 + 0.026)
+    device.add(glass)
+    const status = box(0.03, 0.03, 0.01, mat('#7dff9a', { emissive: '#7dff9a', emissiveIntensity: 1.4 }))
+    status.position.set(S * 0.32, S * 0.74, S / 2 + 0.003)
+    device.add(status)
+    device.position.set(W * 0.74, H * 0.8, 0.09 + S / 2)
+    hinge.add(device)
+
     g.add(hinge)
     this.fridgeDoor = hinge
     g.position.set(-3.15, 0, -2.45)
@@ -591,39 +611,7 @@ export class Desk {
     this.register('calendar', g)
   }
 
-  private buildHeadset() {
-    const g = new THREE.Group()
-    const stand = cyl(0.05, 0.05, 0.9, mat(C.dark))
-    stand.position.y = 0.45
-    g.add(stand)
-    const foot = cyl(0.26, 0.28, 0.05, mat(C.dark))
-    foot.position.y = 0.025
-    g.add(foot)
-    const band = new THREE.Mesh(
-      new THREE.TorusGeometry(0.36, 0.045, 12, 40, Math.PI),
-      mat(C.gold, { roughness: 0.35, metalness: 0.6 }),
-    )
-    band.castShadow = true
-    band.position.y = 0.92
-    g.add(band)
-    for (const side of [-1, 1]) {
-      const cup = cyl(0.17, 0.17, 0.12, mat('#262c3f'))
-      cup.rotation.z = Math.PI / 2
-      cup.position.set(side * 0.38, 0.86, 0)
-      g.add(cup)
-      const pad = cyl(0.13, 0.13, 0.03, mat('#11151f'))
-      pad.rotation.z = Math.PI / 2
-      pad.position.set(side * 0.31, 0.86, 0)
-      g.add(pad)
-    }
-    const mic = cyl(0.015, 0.015, 0.4, mat(C.dark))
-    mic.rotation.z = 1.1
-    mic.position.set(-0.28, 0.7, 0.14)
-    g.add(mic)
-    g.position.set(-2.35, 2.01, 1.0)
-    g.rotation.y = 0.5
-    this.register('headset', g)
-  }
+
 
   private buildServer() {
     const g = new THREE.Group()

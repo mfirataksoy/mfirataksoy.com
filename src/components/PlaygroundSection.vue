@@ -10,7 +10,7 @@ import DeskIcon from './DeskIcon.vue'
 
 const canvas = ref<HTMLCanvasElement>()
 // Each role meets the object that tells its story best first.
-const leadObject: Record<Track, DeskKey> = { cs: 'headset', backend: 'server', fullstack: 'laptop', frontend: 'laptop' }
+const leadObject: Record<Track, DeskKey> = { cs: 'calendar', backend: 'server', fullstack: 'laptop', frontend: 'laptop' }
 const selected = ref<DeskKey>(leadObject[track.value])
 const hover = ref<{ id: DeskKey; x: number; y: number } | null>(null)
 const has3d = ref(true)
