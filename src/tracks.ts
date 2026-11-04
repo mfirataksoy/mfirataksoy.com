@@ -19,7 +19,7 @@ export const tracks: Record<Track, TrackInfo> = {
   cs: {
     path: '/customersuccess',
     label: 'Customer success',
-    title: 'Firat Aksoy · Customer success manager',
+    title: 'Firat Aksoy · Customer success with an engineer’s toolkit',
     description: 'Mehmet Firat Aksoy: customer success manager with a software engineering background, based in Istanbul. Fluent in English and Turkish.',
     resume: mainResume,
   },
