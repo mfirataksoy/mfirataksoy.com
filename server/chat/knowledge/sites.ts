@@ -20,6 +20,7 @@ export const projectsOverview = `
 - Noteful (formerly NoteWith.Me; first built in 2021, rebuilt in 2026 as a realtime editor): collaborative notes without accounts. Open a page, share the URL and write together live, with optional password lock (end-to-end encrypted in the browser), read-only links, QR codes, a list of your notes, and Markdown/HTML/PDF export and Markdown import. Professors used the original for online classes during the pandemic. Vue 3, Tiptap, Yjs, Cloudflare Workers. https://noteful.me · code: https://github.com/mfirataksoy/notewith.me
 - Film Fırtınası (2026, side project): a movie discovery site on TMDB data with official trailers, IMDb, TMDB and community ratings side by side, reviews, movie requests with voting, and an admin panel that adds films straight from TMDB. Vue 3, TypeScript, Tailwind, Firebase. https://filmfirtinasi.com
 - Seçki İstanbul (2026, side project; started as Istanbul Etkinlik, a personal tool): every morning it collects Istanbul's concerts, talks, theatre, exhibitions and workshops from over a hundred sources and ranks them. The ranking uses no AI, so every score can be explained. Visitors get a map, an events assistant, and accounts that re-score events for their own interests, save events and subscribe to a calendar. Python, Vue 3, Cloudflare Pages Functions and D1, GitHub Actions. https://secki.istanbul
+- Altyazı Portalı (2026, case study): Fırat turned a subtitled video app he built for one person into a platform that generates unlimited sites from one backend: hostname-based site resolution, one-click deploys via the Cloudflare Pages API, per-site data in R2. Vue 3, Express, Cloudflare R2 and Pages, Gemini. Demo: https://altyazi.mfirataksoy.com
 - AcneAway (2025, side project, retired and kept as a showcase): upload a selfie and get a clear-skin retouch from an AI image pipeline, with Stripe checkout for credits. Vue 3, Firebase, Stripe, Replicate. https://acneaway.mfirataksoy.com
 - StickerHub (2021, side project with Bedirhan Celayir, retired): WhatsApp and Telegram bots that sent people stickers on request, and a website built from stickers users sent back to the bot. Vue, Node.js, Firebase, Google Cloud. Farewell page: https://stickerhub.mfirataksoy.com
 - mfirataksoy.com (2026, open source): a Three.js globe that follows his career route as you scroll, a desk you can click around, and pages for customer success, full-stack, backend and frontend readers. Vue 3, Three.js, GSAP, Vite. Code: https://github.com/mfirataksoy/mfirataksoy.com
@@ -78,6 +79,45 @@ Films on the site (the catalog bundled with the site; the live site may have a f
 - Yıldızlararası (Interstellar), 2014, 169 min, IMDb 8.7: adventure, drama, sci-fi
 - Parazit (Parasite), 2019, 133 min, IMDb 8.5: comedy, thriller, drama
 To suggest a film: ask at most one quick question if needed (mood, genre, how much time), then suggest one or two films from this list with a one-line reason each, and say they can open the film's page on the site to see the trailer and ratings. Only suggest films from this list.`,
+  },
+  {
+    id: 'altyazi',
+    assistant: {
+      name: { tr: 'Altyazı Portalı Asistanı', en: 'Subtitle Portal Assistant' },
+      persona: 'A patient, warm guide, like a helpful teacher: explains clearly and simply, good with parents and teachers, and makes the portal feel easy to try.',
+      role: 'Guide visitors through this demo: generating their own subtitle site step by step, kids mode and the teacher panel, and explain what the full portal does and how it was built.',
+    },
+    name: 'Altyazı Portalı demo',
+    origins: ['https://altyazi.mfirataksoy.com', ...pagesSite('altyazi-demo')],
+    project: `This is the public demo of Altyazı Portalı (Subtitle Portal), made by Fırat in 2026. The portal creates personal video sites for watching YouTube videos with Turkish subtitles; the full version runs many such sites from one admin panel and one backend.
+
+The landing page (Turkish/English)
+- "Site üret / Generate a site": choose a site name (up to 40 characters), an icon (🎬 🌸 🚀 🐉 🎌 🧸 📚 🌊), a mode (Normal or Kids), a background theme (four stills from Blender open movies) and the interface language (Turkish, English or Japanese). A live preview shows the result.
+- "Generate site" makes a link: the whole demo site lives in its URL, so it can be opened or shared right away ("Open site", "Copy link"). Sites you generated are listed in your browser.
+- The page also explains how this differs from YouTube's auto-translate, how the real portal works in 4 steps, and shows three example sites.
+
+On a generated site
+- A yellow DEMO banner lets you switch Normal/Kids mode, open the teacher panel (Kids mode) or make a new site.
+- The library has three Blender open movies with ready Turkish subtitles: Tears of Steel, Sintel and Cosmos Laundromat (Blender Foundation, CC BY). It can be searched; deleting a video hides it in this browser only.
+- The player is YouTube's player with large Turkish subtitles on top, synced every quarter second. Subtitles stay visible in fullscreen (also on iPhone), and the site remembers where you stopped.
+
+Normal vs Kids mode
+- Normal: just the library and the subtitled player.
+- Kids mode adds a rotating "quote of the moment" (Turkish proverbs), a Games tab with Snake (arrow keys or swipe) and a Reaction Test, each with a top-20 leaderboard, a gift-box opening animation, and the teacher panel at /hocam.
+
+Teacher panel (/hocam)
+- Time limits with a start, an end and a message. During a limit the site shows a lock screen with that message (checked every 30 seconds, on Turkey time).
+- Turn the quote on or off, or replace it with your own message.
+- Show or hide Snake, Reaction Test and the gift animation.
+- View and clear error logs.
+
+What the demo leaves out
+- Adding new videos and generating backgrounds use paid services in the real portal, so they're off here; the demo only plays the three library films. Pasting a new YouTube link won't process it.
+- There's no backend in the demo: settings, schedules and scores stay in your browser, per site.
+- In the full portal: the subtitles of any YouTube video are fetched and translated into Turkish, each site gets its own address through Cloudflare Pages, content lives in Cloudflare R2, and backgrounds are generated with Gemini.
+
+How it's built: Vue 3 and Vite front end, an Express API, Cloudflare R2 storage and Cloudflare Pages deploys driven from the admin panel, Gemini for images.
+Don't share: real names, real sites or domains, or who the portal was originally built for. Don't say the demo's teacher panel is password protected.`,
   },
   {
     id: 'istanbul-etkinlik',
