@@ -331,6 +331,17 @@ export const projects: Project[] = [
     stack: ['Jetson Nano', 'CUDA', 'TensorFlow', 'Firebase'],
   },
   {
+    name: 'Altyazı Portalı',
+    year: '2026',
+    kind: 'Side project',
+    body: 'I turned a subtitled video app built for one person into a platform that generates unlimited sites from one backend: hostname-based site resolution, one-click deploys via the Cloudflare Pages API, per-site data in R2.',
+    stack: ['Vue 3', 'Express', 'Cloudflare R2 and Pages', 'Gemini'],
+    link: { label: 'Open the demo', href: 'https://altyazi.mfirataksoy.com' },
+    preview: '/previews/altyazi.jpg',
+    screen: 'laptop',
+    status: 'Case study',
+  },
+  {
     name: 'AcneAway',
     year: '2025',
     kind: 'Side project',
@@ -375,7 +386,7 @@ export const desk: DeskItem[] = [
       eng: 'Side projects are where I try new stacks before I need them at work.',
       cs: 'Side projects keep my hands on the code, so I know what I’m promising customers.',
     },
-    projects: ['Noteful', 'This website'],
+    projects: ['Noteful', 'Altyazı Portalı', 'This website'],
   },
   {
     id: 'tv',
