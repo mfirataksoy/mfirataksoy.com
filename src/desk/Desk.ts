@@ -160,6 +160,7 @@ export class Desk {
     this.buildLights()
     this.buildDesk()
     this.buildLaptop()
+    this.buildFiles()
     this.buildFridge()
     this.buildPhone()
     this.buildCalendar()
@@ -293,6 +294,52 @@ export class Desk {
     g.position.set(-0.15, 2.01, 0.2)
     g.rotation.y = 0.3
     this.register('laptop', g)
+  }
+
+  // The sites I built for other people, as a small stack of folders next to the laptop.
+  private buildFiles() {
+    const g = new THREE.Group()
+    const W = 0.66, D = 0.88, T = 0.03
+    const covers = ['#c9b07a', '#b39765', '#c9b07a', '#d6c08c']
+    covers.forEach((color, i) => {
+      const f = new THREE.Group()
+      const cover = mat(color, { roughness: 0.85 })
+      const back = box(W, T, D, cover)
+      back.position.y = T / 2
+      f.add(back)
+      // A few sheets peeking out of the open side.
+      const paper = box(W - 0.05, 0.01, D - 0.03, mat(C.ivory, { roughness: 0.9 }))
+      paper.position.set(0.035, T + 0.004, 0.01)
+      f.add(paper)
+      // The tab sticks out of the far edge, at a different spot on each folder.
+      const tab = box(0.16, T, 0.07, cover)
+      tab.position.set(-W / 2 + 0.12 + i * 0.1, T / 2, -D / 2 - 0.03)
+      f.add(tab)
+      f.position.y = i * (T + 0.012)
+      // Fanned a little, so the stack reads as separate folders.
+      f.rotation.y = [0.16, -0.06, 0.1, -0.12][i]
+      f.position.x = [0.03, -0.03, 0.02, -0.01][i]
+      f.position.z = [-0.03, 0.02, -0.01, 0.03][i]
+      g.add(f)
+    })
+    // The top folder is labelled.
+    const label = screenTexture((ctx, w, h) => {
+      ctx.fillStyle = C.ivory
+      ctx.fillRect(0, 0, w, h)
+      ctx.fillStyle = '#16223f'
+      ctx.font = '700 40px "Inter Variable", system-ui, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillText('WEBSITES', w / 2, h / 2 + 2)
+    }, 256, 72)
+    const plate = new THREE.Mesh(new THREE.PlaneGeometry(0.44, 0.124), new THREE.MeshStandardMaterial({ map: label, roughness: 0.8 }))
+    plate.rotation.x = -Math.PI / 2
+    const top = g.children[g.children.length - 1]
+    plate.position.set(-0.04, 0.03 + 0.012, 0.2)
+    top.add(plate)
+    g.position.set(-1.38, 2.01, 0.7)
+    g.rotation.y = 0.18
+    this.register('files', g)
   }
 
   // H-E-B's smart grocery device lived with people's groceries, so it gets a
