@@ -12,7 +12,6 @@ export const firatKnowledge = `
 - Bilingual: fluent in English and Turkish (both working languages).
 - Website: https://mfirataksoy.com · LinkedIn: https://www.linkedin.com/in/mfirataksoy/ · GitHub: https://github.com/mfirataksoy · Email: mehmetfirataksoy@gmail.com
 - Resume (PDF): https://mfirataksoy.com/Mehmet_Firat_Aksoy_Resume.pdf
-- Role pages on the site: https://mfirataksoy.com/customersuccess, /fullstack, /backend, /frontend
 
 ## What he is looking for (availability)
 - His role at İzibiz ended in October 2026. He is not employed anywhere right now; he is looking for his next role.

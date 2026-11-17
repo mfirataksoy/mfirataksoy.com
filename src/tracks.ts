@@ -8,8 +8,7 @@ export type TrackInfo = {
   label: string
   title: string
   description: string
-  // Tailored resumes are produced in the resume chat; until a file exists the
-  // track falls back to the main resume.
+  // One resume for the whole site.
   resume: string
 }
 
@@ -21,34 +20,27 @@ export const tracks: Record<Track, TrackInfo> = {
     label: 'Customer success',
     title: 'Firat Aksoy · Customer success with an engineer’s toolkit',
     description: 'Mehmet Firat Aksoy: customer success manager with a software engineering background, based in Istanbul. Fluent in English and Turkish.',
-    resume: '/Mehmet_Firat_Aksoy_Resume_CustomerSuccess.pdf',
+    resume: mainResume,
   },
   fullstack: {
     path: '/fullstack',
     label: 'Full-stack',
     title: 'Firat Aksoy · Full-stack engineer',
     description: 'Mehmet Firat Aksoy: full-stack engineer in Istanbul across Flutter, Vue, Java Spring Boot and AWS. Previously İzibiz, Credit One Bank and H-E-B.',
-    resume: '/Mehmet_Firat_Aksoy_Resume_FullStack.pdf',
+    resume: mainResume,
   },
   backend: {
     path: '/backend',
     label: 'Backend',
     title: 'Firat Aksoy · Backend engineer',
     description: 'Mehmet Firat Aksoy: backend engineer in Istanbul. Java Spring Boot and PostgreSQL services, Docker, AWS EKS and Terraform.',
-    resume: '/Mehmet_Firat_Aksoy_Resume_Backend.pdf',
+    resume: mainResume,
   },
   frontend: {
     path: '/frontend',
     label: 'Frontend',
     title: 'Firat Aksoy · Frontend engineer',
     description: 'Mehmet Firat Aksoy: frontend engineer in Istanbul across Vue, React and Flutter.',
-    resume: '/Mehmet_Firat_Aksoy_Resume_Frontend.pdf',
+    resume: mainResume,
   },
-}
-
-export const trackOrder: Track[] = ['cs', 'fullstack', 'backend', 'frontend']
-
-export function trackFromPath(pathname: string): Track | null {
-  const clean = pathname.replace(/\/+$/, '') || '/'
-  return trackOrder.find((t) => tracks[t].path === clean) ?? null
 }
