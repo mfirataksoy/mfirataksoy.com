@@ -49,7 +49,7 @@ export const firatKnowledge = `
 - Staffed the front desk for four years while studying full time, welcoming guests and setting up 300+ attendee events; recognized by management in 2023 for handling an emergency.
 
 ## Education and certifications
-- B.S. Computer Science, Minor in Mathematics · Texas Christian University · Fort Worth, TX · 2018 – 2023. Chancellor's Scholar (full-ride merit scholarship), Honors graduate, Dean's List.
+- B.S. Computer Science, Minor in Mathematics · Texas Christian University · Fort Worth, TX · graduated 2023. Chancellor's Scholar (full-ride merit scholarship), Honors graduate, Dean's List.
 - Certifications: AWS Certified Cloud Practitioner; MS SQL From A to Z; Professional IT Support Certificate.
 
 ## Skills

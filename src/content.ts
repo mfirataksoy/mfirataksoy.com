@@ -100,7 +100,7 @@ export type Chapter = {
 export const chapters: Chapter[] = [
   {
     id: 'tcu',
-    years: '2018 – 2023',
+    years: '2023',
     place: 'Fort Worth, TX',
     focus: 'fortWorth',
     org: 'Texas Christian University',
