@@ -29,7 +29,7 @@ async function copyEmail() {
       <div class="contact__actions" data-reveal>
         <a class="btn btn--primary" :href="`mailto:${profile.email}`" data-event="contact_click" data-channel="email">Email me</a>
         <button type="button" class="btn" @click="copyEmail">{{ copied ? 'Copied' : 'Copy email' }}</button>
-        <a class="btn" :href="tracks[track].resume" download data-event="resume_download" data-where="contact">Resume (PDF)</a>
+        <a class="btn" :href="tracks[track].resume" target="_blank" rel="noopener" data-event="resume_download" data-where="contact">Resume ↗</a>
       </div>
       <ul class="contact__links" data-reveal>
         <li><a :href="profile.linkedin" target="_blank" rel="noopener" data-event="contact_click" data-channel="linkedin">LinkedIn ↗</a></li>
