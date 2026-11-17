@@ -1,5 +1,5 @@
 // Everything the assistant may say about Fırat. Sources: the one-page resume
-// (public/Mehmet_Firat_Aksoy_Resume.pdf, synced with LinkedIn 2026-10-28) and
+// (public/Mehmet_Firat_Aksoy_Resume.pdf, updated 2026-11-17) and
 // the copy in src/content.ts. If a fact is not here, the assistant must not say it.
 
 export const firatKnowledge = `
@@ -7,12 +7,11 @@ export const firatKnowledge = `
 
 ## At a glance
 - Full-stack software engineer with a customer success background, based in Istanbul, Türkiye.
-- 3+ years shipping mobile, web and backend products from design to production, with AI tools such as Claude Code built into every stage of development.
+- 3+ years shipping mobile, web and backend products from design to production.
 - AWS Certified Cloud Practitioner. Chancellor's Scholar (full-ride merit scholarship) and Honors Computer Science graduate of Texas Christian University (TCU).
 - Bilingual: fluent in English and Turkish (both working languages).
 - Website: https://mfirataksoy.com · LinkedIn: https://www.linkedin.com/in/mfirataksoy/ · GitHub: https://github.com/mfirataksoy · Email: mehmetfirataksoy@gmail.com
 - Resume (PDF): https://mfirataksoy.com/Mehmet_Firat_Aksoy_Resume.pdf
-- Role pages on the site: https://mfirataksoy.com/customersuccess, /fullstack, /backend, /frontend
 
 ## What he is looking for (availability)
 - His role at İzibiz ended in October 2026. He is not employed anywhere right now; he is looking for his next role.
@@ -23,14 +22,15 @@ export const firatKnowledge = `
 ## Experience
 
 ### Software Engineer · İzibiz Bilişim Teknolojileri A.Ş. · Istanbul · May 2025 – Oct 2026
-- Led end-to-end delivery of regulated e-document products (e-Ledger, e-SMM, e-Creditnote, expense vouchers), a tax calculation engine, an SMS microservice and partner integrations such as IdeaSoft.
-- Shipped across Flutter mobile, Vue and JSP web, and Java Spring and PostgreSQL backends; containerized the stack with Docker and Nginx and used Graylog and Zabbix to monitor logs and infrastructure in production.
-- Built Claude Code into every stage of development, from design and coding to code review, testing, documentation and releases, to deliver more with a lean team.
+- Owned regulated e-document products serving 50,000 customers (e-Ledger, e-SMM, e-Creditnote, expense vouchers) on Spring Boot, JPA/Hibernate and PostgreSQL, with UBL-TR XML for the tax authority (GİB).
+- Built a tax calculation engine, an SMS microservice on Kafka and Redis, Vue and JSP web interfaces and Node.js internal tools; managed 4 partner integrations with e-commerce platforms such as IdeaSoft.
+- Built a Flutter mobile app from scratch (Riverpod, Firebase push notifications) and released it on the App Store and Google Play.
+- Containerized services with Docker and Nginx and used Graylog and Zabbix to monitor logs and infrastructure in production.
 
 ### IT Leadership Associate · Credit One Bank · Las Vegas, NV · Aug 2023 – Aug 2024
 - Selected for the Information Management Leadership Program (IMLP), a two-year IT rotation; partnered with senior IT leadership on planning and delivery.
 - Cloud: onboarded new applications onto the bank's hybrid cloud platform, provisioning infrastructure with Terraform and deploying to AWS EKS clusters on Kubernetes; monitored cluster and application health across EKS environments for production banking services.
-- Development: built features for the bank's internal React support-agent platform, used daily by customer support staff (hooks, global state management, React Router, REST APIs). Built a customer-handling timer whose state persisted across route changes as agents moved between screens.
+- Development: built features for the bank's internal React support-agent platform, used daily by 500 customer support agents (hooks, global state management, React Router, REST APIs). Built a customer-handling timer whose state persisted across route changes as agents moved between screens.
 
 ### Customer Success Manager (Contract) · US local-delivery platform (name confidential) · Remote · Sep 2022 – Apr 2023
 - Managed a US client's delivery app for local shops through development, translating client needs into technical requirements.
@@ -54,8 +54,8 @@ export const firatKnowledge = `
 
 ## Skills
 - Languages: Java, Dart, TypeScript, JavaScript, Python, SQL
-- Frameworks: Spring, Flutter, Vue.js, React, Node.js, Express, JSP, Tailwind
-- Databases and BaaS: PostgreSQL, MS SQL, MongoDB, Firebase
+- Frameworks: Spring Boot, JPA/Hibernate, Flutter (Riverpod), Vue.js, React (TanStack Query), Node.js, Express, JSP, Tailwind
+- Data and messaging: PostgreSQL, MS SQL, MongoDB, Redis, Kafka, Firebase
 - Cloud and DevOps: AWS (EKS), Kubernetes, Terraform, Docker, Portainer, Nginx, Graylog, Zabbix, CI/CD
 - AI and tools: Claude Code (AI-assisted development), TensorFlow, OpenCV, CUDA, NVIDIA Jetson, Git, Jira
 - Customer work: client relationships, turning customer needs into requirements, scope and timelines, stakeholder alignment, working across time zones, clear and actionable messaging, documentation.

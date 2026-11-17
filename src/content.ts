@@ -40,8 +40,8 @@ export const hero = {
   headline: 'I build bridges',
   sub: {
     cs: 'between customers and the teams that serve them. A customer success manager with a software engineer’s background, so I can go deep on the technical side of every conversation.',
-    eng: 'between a product idea and the code that ships it. Full-stack engineer across Flutter, Vue, Java Spring and AWS, with Claude Code at every stage.',
-    backend: 'between business rules and the services that run them. Backend engineer in Java Spring and PostgreSQL, from a tax engine to an SMS microservice, shipped on Docker and AWS EKS.',
+    eng: 'between a product idea and the code that ships it. Full-stack engineer across Java Spring Boot, Vue, Flutter and AWS, from regulated e-document services to an app released on the App Store and Google Play.',
+    backend: 'between business rules and the services that run them. Backend engineer in Java Spring Boot and PostgreSQL, from a tax engine to an SMS microservice, shipped on Docker and AWS EKS.',
     frontend: 'between people and the products they use. Frontend engineer across Vue, React and Flutter, turning complex flows into screens that feel simple.',
   } satisfies ByTrack,
 }
@@ -51,8 +51,8 @@ export const about = {
   greeting: 'Hi, I’m Firat.',
   body: {
     cs: 'I trained as a software engineer, and the part of every project I cared about most was the people using it. As a customer success manager for a New York delivery platform, I owned the client relationship and turned what they needed into work the dev team could build. At Credit One Bank I built the app the support team used every day. Now I want to help customers succeed full time, with the technical depth to back it up.',
-    eng: 'I’m a full-stack engineer who likes owning a product end to end: the Flutter app, the Vue dashboard, the Spring service behind them and the cluster they run on. Most recently I led regulated e-document products at İzibiz, with Claude Code built into every step so a small team could ship like a bigger one.',
-    backend: 'I’m a backend engineer who likes systems that are correct before they are clever. At İzibiz I built a tax calculation engine, an SMS microservice and regulated e-document services on Java Spring and PostgreSQL, ran them on Docker and Nginx and watched them with Graylog and Zabbix. Before that I onboarded banking applications onto AWS EKS with Terraform at Credit One.',
+    eng: 'I’m a full-stack engineer who likes owning a product end to end: the Flutter app, the Vue dashboard, the Spring service behind them and the cluster they run on. Most recently I led regulated e-document products at İzibiz and built a Flutter app from scratch that shipped to the App Store and Google Play.',
+    backend: 'I’m a backend engineer who likes systems that are correct before they are clever. At İzibiz I built a tax calculation engine, an SMS microservice and regulated e-document services on Java Spring Boot and PostgreSQL, ran them on Docker and Nginx and watched them with Graylog and Zabbix. Before that I onboarded banking applications onto AWS EKS with Terraform at Credit One.',
     frontend: 'I’m a frontend engineer who has shipped across Vue, React and Flutter: e-document products on web and mobile at İzibiz, an internal React app a bank’s support team used every day, and side projects from collaborative notes to a movie discovery site.',
   } satisfies ByTrack,
   facts: {
@@ -202,10 +202,10 @@ export const chapters: Chapter[] = [
       frontend: 'Built e-document apps for web and mobile',
     },
     body: {
-      eng: 'Led delivery of e-Ledger, e-SMM, e-Creditnote and expense vouchers, a tax calculation engine and an SMS microservice across Flutter, Vue, JSP, Java Spring and PostgreSQL, running on Docker and Nginx with Graylog and Zabbix. Claude Code at every stage.',
-      backend: 'Built a tax calculation engine, an SMS microservice and the services behind e-Ledger, e-SMM, e-Creditnote and expense vouchers on Java Spring and PostgreSQL, plus partner integrations such as IdeaSoft. Containerized with Docker and Nginx, monitored with Graylog and Zabbix.',
-      frontend: 'Shipped regulated e-document products across Flutter mobile and Vue and JSP web, from requirements to release, with Claude Code at every stage.',
-      cs: 'Owned regulated e-document products end to end, from requirements to release, and partner integrations such as IdeaSoft. Built Claude Code into design, review, testing and documentation so a lean team could deliver more.',
+      eng: 'Led delivery of e-Ledger, e-SMM, e-Creditnote and expense vouchers, a tax calculation engine and an SMS microservice across Vue, JSP, Java Spring Boot and PostgreSQL, running on Docker and Nginx with Graylog and Zabbix. Built a Flutter app from scratch and released it on the App Store and Google Play.',
+      backend: 'Built a tax calculation engine, an SMS microservice and the services behind e-Ledger, e-SMM, e-Creditnote and expense vouchers on Java Spring Boot, JPA/Hibernate and PostgreSQL, and managed partner integrations such as IdeaSoft. Containerized with Docker and Nginx, monitored with Graylog and Zabbix.',
+      frontend: 'Shipped regulated e-document products on Vue and JSP web, and built a Flutter app from scratch with Riverpod, released on the App Store and Google Play.',
+      cs: 'Owned regulated e-document products end to end, from requirements to release, and managed partner integrations such as IdeaSoft. Also built a Flutter app from scratch, released on the App Store and Google Play.',
     },
     logo: { src: '/logos/izibiz.webp', alt: 'İzibiz Business Solutions' },
   },
@@ -239,14 +239,14 @@ type ToolGroup = { group: string; items: string[] }
 export const toolkit: { cs: ToolGroup[]; eng: ToolGroup[] } & Partial<Record<Track, ToolGroup[]>> = {
   eng: [
     { group: 'Languages', items: ['Java', 'Dart', 'TypeScript', 'JavaScript', 'Python', 'SQL'] },
-    { group: 'Frameworks', items: ['Spring', 'Flutter', 'Vue.js', 'React', 'Node.js', 'Express', 'JSP', 'Tailwind'] },
+    { group: 'Frameworks', items: ['Spring Boot', 'Flutter', 'Vue.js', 'React', 'Node.js', 'Express', 'JSP', 'Tailwind'] },
     { group: 'Data', items: ['PostgreSQL', 'MS SQL', 'MongoDB', 'Firebase'] },
     { group: 'Cloud and DevOps', items: ['AWS EKS', 'Kubernetes', 'Terraform', 'Docker', 'Nginx', 'Graylog', 'Zabbix', 'CI/CD'] },
     { group: 'AI and tools', items: ['Claude Code', 'TensorFlow', 'OpenCV', 'CUDA', 'NVIDIA Jetson', 'Git', 'Jira'] },
   ],
   backend: [
     { group: 'Languages', items: ['Java', 'SQL', 'Python', 'TypeScript'] },
-    { group: 'Backend', items: ['Spring', 'Node.js', 'Express', 'REST APIs', 'Microservices', 'JSP'] },
+    { group: 'Backend', items: ['Spring Boot', 'Node.js', 'Express', 'REST APIs', 'Microservices', 'JSP'] },
     { group: 'Data', items: ['PostgreSQL', 'MS SQL', 'MongoDB', 'Firebase'] },
     { group: 'Cloud and DevOps', items: ['AWS EKS', 'Kubernetes', 'Terraform', 'Docker', 'Nginx', 'CI/CD'] },
     { group: 'Observability and tools', items: ['Graylog', 'Zabbix', 'Claude Code', 'Git', 'Jira'] },

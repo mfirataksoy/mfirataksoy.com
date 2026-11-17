@@ -8,7 +8,6 @@ import { pick } from './useLens'
 import { captureOnce, startAnalytics } from './analytics'
 import GlobeStage from './components/GlobeStage.vue'
 import NavBar from './components/NavBar.vue'
-import RolePicker from './components/RolePicker.vue'
 import HeroSection from './components/HeroSection.vue'
 import AboutSection from './components/AboutSection.vue'
 import JourneySection from './components/JourneySection.vue'
@@ -137,7 +136,6 @@ onBeforeUnmount(() => ctx?.revert())
 <template>
   <GlobeStage />
   <NavBar />
-  <RolePicker />
   <main class="page">
     <HeroSection />
     <JourneySection />

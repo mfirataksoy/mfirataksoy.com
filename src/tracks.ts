@@ -8,8 +8,7 @@ export type TrackInfo = {
   label: string
   title: string
   description: string
-  // Tailored resumes are produced in the resume chat; until a file exists the
-  // track falls back to the main resume.
+  // One resume for the whole site.
   resume: string
 }
 
@@ -27,14 +26,14 @@ export const tracks: Record<Track, TrackInfo> = {
     path: '/fullstack',
     label: 'Full-stack',
     title: 'Firat Aksoy · Full-stack engineer',
-    description: 'Mehmet Firat Aksoy: full-stack engineer in Istanbul across Flutter, Vue, Java Spring and AWS. Previously İzibiz, Credit One Bank and H-E-B.',
+    description: 'Mehmet Firat Aksoy: full-stack engineer in Istanbul across Flutter, Vue, Java Spring Boot and AWS. Previously İzibiz, Credit One Bank and H-E-B.',
     resume: mainResume,
   },
   backend: {
     path: '/backend',
     label: 'Backend',
     title: 'Firat Aksoy · Backend engineer',
-    description: 'Mehmet Firat Aksoy: backend engineer in Istanbul. Java Spring and PostgreSQL services, Docker, AWS EKS and Terraform.',
+    description: 'Mehmet Firat Aksoy: backend engineer in Istanbul. Java Spring Boot and PostgreSQL services, Docker, AWS EKS and Terraform.',
     resume: mainResume,
   },
   frontend: {
@@ -44,11 +43,4 @@ export const tracks: Record<Track, TrackInfo> = {
     description: 'Mehmet Firat Aksoy: frontend engineer in Istanbul across Vue, React and Flutter.',
     resume: mainResume,
   },
-}
-
-export const trackOrder: Track[] = ['cs', 'fullstack', 'backend', 'frontend']
-
-export function trackFromPath(pathname: string): Track | null {
-  const clean = pathname.replace(/\/+$/, '') || '/'
-  return trackOrder.find((t) => tracks[t].path === clean) ?? null
 }
